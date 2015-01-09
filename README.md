@@ -8,7 +8,7 @@ A library providing sorted and navigable collections for Rust.
 ## Usage
 NOTE: This library is not even remotely done yet, and unpublished to crates.io as of yet.
 I will publish the first version once I deem it to be at least somewhat usable.
----
+
 Put this in your `Cargo.toml`:
 
 ```toml
