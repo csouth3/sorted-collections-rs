@@ -1,4 +1,4 @@
-#![allow(staged_unstable, staged_experimental)]
+#![allow(unstable)]
 
 #[cfg(test)] extern crate test;
 
