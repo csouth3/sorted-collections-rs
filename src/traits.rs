@@ -54,7 +54,7 @@ pub trait SortedSet<T: Ord + Clone> : Sized {
 
 /// An extension trait for a `Map` whose keys have a defined total ordering.
 /// This trait provides convenience methods which take advantage of the map's ordering.
-pub trait SortedMap<K: Ord + Clone, V> : Sized {
+pub trait SortedMap<K: Ord + Clone, V: Clone> : Sized {
     /// Returns the first (lowest) key currently in this map and optionally removes it
     /// from the map.
     /// Returns `None` if this map is empty.
