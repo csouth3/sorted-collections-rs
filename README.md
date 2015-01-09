@@ -1,7 +1,7 @@
 sorted-collections-rs
 =====================
 
-A library providing sorted and navigable collections for Rust.
+A library providing useful extension traits and convenience methods for ordered collections in Rust.
 
 [![Build Status](https://travis-ci.org/csouth3/sorted-collections-rs.svg?branch=master)](https://travis-ci.org/csouth3/sorted-collections-rs)
 
