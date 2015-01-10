@@ -1,6 +1,7 @@
 /// An extension trait for a `Set` whose elements have a defined total ordering.
 /// This trait provides convenience methods which take advantage of the set's ordering.
-pub trait SortedSet<T: Ord + Clone> : Sized {
+pub trait SortedSet<T> : Sized
+    where T: Ord + Clone {
     /// Returns the first (lowest) element currently in this set and optionally removes it
     /// from the set.
     /// Returns `None` if this set is empty.
@@ -54,7 +55,9 @@ pub trait SortedSet<T: Ord + Clone> : Sized {
 
 /// An extension trait for a `Map` whose keys have a defined total ordering.
 /// This trait provides convenience methods which take advantage of the map's ordering.
-pub trait SortedMap<K: Ord + Clone, V: Clone> : Sized {
+pub trait SortedMap<K, V> : Sized
+    where K: Clone + Ord,
+          V: Clone {
     /// Returns the first (lowest) key currently in this map and optionally removes it
     /// from the map.
     /// Returns `None` if this map is empty.
