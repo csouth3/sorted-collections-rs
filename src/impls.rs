@@ -1,124 +1,145 @@
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
+use std::collections::hash_state::HashState;
+use std::default::Default;
+use std::hash::{Hash, Hasher};
 
 use super::traits::{SortedMap, SortedSet};
 
 macro_rules! sortedset_impl {
     ($typ:ty) => (
-        impl<T: Ord + Clone> SortedSet<T> for $typ {
-            fn first(&mut self, remove: bool) -> Option<T> {
-                if self.is_empty() { return None }
+        fn first(&mut self, remove: bool) -> Option<T> {
+            if self.is_empty() { return None }
 
-                let ret = self.iter().min().unwrap().clone();
-                if remove {
-                    self.remove(&ret);
-                }
-                Some(ret)
+            let ret = self.iter().min().unwrap().clone();
+            if remove {
+                self.remove(&ret);
             }
+            Some(ret)
+        }
 
-            fn last(&mut self, remove: bool) -> Option<T> {
-                if self.is_empty() { return None }
+        fn last(&mut self, remove: bool) -> Option<T> {
+            if self.is_empty() { return None }
 
-                let ret = self.iter().max().unwrap().clone();
-                if remove {
-                    self.remove(&ret);
-                }
-                Some(ret)
+            let ret = self.iter().max().unwrap().clone();
+            if remove {
+                self.remove(&ret);
             }
+            Some(ret)
+        }
 
-            fn head_set(&self, elem: &T, inclusive: bool) -> $typ {
-                if inclusive {
-                    return self.iter().cloned().filter(|x| x <= elem).collect();
-                } else {
-                    return self.iter().cloned().filter(|x| x < elem).collect();
-                }
+        fn head_set(&self, elem: &T, inclusive: bool) -> $typ {
+            if inclusive {
+                return self.iter().cloned().filter(|x| x <= elem).collect();
+            } else {
+                return self.iter().cloned().filter(|x| x < elem).collect();
             }
+        }
 
-            fn sub_set(&self, from_elem: &T, from_inclusive: bool, to_elem: &T, to_inclusive:bool) -> $typ {
-                assert!(from_elem <= to_elem);
+        fn sub_set(&self, from_elem: &T, from_inclusive: bool, to_elem: &T, to_inclusive:bool) -> $typ {
+            assert!(from_elem <= to_elem);
 
-                if from_inclusive && to_inclusive {
-                    return self.iter().cloned().filter(|x| x >= from_elem && x <= to_elem).collect();
-                } else if from_inclusive && !to_inclusive {
-                    return self.iter().cloned().filter(|x| x >= from_elem && x < to_elem).collect();
-                } else if !from_inclusive && to_inclusive {
-                    return self.iter().cloned().filter(|x| x > from_elem && x <= to_elem).collect();
-                } else {
-                    return self.iter().cloned().filter(|x| x > from_elem && x < to_elem).collect();
-                }
+            if from_inclusive && to_inclusive {
+                return self.iter().cloned().filter(|x| x >= from_elem && x <= to_elem).collect();
+            } else if from_inclusive && !to_inclusive {
+                return self.iter().cloned().filter(|x| x >= from_elem && x < to_elem).collect();
+            } else if !from_inclusive && to_inclusive {
+                return self.iter().cloned().filter(|x| x > from_elem && x <= to_elem).collect();
+            } else {
+                return self.iter().cloned().filter(|x| x > from_elem && x < to_elem).collect();
             }
+        }
 
-            fn tail_set(&self, elem: &T, inclusive: bool) -> $typ {
-                if inclusive {
-                    return self.iter().cloned().filter(|x| x >= elem).collect();
-                } else {
-                    return self.iter().cloned().filter(|x| x > elem).collect();
-                }
+        fn tail_set(&self, elem: &T, inclusive: bool) -> $typ {
+            if inclusive {
+                return self.iter().cloned().filter(|x| x >= elem).collect();
+            } else {
+                return self.iter().cloned().filter(|x| x > elem).collect();
             }
         }
     );
 }
-sortedset_impl!(BTreeSet<T>);
+
+impl<T> SortedSet<T> for BTreeSet<T>
+    where T: Ord + Clone {
+    sortedset_impl!(BTreeSet<T>);
+}
+impl<T, S, H> SortedSet<T> for HashSet<T, S>
+    where T: Clone + Eq + Hash<H> + Ord,
+          S: HashState<Hasher=H> + Default,
+          H: Hasher<Output=u64> {
+    sortedset_impl!(HashSet<T, S>);
+}
 
 macro_rules! sortedmap_impl {
     ($typ:ty) => (
-        impl<K: Ord + Clone, V: Clone> SortedMap<K, V> for $typ {
-            fn first_key(&mut self, remove: bool) -> Option<K> {
-                if self.is_empty() { return None }
+        fn first_key(&mut self, remove: bool) -> Option<K> {
+            if self.is_empty() { return None }
 
-                let ret = self.keys().min().unwrap().clone();
-                if remove {
-                    self.remove(&ret);
-                }
-                Some(ret)
+            let ret = self.keys().min().unwrap().clone();
+            if remove {
+                self.remove(&ret);
             }
+            Some(ret)
+        }
 
-            fn last_key(&mut self, remove: bool) -> Option<K> {
-                if self.is_empty() { return None }
+        fn last_key(&mut self, remove: bool) -> Option<K> {
+            if self.is_empty() { return None }
 
-                let ret = self.keys().max().unwrap().clone();
-                if remove {
-                    self.remove(&ret);
-                }
-                Some(ret)
+            let ret = self.keys().max().unwrap().clone();
+            if remove {
+                self.remove(&ret);
             }
+            Some(ret)
+        }
 
-            fn head_map(&self, key: &K, inclusive: bool) -> $typ {
-                // FIXME: here be extravagant cloning
-                let it = self.keys().cloned().zip(self.values().cloned());
-                if inclusive {
-                    return it.filter_map(|(k, v)| if k <= *key { Some((k.clone(), v.clone())) } else { None }).collect();
-                } else {
-                    return it.filter_map(|(k, v)| if k < *key { Some((k.clone(), v.clone())) } else { None }).collect();
-                }
+        fn head_map(&self, key: &K, inclusive: bool) -> $typ {
+            // FIXME: here be extravagant cloning
+            let it = self.keys().cloned().zip(self.values().cloned());
+            if inclusive {
+                return it.filter_map(|(k, v)| if k <= *key { Some((k.clone(), v.clone())) } else { None }).collect();
+            } else {
+                return it.filter_map(|(k, v)| if k < *key { Some((k.clone(), v.clone())) } else { None }).collect();
             }
+        }
 
-            fn sub_map(&self, from_key: &K, from_inclusive: bool, to_key: &K, to_inclusive: bool) -> $typ {
-                // FIXME: here be extravagant cloning
-                let it = self.keys().cloned().zip(self.values().cloned());
-                if from_inclusive && to_inclusive {
-                    return it.filter_map(|(k, v)| if k >= *from_key && k <= *to_key { Some((k.clone(), v.clone())) } else { None }).collect();
-                } else if from_inclusive && !to_inclusive {
-                    return it.filter_map(|(k, v)| if k >= *from_key && k < *to_key { Some((k.clone(), v.clone())) } else { None }).collect();
-                } else if !from_inclusive && to_inclusive {
-                    return it.filter_map(|(k, v)| if k > *from_key && k <= *to_key { Some((k.clone(), v.clone())) } else { None }).collect();
-                } else {
-                    return it.filter_map(|(k, v)| if k > *from_key && k < *to_key { Some((k.clone(), v.clone())) } else { None }).collect();
-                }
+        fn sub_map(&self, from_key: &K, from_inclusive: bool, to_key: &K, to_inclusive: bool) -> $typ {
+            // FIXME: here be extravagant cloning
+            let it = self.keys().cloned().zip(self.values().cloned());
+            if from_inclusive && to_inclusive {
+                return it.filter_map(|(k, v)| if k >= *from_key && k <= *to_key { Some((k.clone(), v.clone())) } else { None }).collect();
+            } else if from_inclusive && !to_inclusive {
+                return it.filter_map(|(k, v)| if k >= *from_key && k < *to_key { Some((k.clone(), v.clone())) } else { None }).collect();
+            } else if !from_inclusive && to_inclusive {
+                return it.filter_map(|(k, v)| if k > *from_key && k <= *to_key { Some((k.clone(), v.clone())) } else { None }).collect();
+            } else {
+                return it.filter_map(|(k, v)| if k > *from_key && k < *to_key { Some((k.clone(), v.clone())) } else { None }).collect();
             }
+        }
 
-            fn tail_map(&self, key: &K, inclusive: bool) -> $typ {
-                // FIXME: here be extravagant cloning
-                let it = self.keys().cloned().zip(self.values().cloned());
-                if inclusive {
-                    return it.filter_map(|(k, v)| if k >= *key { Some((k.clone(), v.clone())) } else { None }).collect();
-                } else {
-                    return it.filter_map(|(k, v)| if k > *key { Some((k.clone(), v.clone())) } else { None }).collect();
-                }
+        fn tail_map(&self, key: &K, inclusive: bool) -> $typ {
+            // FIXME: here be extravagant cloning
+            let it = self.keys().cloned().zip(self.values().cloned());
+            if inclusive {
+                return it.filter_map(|(k, v)| if k >= *key { Some((k.clone(), v.clone())) } else { None }).collect();
+            } else {
+                return it.filter_map(|(k, v)| if k > *key { Some((k.clone(), v.clone())) } else { None }).collect();
             }
         }
     );
 }
-sortedmap_impl!(BTreeMap<K, V>);
+
+impl<K, V> SortedMap<K, V> for BTreeMap<K, V>
+    where K: Clone + Ord,
+          V: Clone {
+    sortedmap_impl!(BTreeMap<K, V>);
+}
+impl<K, V, S, H> SortedMap<K, V> for HashMap<K, V, S>
+    where K: Clone + Eq + Hash<H> + Ord,
+          V: Clone,
+          S: HashState<Hasher=H> + Default,
+          H: Hasher<Output=u64> {
+    sortedmap_impl!(HashMap<K, V, S>);
+}
 
 #[cfg(test)]
 mod tests {
