@@ -58,15 +58,15 @@ pub trait SortedSet<T> : Sized
 pub trait SortedMap<K, V> : Sized
     where K: Clone + Ord,
           V: Clone {
-    /// Returns the first (lowest) key currently in this map and optionally removes it
-    /// from the map.
+    /// Returns the first (lowest) key currently in this map, and its corresponding value,
+    /// and optionally removes it from the map.
     /// Returns `None` if this map is empty.
-    fn first_key(&mut self, remove: bool) -> Option<K>;
+    fn first_key(&mut self, remove: bool) -> Option<(K, V)>;
 
-    /// Returns the last (highest) key currently in this map and optionally removes it
-    /// from the map.
+    /// Returns the last (highest) key currently in this map, and its corresponding value,
+    /// and optionally removes it from the map.
     /// Returns `None` if this map is empty.
-    fn last_key(&mut self, remove: bool) -> Option<K>;
+    fn last_key(&mut self, remove: bool) -> Option<(K, V)>;
 
     /// Returns the key-value pairs of this map whose keys are less than (or equal to,
     /// if `inclusive` is true) `key`, as a new instance of the same type of map.
@@ -80,30 +80,30 @@ pub trait SortedMap<K, V> : Sized
     /// if `inclusive` is true) `key`, as a new instance of the same type of map.
     fn tail_map(&self, key: &K, inclusive: bool) -> Self;
 
-    /// Returns the least key greater than or equal to `key`.
+    /// Returns the least key greater than or equal to `key`, and its corresponding value.
     /// Returns `None` if there is no such key.
-    fn ceiling_key(&self, key: &K) -> Option<K> {
+    fn ceiling_key(&self, key: &K) -> Option<(K, V)> {
         let mut tail = self.tail_map(key, true);
         tail.first_key(false)
     }
 
-    /// Returns the greatest key less than or equal to `key`.
+    /// Returns the greatest key less than or equal to `key`, and its corresponding value.
     /// Returns `None` if there is no such key.
-    fn floor_key(&self, key: &K) -> Option<K> {
+    fn floor_key(&self, key: &K) -> Option<(K, V)> {
         let mut head = self.head_map(key, true);
         head.last_key(false)
     }
 
-    /// Returns the least key strictly greater than the given key.
+    /// Returns the least key strictly greater than the given key, and its corresponding value.
     /// Returns `None` if there is no such key.
-    fn higher_key(&self, key: &K) -> Option<K> {
+    fn higher_key(&self, key: &K) -> Option<(K, V)> {
         let mut tail = self.tail_map(key, false);
         tail.first_key(false)
     }
 
-    /// Returns the greatest key strictly less than the given key.
+    /// Returns the greatest key strictly less than the given key, and its corresponding value.
     /// Returns `None` if there is no such key.
-    fn lower_key(&self, key: &K) -> Option<K> {
+    fn lower_key(&self, key: &K) -> Option<(K, V)> {
         let mut head = self.head_map(key, false);
         head.first_key(false)
     }

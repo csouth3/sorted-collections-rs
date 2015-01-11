@@ -72,24 +72,34 @@ impl<T, S, H> SortedSet<T> for HashSet<T, S>
 
 macro_rules! sortedmap_impl {
     ($typ:ty) => (
-        fn first_key(&mut self, remove: bool) -> Option<K> {
+        fn first_key(&mut self, remove: bool) -> Option<(K, V)> {
             if self.is_empty() { return None }
 
-            let ret = self.keys().min().unwrap().clone();
+            let key = self.keys().min().unwrap().clone();
+            let val: V;
+
             if remove {
-                self.remove(&ret);
+                val = self.remove(&key).unwrap();
+            } else {
+                val = self.get(&key).unwrap().clone();
             }
-            Some(ret)
+
+            Some((key, val))
         }
 
-        fn last_key(&mut self, remove: bool) -> Option<K> {
+        fn last_key(&mut self, remove: bool) -> Option<(K, V)> {
             if self.is_empty() { return None }
 
-            let ret = self.keys().max().unwrap().clone();
+            let key = self.keys().max().unwrap().clone();
+            let val: V;
+
             if remove {
-                self.remove(&ret);
+                val = self.remove(&key).unwrap();
+            } else {
+                val = self.get(&key).unwrap().clone();
             }
-            Some(ret)
+
+            Some((key, val))
         }
 
         fn head_map(&self, key: &K, inclusive: bool) -> $typ {
