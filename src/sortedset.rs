@@ -54,7 +54,7 @@ pub trait SortedSet<T> : Sized
     /// Returns `None` if there is no such element.
     fn lower(&self, elem: &T) -> Option<T> {
         let mut head = self.head_set(elem, false);
-        head.first(false)
+        head.last(false)
     }
 }
 
@@ -220,5 +220,33 @@ mod tests {
         let tail_set = set.tail_set(&3, true);
         assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
         assert_eq!(tail_set.into_iter().collect::<Vec<u32>>(), vec![3u32, 4, 5]);
+    }
+
+    #[test]
+    fn test_ceiling() {
+        let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+        assert_eq!(set.ceiling(&3).unwrap(), 3);
+        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+    }
+
+    #[test]
+    fn test_floor() {
+        let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+        assert_eq!(set.floor(&3).unwrap(), 3);
+        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+    }
+
+    #[test]
+    fn test_higher() {
+        let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+        assert_eq!(set.higher(&3).unwrap(), 4);
+        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+    }
+
+    #[test]
+    fn test_lower() {
+        let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+        assert_eq!(set.lower(&3).unwrap(), 2);
+        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
     }
 }
