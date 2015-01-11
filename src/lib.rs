@@ -2,7 +2,8 @@
 
 #[cfg(test)] extern crate test;
 
-pub use traits::SortedSet;
+pub use sortedmap::SortedMap;
+pub use sortedset::SortedSet;
 
-pub mod traits;
-pub mod impls;
+pub mod sortedmap;
+pub mod sortedset;

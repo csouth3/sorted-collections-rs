@@ -1,9 +1,62 @@
-use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
+use std::collections::{BTreeSet, HashSet};
 use std::collections::hash_state::HashState;
 use std::default::Default;
 use std::hash::{Hash, Hasher};
 
-use super::traits::{SortedMap, SortedSet};
+/// An extension trait for a `Set` whose elements have a defined total ordering.
+/// This trait provides convenience methods which take advantage of the set's ordering.
+pub trait SortedSet<T> : Sized
+    where T: Clone + Ord {
+    /// Returns the first (lowest) element currently in this set and optionally removes it
+    /// from the set.
+    /// Returns `None` if this set is empty.
+    fn first(&mut self, remove: bool) -> Option<T>;
+
+    /// Returns the last (highest) element current in this set and optionally removes it
+    /// from the set.
+    /// Returns `None` if this set is empty.
+    fn last(&mut self, remove: bool) -> Option<T>;
+
+    /// Returns the elements of this set which are less than (or equal to, if `inclusive`
+    /// is true) `elem`, as a new instance of the same type of set.
+    fn head_set(&self, elem: &T, inclusive: bool) -> Self;
+
+    /// Returns the elements of this set ranging from `from_elem` to `to_elem`, as
+    /// a new instance of the same type of set.
+    fn sub_set(&self, from_elem: &T, from_inclusive: bool, to_elem: &T, to_inclusive: bool) -> Self;
+
+    /// Returns the elements of this set which are greater than (or equal to, if
+    /// `inclusive` is true) `elem`, as a new instance of the same type of set.
+    fn tail_set(&self, elem: &T, inclusive: bool) -> Self;
+
+    /// Returns the least element in this set greater than or equal to `elem`.
+    /// Returns `None` if there is no such element.
+    fn ceiling(&self, elem: &T) -> Option<T> {
+        let mut tail = self.tail_set(elem, true);
+        tail.first(false)
+    }
+
+    /// Returns the greatest element in this set less than or equal to `elem`.
+    /// Returns `None` if there is no such element.
+    fn floor(&self, elem: &T) -> Option<T> {
+        let mut head = self.head_set(elem, true);
+        head.last(false)
+    }
+
+    /// Returns the least element in this set strictly greater than `elem`.
+    /// Returns `None` if there is no such element.
+    fn higher(&self, elem: &T) -> Option<T> {
+        let mut tail = self.tail_set(elem, false);
+        tail.first(false)
+    }
+
+    /// Returns the greatest element in this set strictly less than `elem`.
+    /// Returns `None` if there is no such element.
+    fn lower(&self, elem: &T) -> Option<T> {
+        let mut head = self.head_set(elem, false);
+        head.first(false)
+    }
+}
 
 macro_rules! sortedset_impl {
     ($typ:ty) => (
@@ -70,87 +123,9 @@ impl<T, S, H> SortedSet<T> for HashSet<T, S>
     sortedset_impl!(HashSet<T, S>);
 }
 
-macro_rules! sortedmap_impl {
-    ($typ:ty) => (
-        fn first_key(&mut self, remove: bool) -> Option<(K, V)> {
-            if self.is_empty() { return None }
-
-            let key = self.keys().min().unwrap().clone();
-            let val: V;
-
-            if remove {
-                val = self.remove(&key).unwrap();
-            } else {
-                val = self.get(&key).unwrap().clone();
-            }
-
-            Some((key, val))
-        }
-
-        fn last_key(&mut self, remove: bool) -> Option<(K, V)> {
-            if self.is_empty() { return None }
-
-            let key = self.keys().max().unwrap().clone();
-            let val: V;
-
-            if remove {
-                val = self.remove(&key).unwrap();
-            } else {
-                val = self.get(&key).unwrap().clone();
-            }
-
-            Some((key, val))
-        }
-
-        fn head_map(&self, key: &K, inclusive: bool) -> $typ {
-            let it = self.keys().cloned().zip(self.values().cloned());
-            if inclusive {
-                return it.filter_map(|(k, v)| if k <= *key { Some((k, v)) } else { None }).collect();
-            } else {
-                return it.filter_map(|(k, v)| if k < *key { Some((k, v)) } else { None }).collect();
-            }
-        }
-
-        fn sub_map(&self, from_key: &K, from_inclusive: bool, to_key: &K, to_inclusive: bool) -> $typ {
-            let it = self.keys().cloned().zip(self.values().cloned());
-            if from_inclusive && to_inclusive {
-                return it.filter_map(|(k, v)| if k >= *from_key && k <= *to_key { Some((k, v)) } else { None }).collect();
-            } else if from_inclusive && !to_inclusive {
-                return it.filter_map(|(k, v)| if k >= *from_key && k < *to_key { Some((k, v)) } else { None }).collect();
-            } else if !from_inclusive && to_inclusive {
-                return it.filter_map(|(k, v)| if k > *from_key && k <= *to_key { Some((k, v)) } else { None }).collect();
-            } else {
-                return it.filter_map(|(k, v)| if k > *from_key && k < *to_key { Some((k, v)) } else { None }).collect();
-            }
-        }
-
-        fn tail_map(&self, key: &K, inclusive: bool) -> $typ {
-            let it = self.keys().cloned().zip(self.values().cloned());
-            if inclusive {
-                return it.filter_map(|(k, v)| if k >= *key { Some((k, v)) } else { None }).collect();
-            } else {
-                return it.filter_map(|(k, v)| if k > *key { Some((k, v)) } else { None }).collect();
-            }
-        }
-    );
-}
-
-impl<K, V> SortedMap<K, V> for BTreeMap<K, V>
-    where K: Clone + Ord,
-          V: Clone {
-    sortedmap_impl!(BTreeMap<K, V>);
-}
-impl<K, V, S, H> SortedMap<K, V> for HashMap<K, V, S>
-    where K: Clone + Eq + Hash<H> + Ord,
-          V: Clone,
-          S: HashState<Hasher=H> + Default,
-          H: Hasher<Output=u64> {
-    sortedmap_impl!(HashMap<K, V, S>);
-}
-
 #[cfg(test)]
 mod tests {
-    use super::super::traits::SortedSet;
+    use super::SortedSet;
 
     use std::collections::BTreeSet;
 
@@ -246,6 +221,4 @@ mod tests {
         assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
         assert_eq!(tail_set.into_iter().collect::<Vec<u32>>(), vec![3u32, 4, 5]);
     }
-
-    // FIXME: Add map tests!
 }
