@@ -225,28 +225,28 @@ mod tests {
     #[test]
     fn test_ceiling() {
         let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        assert_eq!(set.ceiling(&3).unwrap(), 3);
+        assert_eq!(set.ceiling(&3).unwrap(), 3u32);
         assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
     }
 
     #[test]
     fn test_floor() {
         let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        assert_eq!(set.floor(&3).unwrap(), 3);
+        assert_eq!(set.floor(&3).unwrap(), 3u32);
         assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
     }
 
     #[test]
     fn test_higher() {
         let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        assert_eq!(set.higher(&3).unwrap(), 4);
+        assert_eq!(set.higher(&3).unwrap(), 4u32);
         assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
     }
 
     #[test]
     fn test_lower() {
         let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        assert_eq!(set.lower(&3).unwrap(), 2);
+        assert_eq!(set.lower(&3).unwrap(), 2u32);
         assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
     }
 }
