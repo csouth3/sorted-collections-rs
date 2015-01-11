@@ -60,7 +60,7 @@ macro_rules! sortedset_impl {
 }
 
 impl<T> SortedSet<T> for BTreeSet<T>
-    where T: Ord + Clone {
+    where T: Clone + Ord {
     sortedset_impl!(BTreeSet<T>);
 }
 impl<T, S, H> SortedSet<T> for HashSet<T, S>
@@ -93,36 +93,33 @@ macro_rules! sortedmap_impl {
         }
 
         fn head_map(&self, key: &K, inclusive: bool) -> $typ {
-            // FIXME: here be extravagant cloning
             let it = self.keys().cloned().zip(self.values().cloned());
             if inclusive {
-                return it.filter_map(|(k, v)| if k <= *key { Some((k.clone(), v.clone())) } else { None }).collect();
+                return it.filter_map(|(k, v)| if k <= *key { Some((k, v)) } else { None }).collect();
             } else {
-                return it.filter_map(|(k, v)| if k < *key { Some((k.clone(), v.clone())) } else { None }).collect();
+                return it.filter_map(|(k, v)| if k < *key { Some((k, v)) } else { None }).collect();
             }
         }
 
         fn sub_map(&self, from_key: &K, from_inclusive: bool, to_key: &K, to_inclusive: bool) -> $typ {
-            // FIXME: here be extravagant cloning
             let it = self.keys().cloned().zip(self.values().cloned());
             if from_inclusive && to_inclusive {
-                return it.filter_map(|(k, v)| if k >= *from_key && k <= *to_key { Some((k.clone(), v.clone())) } else { None }).collect();
+                return it.filter_map(|(k, v)| if k >= *from_key && k <= *to_key { Some((k, v)) } else { None }).collect();
             } else if from_inclusive && !to_inclusive {
-                return it.filter_map(|(k, v)| if k >= *from_key && k < *to_key { Some((k.clone(), v.clone())) } else { None }).collect();
+                return it.filter_map(|(k, v)| if k >= *from_key && k < *to_key { Some((k, v)) } else { None }).collect();
             } else if !from_inclusive && to_inclusive {
-                return it.filter_map(|(k, v)| if k > *from_key && k <= *to_key { Some((k.clone(), v.clone())) } else { None }).collect();
+                return it.filter_map(|(k, v)| if k > *from_key && k <= *to_key { Some((k, v)) } else { None }).collect();
             } else {
-                return it.filter_map(|(k, v)| if k > *from_key && k < *to_key { Some((k.clone(), v.clone())) } else { None }).collect();
+                return it.filter_map(|(k, v)| if k > *from_key && k < *to_key { Some((k, v)) } else { None }).collect();
             }
         }
 
         fn tail_map(&self, key: &K, inclusive: bool) -> $typ {
-            // FIXME: here be extravagant cloning
             let it = self.keys().cloned().zip(self.values().cloned());
             if inclusive {
-                return it.filter_map(|(k, v)| if k >= *key { Some((k.clone(), v.clone())) } else { None }).collect();
+                return it.filter_map(|(k, v)| if k >= *key { Some((k, v)) } else { None }).collect();
             } else {
-                return it.filter_map(|(k, v)| if k > *key { Some((k.clone(), v.clone())) } else { None }).collect();
+                return it.filter_map(|(k, v)| if k > *key { Some((k, v)) } else { None }).collect();
             }
         }
     );

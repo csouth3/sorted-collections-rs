@@ -1,7 +1,7 @@
 /// An extension trait for a `Set` whose elements have a defined total ordering.
 /// This trait provides convenience methods which take advantage of the set's ordering.
 pub trait SortedSet<T> : Sized
-    where T: Ord + Clone {
+    where T: Clone + Ord {
     /// Returns the first (lowest) element currently in this set and optionally removes it
     /// from the set.
     /// Returns `None` if this set is empty.
