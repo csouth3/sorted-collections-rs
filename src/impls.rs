@@ -199,7 +199,37 @@ mod tests {
 
     }
 
-    // FIXME: Add subset tests!
+    #[test]
+    fn test_sub_set_noinclusive() {
+        let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+        let sub_set = set.sub_set(&2, false, &4, false);
+        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+        assert_eq!(sub_set.into_iter().collect::<Vec<u32>>(), vec![3u32]);
+    }
+
+    #[test]
+    fn test_sub_set_nofrom_to() {
+        let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+        let sub_set = set.sub_set(&2, false, &4, true);
+        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+        assert_eq!(sub_set.into_iter().collect::<Vec<u32>>(), vec![3u32, 4]);
+    }
+
+    #[test]
+    fn test_sub_set_from_noto() {
+        let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+        let sub_set = set.sub_set(&2, true, &4, false);
+        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+        assert_eq!(sub_set.into_iter().collect::<Vec<u32>>(), vec![2u32, 3]);
+    }
+
+    #[test]
+    fn test_sub_set_inclusive() {
+        let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+        let sub_set = set.sub_set(&2, true, &4, true);
+        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+        assert_eq!(sub_set.into_iter().collect::<Vec<u32>>(), vec![2u32, 3, 4]);
+    }
 
     #[test]
     fn test_tail_set_noinclusive() {
@@ -216,8 +246,6 @@ mod tests {
         assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
         assert_eq!(tail_set.into_iter().collect::<Vec<u32>>(), vec![3u32, 4, 5]);
     }
-
-    // FIXME: Add provided fn tests!
 
     // FIXME: Add map tests!
 }
