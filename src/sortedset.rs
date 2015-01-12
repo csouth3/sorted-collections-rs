@@ -7,12 +7,12 @@ use std::hash::{Hash, Hasher};
 /// This trait provides convenience methods which take advantage of the set's ordering.
 pub trait SortedSet<T> : Sized
     where T: Clone + Ord {
-    /// Returns the first (lowest) element currently in this set and optionally removes it
+    /// Returns the first (least) element currently in this set and optionally removes it
     /// from the set.
     /// Returns `None` if this set is empty.
     fn first(&mut self, remove: bool) -> Option<T>;
 
-    /// Returns the last (highest) element current in this set and optionally removes it
+    /// Returns the last (greatest) element currently in this set and optionally removes it
     /// from the set.
     /// Returns `None` if this set is empty.
     fn last(&mut self, remove: bool) -> Option<T>;

@@ -8,12 +8,12 @@ use std::hash::{Hash, Hasher};
 pub trait SortedMap<K, V> : Sized
     where K: Clone + Ord,
           V: Clone {
-    /// Returns the first (lowest) key currently in this map, and its corresponding value,
+    /// Returns the first (least) key currently in this map, and its corresponding value,
     /// and optionally removes it from the map.
     /// Returns `None` if this map is empty.
     fn first(&mut self, remove: bool) -> Option<(K, V)>;
 
-    /// Returns the last (highest) key currently in this map, and its corresponding value,
+    /// Returns the last (greatest) key currently in this map, and its corresponding value,
     /// and optionally removes it from the map.
     /// Returns `None` if this map is empty.
     fn last(&mut self, remove: bool) -> Option<(K, V)>;
