@@ -5,32 +5,45 @@ use std::hash::{Hash, Hasher};
 
 /// An extension trait for a `Set` whose elements have a defined total ordering.
 /// This trait provides convenience methods which take advantage of the set's ordering.
+/// The provided methods may be overridden if desired to provide more efficient
+/// implementations.
+#[experimental]
 pub trait SortedSet<T> : Sized
     where T: Clone + Ord {
     /// Returns the first (least) element currently in this set and optionally removes it
     /// from the set.
     /// Returns `None` if this set is empty.
+    #[experimental]
     fn first(&mut self, remove: bool) -> Option<T>;
 
     /// Returns the last (greatest) element currently in this set and optionally removes it
     /// from the set.
     /// Returns `None` if this set is empty.
+    #[experimental]
     fn last(&mut self, remove: bool) -> Option<T>;
 
     /// Returns the elements of this set which are less than (or equal to, if `inclusive`
     /// is true) `elem`, as a new instance of the same type of set.
+    #[experimental]
     fn head_set(&self, elem: &T, inclusive: bool) -> Self;
 
     /// Returns the elements of this set ranging from `from_elem` to `to_elem`, as
     /// a new instance of the same type of set.
+    ///
+    /// # Panics
+    ///
+    /// This function panics if `from_elem > to_elem`.
+    #[experimental]
     fn sub_set(&self, from_elem: &T, from_inclusive: bool, to_elem: &T, to_inclusive: bool) -> Self;
 
     /// Returns the elements of this set which are greater than (or equal to, if
     /// `inclusive` is true) `elem`, as a new instance of the same type of set.
+    #[experimental]
     fn tail_set(&self, elem: &T, inclusive: bool) -> Self;
 
     /// Returns the least element in this set greater than or equal to `elem`.
     /// Returns `None` if there is no such element.
+    #[experimental]
     fn ceiling(&self, elem: &T) -> Option<T> {
         let mut tail = self.tail_set(elem, true);
         tail.first(false)
@@ -38,6 +51,7 @@ pub trait SortedSet<T> : Sized
 
     /// Returns the greatest element in this set less than or equal to `elem`.
     /// Returns `None` if there is no such element.
+    #[experimental]
     fn floor(&self, elem: &T) -> Option<T> {
         let mut head = self.head_set(elem, true);
         head.last(false)
@@ -45,6 +59,7 @@ pub trait SortedSet<T> : Sized
 
     /// Returns the least element in this set strictly greater than `elem`.
     /// Returns `None` if there is no such element.
+    #[experimental]
     fn higher(&self, elem: &T) -> Option<T> {
         let mut tail = self.tail_set(elem, false);
         tail.first(false)
@@ -52,12 +67,14 @@ pub trait SortedSet<T> : Sized
 
     /// Returns the greatest element in this set strictly less than `elem`.
     /// Returns `None` if there is no such element.
+    #[experimental]
     fn lower(&self, elem: &T) -> Option<T> {
         let mut head = self.head_set(elem, false);
         head.last(false)
     }
 }
 
+// A generic reusable impl of SortedSet.
 macro_rules! sortedset_impl {
     ($typ:ty) => (
         fn first(&mut self, remove: bool) -> Option<T> {
@@ -112,10 +129,14 @@ macro_rules! sortedset_impl {
     );
 }
 
+// An impl of SortedSet for the standard library BTreeSet
+#[experimental]
 impl<T> SortedSet<T> for BTreeSet<T>
     where T: Clone + Ord {
     sortedset_impl!(BTreeSet<T>);
 }
+// An impl of SortedSet for the standard library HashSet
+#[experimental]
 impl<T, S, H> SortedSet<T> for HashSet<T, S>
     where T: Clone + Eq + Hash<H> + Ord,
           S: HashState<Hasher=H> + Default,
@@ -125,9 +146,9 @@ impl<T, S, H> SortedSet<T> for HashSet<T, S>
 
 #[cfg(test)]
 mod tests {
-    use super::SortedSet;
-
     use std::collections::BTreeSet;
+
+    use super::SortedSet;
 
     #[test]
     fn test_first_noremove() {
