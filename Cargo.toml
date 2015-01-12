@@ -7,7 +7,9 @@ authors = ["Chase Southwood <csouth3@illinois.edu>"]
 
 repository = "https://github.com/csouth3/sorted-collections-rs"
 homepage =  "https://github.com/csouth3/sorted-collections-rs"
+documentation = "http://csouth3.github.com/sorted-collections-rs/sorted-collections"
 keywords = ["sorted", "navigable", "collections"]
+readme = "README.md"
 
 [profile.dev]
 debug = false

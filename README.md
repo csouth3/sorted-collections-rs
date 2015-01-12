@@ -20,4 +20,4 @@ And this in your crate root:
 extern crate "sorted-collections" as sorted_collections;
 ```
 
-[Documentation](http://csouth3.github.io/sorted-collections-rs)
+[Documentation](http://csouth3.github.io/sorted-collections-rs/sorted-collections)
