@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `SortedMap` trait in crate `sorted-collections`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, SortedMap">
+
+    <title>sorted-collections::sortedmap::SortedMap - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='../index.html'>sorted-collections</a>::<wbr><a href='index.html'>sortedmap</a></p><div class='block trait'><h2>Traits</h2><a class='trait current' href='trait.SortedMap.html'>SortedMap</a></div>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content trait">
+<h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>sorted-collections</a>::<wbr><a href='index.html'>sortedmap</a>::<wbr><a class='trait' href=''>SortedMap</a><wbr><a class='stability Experimental' title=''>Experimental</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="collapse-all" href="#">[-]
+            </a>&nbsp;<a id="expand-all" href="#">[+]</a>
+        </span><a id='src-16' href='../../src/sorted-collections/sortedmap.rs.html#11-76'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait SortedMap&lt;K, V&gt;: <a class='trait' href='http://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a> <span class='where'>where K: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a>, V: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a></span> {
+    fn <a href='#tymethod.first' class='fnname'>first</a>(&amp;mut self, remove: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;;
+    fn <a href='#tymethod.last' class='fnname'>last</a>(&amp;mut self, remove: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;;
+    fn <a href='#tymethod.head_map' class='fnname'>head_map</a>(&amp;self, key: &amp;K, inclusive: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; Self;
+    fn <a href='#tymethod.sub_map' class='fnname'>sub_map</a>(&amp;self, from_key: &amp;K, from_inclusive: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>, to_key: &amp;K, to_inclusive: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; Self;
+    fn <a href='#tymethod.tail_map' class='fnname'>tail_map</a>(&amp;self, key: &amp;K, inclusive: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; Self;
+
+    fn <a href='#method.ceiling' class='fnname'>ceiling</a>(&amp;self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt; { ... }
+    fn <a href='#method.floor' class='fnname'>floor</a>(&amp;self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt; { ... }
+    fn <a href='#method.higher' class='fnname'>higher</a>(&amp;self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt; { ... }
+    fn <a href='#method.lower' class='fnname'>lower</a>(&amp;self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt; { ... }
+}</pre><div class='docblock'><p>An extension trait for a <code>Map</code> whose keys have a defined total ordering.
+This trait provides convenience methods which take advantage of the map&#39;s ordering.
+The provided methods may be overriden if desired to provide more efficient
+implementations.</p>
+</div>
+            <h2 id='required-methods'>Required Methods</h2>
+            <div class='methods'>
+        <h3 id='tymethod.first' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.first' class='fnname'>first</a>(&amp;mut self, remove: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;</code></h3><div class='docblock'><p>Returns the first (least) key currently in this map, and its corresponding value,
+and optionally removes it from the map.
+Returns <code>None</code> if this map is empty.</p>
+</div><h3 id='tymethod.last' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.last' class='fnname'>last</a>(&amp;mut self, remove: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;</code></h3><div class='docblock'><p>Returns the last (greatest) key currently in this map, and its corresponding value,
+and optionally removes it from the map.
+Returns <code>None</code> if this map is empty.</p>
+</div><h3 id='tymethod.head_map' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.head_map' class='fnname'>head_map</a>(&amp;self, key: &amp;K, inclusive: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; Self</code></h3><div class='docblock'><p>Returns the key-value pairs of this map whose keys are less than (or equal to,
+if <code>inclusive</code> is true) <code>key</code>, as a new instance of the same type of map.</p>
+</div><h3 id='tymethod.sub_map' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.sub_map' class='fnname'>sub_map</a>(&amp;self, from_key: &amp;K, from_inclusive: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>, to_key: &amp;K, to_inclusive: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; Self</code></h3><div class='docblock'><p>Returns the key-value pairs of this map whose keys range from <code>from_key</code> to
+<code>to_key</code>, as a new instance of the same type of map.</p>
+
+<h1 id="panics" class='section-header'><a
+                           href="#panics">Panics</a></h1>
+<p>This function panics if <code>from_key &lt; to_key</code>.</p>
+</div><h3 id='tymethod.tail_map' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.tail_map' class='fnname'>tail_map</a>(&amp;self, key: &amp;K, inclusive: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; Self</code></h3><div class='docblock'><p>Returns the key-value pairs of this map whose keys are greater than (or equal to,
+if <code>inclusive</code> is true) <code>key</code>, as a new instance of the same type of map.</p>
+</div></div>
+            <h2 id='provided-methods'>Provided Methods</h2>
+            <div class='methods'>
+        <h3 id='method.ceiling' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#method.ceiling' class='fnname'>ceiling</a>(&amp;self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;</code></h3><div class='docblock'><p>Returns the least key greater than or equal to <code>key</code>, and its corresponding value.
+Returns <code>None</code> if there is no such key.</p>
+</div><h3 id='method.floor' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#method.floor' class='fnname'>floor</a>(&amp;self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;</code></h3><div class='docblock'><p>Returns the greatest key less than or equal to <code>key</code>, and its corresponding value.
+Returns <code>None</code> if there is no such key.</p>
+</div><h3 id='method.higher' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#method.higher' class='fnname'>higher</a>(&amp;self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;</code></h3><div class='docblock'><p>Returns the least key strictly greater than the given key, and its corresponding value.
+Returns <code>None</code> if there is no such key.</p>
+</div><h3 id='method.lower' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#method.lower' class='fnname'>lower</a>(&amp;self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;</code></h3><div class='docblock'><p>Returns the greatest key strictly less than the given key, and its corresponding value.
+Returns <code>None</code> if there is no such key.</p>
+</div></div>
+        <h2 id='implementors'>Implementors</h2>
+        <ul class='item-list' id='implementors-list'>
+    <li><a class='stability Experimental' title='Experimental'></a><code>impl&lt;K, V&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMap.html' title='sorted-collections::sortedmap::SortedMap'>SortedMap</a>&lt;K, V&gt; for <a class='struct' href='http://doc.rust-lang.org/nightly/collections/btree/map/struct.BTreeMap.html' title='collections::btree::map::BTreeMap'>BTreeMap</a>&lt;K, V&gt; <span class='where'>where K: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a>, V: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a></span></code></li>
+<li><a class='stability Experimental' title='Experimental'></a><code>impl&lt;K, V, S, H&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMap.html' title='sorted-collections::sortedmap::SortedMap'>SortedMap</a>&lt;K, V&gt; for <a class='struct' href='http://doc.rust-lang.org/nightly/std/collections/hash/map/struct.HashMap.html' title='std::collections::hash::map::HashMap'>HashMap</a>&lt;K, V, S&gt; <span class='where'>where K: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Eq.html' title='core::cmp::Eq'>Eq</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/hash/trait.Hash.html' title='core::hash::Hash'>Hash</a>&lt;H&gt; + <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a>, V: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a>, S: <a class='trait' href='http://doc.rust-lang.org/nightly/std/collections/hash/state/trait.HashState.html' title='std::collections::hash::state::HashState'>HashState</a>&lt;Hasher=H&gt; + <a class='trait' href='http://doc.rust-lang.org/nightly/core/default/trait.Default.html' title='core::default::Default'>Default</a>, H: <a class='trait' href='http://doc.rust-lang.org/nightly/core/hash/trait.Hasher.html' title='core::hash::Hasher'>Hasher</a>&lt;Output=<a href='http://doc.rust-lang.org/nightly/std/primitive.u64.html'>u64</a>&gt;</span></code></li>
+</ul><script type="text/javascript" async
+                              src="../../implementors/sorted-collections/sortedmap/trait.SortedMap.js">
+                      </script></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div class="shortcuts">
+            <h1>Keyboard shortcuts</h1>
+            <dl>
+                <dt>?</dt>
+                <dd>Show this help dialog</dd>
+                <dt>S</dt>
+                <dd>Focus the search field</dd>
+                <dt>&larrb;</dt>
+                <dd>Move up in search results</dd>
+                <dt>&rarrb;</dt>
+                <dd>Move down in search results</dd>
+                <dt>&#9166;</dt>
+                <dd>Go to active search result</dd>
+            </dl>
+        </div>
+        <div class="infos">
+            <h1>Search tricks</h1>
+            <p>
+                Prefix searches with a type followed by a colon (e.g.
+                <code>fn:</code>) to restrict the search to a given type.
+            </p>
+            <p>
+                Accepted types are: <code>fn</code>, <code>mod</code>,
+                <code>struct</code>, <code>enum</code>,
+                <code>trait</code>, <code>typedef</code> (or
+                <code>tdef</code>).
+            </p>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "sorted-collections";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script async src="../../search-index.js"></script>
+</body>
+</html>
