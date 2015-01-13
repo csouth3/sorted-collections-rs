@@ -13,22 +13,89 @@ pub trait SortedSet<T> : Sized
     /// Returns the first (least) element currently in this set and optionally removes it
     /// from the set.
     /// Returns `None` if this set is empty.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeSet;
+    /// use sorted_collections::SortedSet;
+    ///
+    /// fn main() {
+    ///     let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+    ///     assert_eq!(set.first(false).unwrap(), 1u32);
+    ///     // The original set should remain unchanged since we opted not to remove.
+    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+    /// }
+    /// ```
     #[experimental]
     fn first(&mut self, remove: bool) -> Option<T>;
 
     /// Returns the last (greatest) element currently in this set and optionally removes it
     /// from the set.
     /// Returns `None` if this set is empty.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeSet;
+    /// use sorted_collections::SortedSet;
+    ///
+    /// fn main() {
+    ///     let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+    ///     assert_eq!(set.last(false).unwrap(), 5u32);
+    ///     // The original set should remain unchanged since we opted not to remove.
+    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+    /// }
+    /// ```
     #[experimental]
     fn last(&mut self, remove: bool) -> Option<T>;
 
     /// Returns the elements of this set which are less than (or equal to, if `inclusive`
     /// is true) `elem`, as a new instance of the same type of set.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeSet;
+    /// use sorted_collections::SortedSet;
+    ///
+    /// fn main() {
+    ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+    ///     let head_set = set.head_set(&3, true);
+    ///     // The original set shouldn't change.
+    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+    ///     assert_eq!(head_set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3]);
+    /// }
+    /// ```
     #[experimental]
     fn head_set(&self, elem: &T, inclusive: bool) -> Self;
 
     /// Returns the elements of this set ranging from `from_elem` to `to_elem`, as
     /// a new instance of the same type of set.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeSet;
+    /// use sorted_collections::SortedSet;
+    ///
+    /// fn main() {
+    ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+    ///     let sub_set = set.sub_set(&2, false, &4, true);
+    ///     // The original set shouldn't change.
+    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+    ///     // 2 isn't in the resulting set, while 4 is, just as we expected.
+    ///     assert_eq!(sub_set.into_iter().collect::<Vec<u32>>(), vec![3u32, 4]);
+    /// }
+    /// ```
     ///
     /// # Panics
     ///
@@ -38,11 +105,44 @@ pub trait SortedSet<T> : Sized
 
     /// Returns the elements of this set which are greater than (or equal to, if
     /// `inclusive` is true) `elem`, as a new instance of the same type of set.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeSet;
+    /// use sorted_collections::SortedSet;
+    ///
+    /// fn main() {
+    ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+    ///     let tail_set = set.tail_set(&3, true);
+    ///     // The original set shouldn't change.
+    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+    ///     assert_eq!(tail_set.into_iter().collect::<Vec<u32>>(), vec![3u32, 4, 5]);
+    /// }
+    /// ```
     #[experimental]
     fn tail_set(&self, elem: &T, inclusive: bool) -> Self;
 
     /// Returns the least element in this set greater than or equal to `elem`.
     /// Returns `None` if there is no such element.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeSet;
+    /// use sorted_collections::SortedSet;
+    ///
+    /// fn main() {
+    ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+    ///     assert_eq!(set.ceiling(&3).unwrap(), 3u32);
+    ///     // The original set shouldn't change.
+    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+    /// }
+    /// ```
     #[experimental]
     fn ceiling(&self, elem: &T) -> Option<T> {
         let mut tail = self.tail_set(elem, true);
@@ -51,6 +151,22 @@ pub trait SortedSet<T> : Sized
 
     /// Returns the greatest element in this set less than or equal to `elem`.
     /// Returns `None` if there is no such element.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeSet;
+    /// use sorted_collections::SortedSet;
+    ///
+    /// fn main() {
+    ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+    ///     assert_eq!(set.floor(&3).unwrap(), 3u32);
+    ///     // The original set shouldn't change.
+    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+    /// }
+    /// ```
     #[experimental]
     fn floor(&self, elem: &T) -> Option<T> {
         let mut head = self.head_set(elem, true);
@@ -59,6 +175,22 @@ pub trait SortedSet<T> : Sized
 
     /// Returns the least element in this set strictly greater than `elem`.
     /// Returns `None` if there is no such element.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeSet;
+    /// use sorted_collections::SortedSet;
+    ///
+    /// fn main() {
+    ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+    ///     assert_eq!(set.higher(&3).unwrap(), 4u32);
+    ///     // The original set shouldn't change.
+    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+    /// }
+    /// ```
     #[experimental]
     fn higher(&self, elem: &T) -> Option<T> {
         let mut tail = self.tail_set(elem, false);
@@ -67,6 +199,21 @@ pub trait SortedSet<T> : Sized
 
     /// Returns the greatest element in this set strictly less than `elem`.
     /// Returns `None` if there is no such element.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeSet;
+    /// use sorted_collections::SortedSet;
+    ///
+    /// fn main() {
+    ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+    ///     assert_eq!(set.lower(&3).unwrap(), 2u32);
+    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+    /// }
+    /// ```
     #[experimental]
     fn lower(&self, elem: &T) -> Option<T> {
         let mut head = self.head_set(elem, false);
@@ -105,7 +252,7 @@ macro_rules! sortedset_impl {
             }
         }
 
-        fn sub_set(&self, from_elem: &T, from_inclusive: bool, to_elem: &T, to_inclusive:bool) -> $typ {
+        fn sub_set(&self, from_elem: &T, from_inclusive: bool, to_elem: &T, to_inclusive: bool) -> $typ {
             assert!(from_elem <= to_elem);
 
             if from_inclusive && to_inclusive {

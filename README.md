@@ -17,7 +17,7 @@ sorted-collections = "*"
 And this in your crate root:
 
 ```rust
-extern crate "sorted-collections" as sorted_collections;
+extern crate "sorted-collections" as sorted_collections; // or whatever you want to import it as
 ```
 
 [Documentation](http://csouth3.github.io/sorted-collections-rs/sorted-collections)
