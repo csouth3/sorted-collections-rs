@@ -44,10 +44,12 @@
 <h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>sorted-collections</a>::<wbr><a href='index.html'>sortedset</a>::<wbr><a class='trait' href=''>SortedSet</a><wbr><a class='stability Experimental' title=''>Experimental</a></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]
             </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-1360' href='../../src/sorted-collections/sortedset.rs.html#11-222'>[src]</a></span></h1>
+        </span><a id='src-1552' href='../../src/sorted-collections/sortedset.rs.html#11-258'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait SortedSet&lt;T&gt;: <a class='trait' href='http://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a> <span class='where'>where T: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a></span> {
-    fn <a href='#tymethod.first' class='fnname'>first</a>(&amp;mut self, remove: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;;
-    fn <a href='#tymethod.last' class='fnname'>last</a>(&amp;mut self, remove: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;;
+    fn <a href='#tymethod.first' class='fnname'>first</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;;
+    fn <a href='#tymethod.first_remove' class='fnname'>first_remove</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;;
+    fn <a href='#tymethod.last' class='fnname'>last</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;;
+    fn <a href='#tymethod.last_remove' class='fnname'>last_remove</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;;
     fn <a href='#tymethod.head_set' class='fnname'>head_set</a>(&amp;self, elem: &amp;T, inclusive: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; Self;
     fn <a href='#tymethod.sub_set' class='fnname'>sub_set</a>(&amp;self, from_elem: &amp;T, from_inclusive: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>, to_elem: &amp;T, to_inclusive: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; Self;
     fn <a href='#tymethod.tail_set' class='fnname'>tail_set</a>(&amp;self, elem: &amp;T, inclusive: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; Self;
@@ -63,8 +65,7 @@ implementations.</p>
 </div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.first' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.first' class='fnname'>first</a>(&amp;mut self, remove: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;</code></h3><div class='docblock'><p>Returns the first (least) element currently in this set and optionally removes it
-from the set.
+        <h3 id='tymethod.first' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.first' class='fnname'>first</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;</code></h3><div class='docblock'><p>Returns the first (least) element currently in this set.
 Returns <code>None</code> if this set is empty.</p>
 
 <h1 id="examples" class='section-header'><a
@@ -75,14 +76,11 @@ Returns <code>None</code> if this set is empty.</p>
 <span class='kw'>use</span> <span class='ident'>sorted_collections</span>::<span class='ident'>SortedSet</span>;
 
 <span class='kw'>fn</span> <span class='ident'>main</span>() {
-    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>set</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
-    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>first</span>(<span class='boolval'>false</span>).<span class='ident'>unwrap</span>(), <span class='number'>1u32</span>);
-    <span class='comment'>// The original set should remain unchanged since we opted not to remove.</span>
-    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;&gt;</span>(), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>]);
+    <span class='kw'>let</span> <span class='ident'>set</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>first</span>().<span class='ident'>unwrap</span>(), <span class='number'>1u32</span>);
 }
 </pre>
-</div><h3 id='tymethod.last' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.last' class='fnname'>last</a>(&amp;mut self, remove: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;</code></h3><div class='docblock'><p>Returns the last (greatest) element currently in this set and optionally removes it
-from the set.
+</div><h3 id='tymethod.first_remove' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.first_remove' class='fnname'>first_remove</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;</code></h3><div class='docblock'><p>Removes and returns the first (least) element currently in this set.
 Returns <code>None</code> if this set is empty.</p>
 
 <h1 id="examples" class='section-header'><a
@@ -94,9 +92,39 @@ Returns <code>None</code> if this set is empty.</p>
 
 <span class='kw'>fn</span> <span class='ident'>main</span>() {
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>set</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
-    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>last</span>(<span class='boolval'>false</span>).<span class='ident'>unwrap</span>(), <span class='number'>5u32</span>);
-    <span class='comment'>// The original set should remain unchanged since we opted not to remove.</span>
-    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;&gt;</span>(), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>]);
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>first_remove</span>().<span class='ident'>unwrap</span>(), <span class='number'>1u32</span>);
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;&gt;</span>(), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>2u32</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>]);
+}
+</pre>
+</div><h3 id='tymethod.last' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.last' class='fnname'>last</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;</code></h3><div class='docblock'><p>Returns the last (greatest) element currently in this set.
+Returns <code>None</code> if this set is empty.</p>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1><pre class='rust '>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
+
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeSet</span>;
+<span class='kw'>use</span> <span class='ident'>sorted_collections</span>::<span class='ident'>SortedSet</span>;
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='ident'>set</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>last</span>().<span class='ident'>unwrap</span>(), <span class='number'>5u32</span>);
+}
+</pre>
+</div><h3 id='tymethod.last_remove' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.last_remove' class='fnname'>last_remove</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;</code></h3><div class='docblock'><p>Removes and returns the last (greatest) element currently in this set.
+Returns <code>None</code> if this set is empty.</p>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1><pre class='rust '>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
+
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeSet</span>;
+<span class='kw'>use</span> <span class='ident'>sorted_collections</span>::<span class='ident'>SortedSet</span>;
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>set</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>last_remove</span>().<span class='ident'>unwrap</span>(), <span class='number'>5u32</span>);
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;&gt;</span>(), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>]);
 }
 </pre>
 </div><h3 id='tymethod.head_set' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.head_set' class='fnname'>head_set</a>(&amp;self, elem: &amp;T, inclusive: <a href='http://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; Self</code></h3><div class='docblock'><p>Returns the elements of this set which are less than (or equal to, if <code>inclusive</code>

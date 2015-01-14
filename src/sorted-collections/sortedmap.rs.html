@@ -510,6 +510,50 @@
 <span id="468">468</span>
 <span id="469">469</span>
 <span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
+<span id="509">509</span>
+<span id="510">510</span>
+<span id="511">511</span>
+<span id="512">512</span>
+<span id="513">513</span>
+<span id="514">514</span>
 </pre><pre class='rust '>
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::{<span class='ident'>BTreeMap</span>, <span class='ident'>HashMap</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>hash_state</span>::<span class='ident'>HashState</span>;
@@ -524,8 +568,7 @@
 <span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>SortedMap</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> : <span class='ident'>Sized</span>
     <span class='kw'>where</span> <span class='ident'>K</span>: <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Ord</span>,
           <span class='ident'>V</span>: <span class='ident'>Clone</span> {
-    <span class='doccomment'>/// Returns the first (least) key currently in this map, and its corresponding value,</span>
-    <span class='doccomment'>/// and optionally removes it from the map.</span>
+    <span class='doccomment'>/// Returns the first (least) key currently in this map, and its corresponding value.</span>
     <span class='doccomment'>/// Returns `None` if this map is empty.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// # Examples</span>
@@ -537,20 +580,17 @@
     <span class='doccomment'>/// use sorted_collections::SortedMap;</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// fn main() {</span>
-    <span class='doccomment'>///     let mut map: BTreeMap&lt;u32, u32&gt; =</span>
+    <span class='doccomment'>///     let map: BTreeMap&lt;u32, u32&gt; =</span>
     <span class='doccomment'>///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>///     assert_eq!(map.first(false).unwrap(), (1u32, 1u32));</span>
-    <span class='doccomment'>///     // The original map shouldn&#39;t have changed.</span>
-    <span class='doccomment'>///     assert_eq!(map.into_iter().collect::&lt;Vec&lt;(u32, u32)&gt;&gt;(),</span>
-    <span class='doccomment'>///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);</span>
+    <span class='doccomment'>///     assert_eq!(map.first().unwrap(), (1u32, 1u32));</span>
     <span class='doccomment'>/// }</span>
     <span class='doccomment'>/// ```</span>
+    <span class='comment'>// FIXME: Return reference here?</span>
     <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>first</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>remove</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>K</span>, <span class='ident'>V</span>)<span class='op'>&gt;</span>;
+    <span class='kw'>fn</span> <span class='ident'>first</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>K</span>, <span class='ident'>V</span>)<span class='op'>&gt;</span>;
 
-    <span class='doccomment'>/// Returns the last (greatest) key currently in this map, and its corresponding value,</span>
-    <span class='doccomment'>/// and optionally removes it from the map.</span>
+    <span class='doccomment'>/// Removes and returns the first (least) key currently in this map, and its corresponding</span>
+    <span class='doccomment'>/// value.</span>
     <span class='doccomment'>/// Returns `None` if this map is empty.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// # Examples</span>
@@ -564,15 +604,57 @@
     <span class='doccomment'>/// fn main() {</span>
     <span class='doccomment'>///     let mut map: BTreeMap&lt;u32, u32&gt; =</span>
     <span class='doccomment'>///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>///     assert_eq!(map.last(false).unwrap(), (5u32, 5u32));</span>
-    <span class='doccomment'>///     // The original map shouldn&#39;t have changed.</span>
+    <span class='doccomment'>///     assert_eq!(map.first_remove().unwrap(), (1u32, 1u32));</span>
     <span class='doccomment'>///     assert_eq!(map.into_iter().collect::&lt;Vec&lt;(u32, u32)&gt;&gt;(),</span>
-    <span class='doccomment'>///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);</span>
+    <span class='doccomment'>///         vec![(2u32, 2u32), (3, 3), (4, 4), (5, 5)]);</span>
     <span class='doccomment'>/// }</span>
     <span class='doccomment'>/// ```</span>
     <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>last</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>remove</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>K</span>, <span class='ident'>V</span>)<span class='op'>&gt;</span>;
+    <span class='kw'>fn</span> <span class='ident'>first_remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>K</span>, <span class='ident'>V</span>)<span class='op'>&gt;</span>;
+
+    <span class='doccomment'>/// Returns the last (greatest) key currently in this map, and its corresponding value.</span>
+    <span class='doccomment'>/// Returns `None` if this map is empty.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// # Examples</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// ```</span>
+    <span class='doccomment'>/// extern crate &quot;sorted-collections&quot; as sorted_collections;</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// use std::collections::BTreeMap;</span>
+    <span class='doccomment'>/// use sorted_collections::SortedMap;</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// fn main() {</span>
+    <span class='doccomment'>///     let map: BTreeMap&lt;u32, u32&gt; =</span>
+    <span class='doccomment'>///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();</span>
+    <span class='doccomment'>///     assert_eq!(map.last().unwrap(), (5u32, 5u32));</span>
+    <span class='doccomment'>/// }</span>
+    <span class='doccomment'>/// ```</span>
+    <span class='comment'>// FIXME: Return reference here?</span>
+    <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
+    <span class='kw'>fn</span> <span class='ident'>last</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>K</span>, <span class='ident'>V</span>)<span class='op'>&gt;</span>;
+
+    <span class='doccomment'>/// Removes and returns the last (greatest) key currently in this map, and its</span>
+    <span class='doccomment'>/// corresponding value.</span>
+    <span class='doccomment'>/// Returns `None` if this map is empty.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// # Examples</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// ```</span>
+    <span class='doccomment'>/// extern crate &quot;sorted-collections&quot; as sorted_collections;</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// use std::collections::BTreeMap;</span>
+    <span class='doccomment'>/// use sorted_collections::SortedMap;</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// fn main() {</span>
+    <span class='doccomment'>///     let mut map: BTreeMap&lt;u32, u32&gt; =</span>
+    <span class='doccomment'>///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();</span>
+    <span class='doccomment'>///     assert_eq!(map.last_remove().unwrap(), (5u32, 5u32));</span>
+    <span class='doccomment'>///     assert_eq!(map.into_iter().collect::&lt;Vec&lt;(u32, u32)&gt;&gt;(),</span>
+    <span class='doccomment'>///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4)]);</span>
+    <span class='doccomment'>/// }</span>
+    <span class='doccomment'>/// ```</span>
+    <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
+    <span class='kw'>fn</span> <span class='ident'>last_remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>K</span>, <span class='ident'>V</span>)<span class='op'>&gt;</span>;
 
     <span class='doccomment'>/// Returns the key-value pairs of this map whose keys are less than (or equal to,</span>
     <span class='doccomment'>/// if `inclusive` is true) `key`, as a new instance of the same type of map.</span>
@@ -682,8 +764,8 @@
     <span class='doccomment'>/// ```</span>
     <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>ceiling</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>key</span>: <span class='kw-2'>&amp;</span><span class='ident'>K</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>K</span>, <span class='ident'>V</span>)<span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>tail</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>tail_map</span>(<span class='ident'>key</span>, <span class='boolval'>true</span>);
-        <span class='ident'>tail</span>.<span class='ident'>first</span>(<span class='boolval'>false</span>)
+        <span class='kw'>let</span> <span class='ident'>tail</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>tail_map</span>(<span class='ident'>key</span>, <span class='boolval'>true</span>);
+        <span class='ident'>tail</span>.<span class='ident'>first</span>()
     }
 
     <span class='doccomment'>/// Returns the greatest key less than or equal to `key`, and its corresponding value.</span>
@@ -709,8 +791,8 @@
     <span class='doccomment'>/// ```</span>
     <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>floor</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>key</span>: <span class='kw-2'>&amp;</span><span class='ident'>K</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>K</span>, <span class='ident'>V</span>)<span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>head</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>head_map</span>(<span class='ident'>key</span>, <span class='boolval'>true</span>);
-        <span class='ident'>head</span>.<span class='ident'>last</span>(<span class='boolval'>false</span>)
+        <span class='kw'>let</span> <span class='ident'>head</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>head_map</span>(<span class='ident'>key</span>, <span class='boolval'>true</span>);
+        <span class='ident'>head</span>.<span class='ident'>last</span>()
     }
 
     <span class='doccomment'>/// Returns the least key strictly greater than the given key, and its corresponding value.</span>
@@ -736,8 +818,8 @@
     <span class='doccomment'>/// ```</span>
     <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>higher</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>key</span>: <span class='kw-2'>&amp;</span><span class='ident'>K</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>K</span>, <span class='ident'>V</span>)<span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>tail</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>tail_map</span>(<span class='ident'>key</span>, <span class='boolval'>false</span>);
-        <span class='ident'>tail</span>.<span class='ident'>first</span>(<span class='boolval'>false</span>)
+        <span class='kw'>let</span> <span class='ident'>tail</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>tail_map</span>(<span class='ident'>key</span>, <span class='boolval'>false</span>);
+        <span class='ident'>tail</span>.<span class='ident'>first</span>()
     }
 
     <span class='doccomment'>/// Returns the greatest key strictly less than the given key, and its corresponding value.</span>
@@ -763,42 +845,50 @@
     <span class='doccomment'>/// ```</span>
     <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>lower</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>key</span>: <span class='kw-2'>&amp;</span><span class='ident'>K</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>K</span>, <span class='ident'>V</span>)<span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>head</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>head_map</span>(<span class='ident'>key</span>, <span class='boolval'>false</span>);
-        <span class='ident'>head</span>.<span class='ident'>last</span>(<span class='boolval'>false</span>)
+        <span class='kw'>let</span> <span class='ident'>head</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>head_map</span>(<span class='ident'>key</span>, <span class='boolval'>false</span>);
+        <span class='ident'>head</span>.<span class='ident'>last</span>()
     }
 }
 
 <span class='comment'>// A generic reusable impl of SortedMap.</span>
 <span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>sortedmap_impl</span> {
     (<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>typ</span>:<span class='ident'>ty</span>) <span class='op'>=&gt;</span> (
-        <span class='kw'>fn</span> <span class='ident'>first</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>remove</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>K</span>, <span class='ident'>V</span>)<span class='op'>&gt;</span> {
+        <span class='kw'>fn</span> <span class='ident'>first</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>K</span>, <span class='ident'>V</span>)<span class='op'>&gt;</span> {
             <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>is_empty</span>() { <span class='kw'>return</span> <span class='prelude-val'>None</span> }
 
-            <span class='kw'>let</span> <span class='ident'>key</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>keys</span>().<span class='ident'>min</span>().<span class='ident'>unwrap</span>().<span class='ident'>clone</span>();
-            <span class='kw'>let</span> <span class='ident'>val</span>: <span class='ident'>V</span>;
-
-            <span class='kw'>if</span> <span class='ident'>remove</span> {
-                <span class='ident'>val</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>key</span>).<span class='ident'>unwrap</span>();
-            } <span class='kw'>else</span> {
-                <span class='ident'>val</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='ident'>key</span>).<span class='ident'>unwrap</span>().<span class='ident'>clone</span>();
-            }
+            <span class='kw'>let</span> <span class='ident'>key</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>keys</span>().<span class='ident'>min</span>().<span class='ident'>cloned</span>().<span class='ident'>unwrap</span>();
+            <span class='kw'>let</span> <span class='ident'>val</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='ident'>key</span>).<span class='ident'>cloned</span>().<span class='ident'>unwrap</span>();
 
             <span class='prelude-val'>Some</span>((<span class='ident'>key</span>, <span class='ident'>val</span>))
         }
 
-        <span class='kw'>fn</span> <span class='ident'>last</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>remove</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>K</span>, <span class='ident'>V</span>)<span class='op'>&gt;</span> {
+        <span class='kw'>fn</span> <span class='ident'>first_remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>K</span>, <span class='ident'>V</span>)<span class='op'>&gt;</span> {
             <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>is_empty</span>() { <span class='kw'>return</span> <span class='prelude-val'>None</span> }
 
-            <span class='kw'>let</span> <span class='ident'>key</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>keys</span>().<span class='ident'>max</span>().<span class='ident'>unwrap</span>().<span class='ident'>clone</span>();
-            <span class='kw'>let</span> <span class='ident'>val</span>: <span class='ident'>V</span>;
+            <span class='kw'>let</span> <span class='ident'>key</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>keys</span>().<span class='ident'>min</span>().<span class='ident'>cloned</span>().<span class='ident'>unwrap</span>();
+            <span class='kw'>let</span> <span class='ident'>val</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>key</span>);
+            <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>val</span>.<span class='ident'>is_some</span>());
 
-            <span class='kw'>if</span> <span class='ident'>remove</span> {
-                <span class='ident'>val</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>key</span>).<span class='ident'>unwrap</span>();
-            } <span class='kw'>else</span> {
-                <span class='ident'>val</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='ident'>key</span>).<span class='ident'>unwrap</span>().<span class='ident'>clone</span>();
-            }
+            <span class='prelude-val'>Some</span>((<span class='ident'>key</span>, <span class='ident'>val</span>.<span class='ident'>unwrap</span>()))
+        }
+
+        <span class='kw'>fn</span> <span class='ident'>last</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>K</span>, <span class='ident'>V</span>)<span class='op'>&gt;</span> {
+            <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>is_empty</span>() { <span class='kw'>return</span> <span class='prelude-val'>None</span> }
+
+            <span class='kw'>let</span> <span class='ident'>key</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>keys</span>().<span class='ident'>max</span>().<span class='ident'>cloned</span>().<span class='ident'>unwrap</span>();
+            <span class='kw'>let</span> <span class='ident'>val</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>get</span>(<span class='kw-2'>&amp;</span><span class='ident'>key</span>).<span class='ident'>cloned</span>().<span class='ident'>unwrap</span>();
 
             <span class='prelude-val'>Some</span>((<span class='ident'>key</span>, <span class='ident'>val</span>))
+        }
+
+        <span class='kw'>fn</span> <span class='ident'>last_remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>K</span>, <span class='ident'>V</span>)<span class='op'>&gt;</span> {
+            <span class='kw'>if</span> <span class='self'>self</span>.<span class='ident'>is_empty</span>() { <span class='kw'>return</span> <span class='prelude-val'>None</span> }
+
+            <span class='kw'>let</span> <span class='ident'>key</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>keys</span>().<span class='ident'>max</span>().<span class='ident'>cloned</span>().<span class='ident'>unwrap</span>();
+            <span class='kw'>let</span> <span class='ident'>val</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>key</span>);
+            <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>val</span>.<span class='ident'>is_some</span>());
+
+            <span class='prelude-val'>Some</span>((<span class='ident'>key</span>, <span class='ident'>val</span>.<span class='ident'>unwrap</span>()))
         }
 
         <span class='kw'>fn</span> <span class='ident'>head_map</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>key</span>: <span class='kw-2'>&amp;</span><span class='ident'>K</span>, <span class='ident'>inclusive</span>: <span class='ident'>bool</span>) <span class='op'>-&gt;</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>typ</span> {
@@ -860,30 +950,28 @@
     <span class='kw'>use</span> <span class='ident'>super</span>::<span class='ident'>SortedMap</span>;
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_first_noremove</span>() {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>map</span>: <span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>u32</span>, <span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>first</span>(<span class='boolval'>false</span>).<span class='ident'>unwrap</span>(), (<span class='number'>1u32</span>, <span class='number'>1u32</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>u32</span>, <span class='ident'>u32</span>)<span class='op'>&gt;&gt;</span>(), <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)]);
+    <span class='kw'>fn</span> <span class='ident'>test_first</span>() {
+        <span class='kw'>let</span> <span class='ident'>map</span>: <span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>u32</span>, <span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>first</span>().<span class='ident'>unwrap</span>(), (<span class='number'>1u32</span>, <span class='number'>1u32</span>));
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_first_remove</span>() {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>map</span>: <span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>u32</span>, <span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>first</span>(<span class='boolval'>true</span>).<span class='ident'>unwrap</span>(), (<span class='number'>1u32</span>, <span class='number'>1u32</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>first_remove</span>().<span class='ident'>unwrap</span>(), (<span class='number'>1u32</span>, <span class='number'>1u32</span>));
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>u32</span>, <span class='ident'>u32</span>)<span class='op'>&gt;&gt;</span>(), <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>2u32</span>, <span class='number'>2u32</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)]);
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_last_noremove</span>() {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>map</span>: <span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>u32</span>, <span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>last</span>(<span class='boolval'>false</span>).<span class='ident'>unwrap</span>(), (<span class='number'>5u32</span>, <span class='number'>5u32</span>));
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>u32</span>, <span class='ident'>u32</span>)<span class='op'>&gt;&gt;</span>(), <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)]);
+    <span class='kw'>fn</span> <span class='ident'>test_last</span>() {
+        <span class='kw'>let</span> <span class='ident'>map</span>: <span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>u32</span>, <span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>last</span>().<span class='ident'>unwrap</span>(), (<span class='number'>5u32</span>, <span class='number'>5u32</span>));
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>test_last_remove</span>() {
         <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>map</span>: <span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>u32</span>, <span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>last</span>(<span class='boolval'>true</span>).<span class='ident'>unwrap</span>(), (<span class='number'>5u32</span>, <span class='number'>5u32</span>));
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>last_remove</span>().<span class='ident'>unwrap</span>(), (<span class='number'>5u32</span>, <span class='number'>5u32</span>));
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>u32</span>, <span class='ident'>u32</span>)<span class='op'>&gt;&gt;</span>(), <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>)]);
     }
 
