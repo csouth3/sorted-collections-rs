@@ -10,8 +10,7 @@ use std::hash::{Hash, Hasher};
 #[experimental]
 pub trait SortedSet<T> : Sized
     where T: Clone + Ord {
-    /// Returns the first (least) element currently in this set and optionally removes it
-    /// from the set.
+    /// Returns the first (least) element currently in this set.
     /// Returns `None` if this set is empty.
     ///
     /// # Examples
@@ -23,17 +22,15 @@ pub trait SortedSet<T> : Sized
     /// use sorted_collections::SortedSet;
     ///
     /// fn main() {
-    ///     let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-    ///     assert_eq!(set.first(false).unwrap(), 1u32);
-    ///     // The original set should remain unchanged since we opted not to remove.
-    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+    ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+    ///     assert_eq!(set.first().unwrap(), 1u32);
     /// }
     /// ```
+    // FIXME: Return reference here?
     #[experimental]
-    fn first(&mut self, remove: bool) -> Option<T>;
+    fn first(&self) -> Option<T>;
 
-    /// Returns the last (greatest) element currently in this set and optionally removes it
-    /// from the set.
+    /// Removes and returns the first (least) element currently in this set.
     /// Returns `None` if this set is empty.
     ///
     /// # Examples
@@ -46,13 +43,52 @@ pub trait SortedSet<T> : Sized
     ///
     /// fn main() {
     ///     let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-    ///     assert_eq!(set.last(false).unwrap(), 5u32);
-    ///     // The original set should remain unchanged since we opted not to remove.
-    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+    ///     assert_eq!(set.first_remove().unwrap(), 1u32);
+    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![2u32, 3, 4, 5]);
     /// }
     /// ```
     #[experimental]
-    fn last(&mut self, remove: bool) -> Option<T>;
+    fn first_remove(&mut self) -> Option<T>;
+
+    /// Returns the last (greatest) element currently in this set.
+    /// Returns `None` if this set is empty.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeSet;
+    /// use sorted_collections::SortedSet;
+    ///
+    /// fn main() {
+    ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+    ///     assert_eq!(set.last().unwrap(), 5u32);
+    /// }
+    /// ```
+    // FIXME: Return reference here?
+    #[experimental]
+    fn last(&self) -> Option<T>;
+
+    /// Removes and returns the last (greatest) element currently in this set.
+    /// Returns `None` if this set is empty.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeSet;
+    /// use sorted_collections::SortedSet;
+    ///
+    /// fn main() {
+    ///     let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+    ///     assert_eq!(set.last_remove().unwrap(), 5u32);
+    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4]);
+    /// }
+    /// ```
+    #[experimental]
+    fn last_remove(&mut self) -> Option<T>;
 
     /// Returns the elements of this set which are less than (or equal to, if `inclusive`
     /// is true) `elem`, as a new instance of the same type of set.
@@ -145,8 +181,8 @@ pub trait SortedSet<T> : Sized
     /// ```
     #[experimental]
     fn ceiling(&self, elem: &T) -> Option<T> {
-        let mut tail = self.tail_set(elem, true);
-        tail.first(false)
+        let tail = self.tail_set(elem, true);
+        tail.first()
     }
 
     /// Returns the greatest element in this set less than or equal to `elem`.
@@ -169,8 +205,8 @@ pub trait SortedSet<T> : Sized
     /// ```
     #[experimental]
     fn floor(&self, elem: &T) -> Option<T> {
-        let mut head = self.head_set(elem, true);
-        head.last(false)
+        let head = self.head_set(elem, true);
+        head.last()
     }
 
     /// Returns the least element in this set strictly greater than `elem`.
@@ -193,8 +229,8 @@ pub trait SortedSet<T> : Sized
     /// ```
     #[experimental]
     fn higher(&self, elem: &T) -> Option<T> {
-        let mut tail = self.tail_set(elem, false);
-        tail.first(false)
+        let tail = self.tail_set(elem, false);
+        tail.first()
     }
 
     /// Returns the greatest element in this set strictly less than `elem`.
@@ -216,31 +252,41 @@ pub trait SortedSet<T> : Sized
     /// ```
     #[experimental]
     fn lower(&self, elem: &T) -> Option<T> {
-        let mut head = self.head_set(elem, false);
-        head.last(false)
+        let head = self.head_set(elem, false);
+        head.last()
     }
 }
 
 // A generic reusable impl of SortedSet.
 macro_rules! sortedset_impl {
     ($typ:ty) => (
-        fn first(&mut self, remove: bool) -> Option<T> {
+        fn first(&self) -> Option<T> {
             if self.is_empty() { return None }
 
-            let ret = self.iter().min().unwrap().clone();
-            if remove {
-                self.remove(&ret);
-            }
+            Some(self.iter().min().cloned().unwrap())
+        }
+
+        fn first_remove(&mut self) -> Option<T> {
+            if self.is_empty() { return None }
+
+            let ret = self.iter().min().cloned().unwrap();
+            assert!(self.remove(&ret));
+
             Some(ret)
         }
 
-        fn last(&mut self, remove: bool) -> Option<T> {
+        fn last(&self) -> Option<T> {
             if self.is_empty() { return None }
 
-            let ret = self.iter().max().unwrap().clone();
-            if remove {
-                self.remove(&ret);
-            }
+            Some(self.iter().max().cloned().unwrap())
+        }
+
+        fn last_remove(&mut self) -> Option<T> {
+            if self.is_empty() { return None }
+
+            let ret = self.iter().max().cloned().unwrap();
+            assert!(self.remove(&ret));
+
             Some(ret)
         }
 
@@ -298,30 +344,28 @@ mod tests {
     use super::SortedSet;
 
     #[test]
-    fn test_first_noremove() {
-        let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        assert_eq!(set.first(false).unwrap(), 1u32);
-        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+    fn test_first() {
+        let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+        assert_eq!(set.first().unwrap(), 1u32);
     }
 
     #[test]
     fn test_first_remove() {
         let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        assert_eq!(set.first(true).unwrap(), 1u32);
+        assert_eq!(set.first_remove().unwrap(), 1u32);
         assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![2u32, 3, 4, 5]);
     }
 
     #[test]
-    fn test_last_noremove() {
-        let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        assert_eq!(set.last(false).unwrap(), 5u32);
-        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+    fn test_last() {
+        let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+        assert_eq!(set.last().unwrap(), 5u32);
     }
 
     #[test]
     fn test_last_remove() {
         let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        assert_eq!(set.last(true).unwrap(), 5u32);
+        assert_eq!(set.last_remove().unwrap(), 5u32);
         assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4]);
     }
 
