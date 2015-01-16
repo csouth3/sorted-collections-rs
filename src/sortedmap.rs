@@ -1,7 +1,9 @@
-use std::collections::{BTreeMap, HashMap};
+use std::collections::btree_map::{BTreeMap, self};
+use std::collections::hash_map::{HashMap, self};
 use std::collections::hash_state::HashState;
 use std::default::Default;
 use std::hash::{Hash, Hasher};
+use std::iter::Peekable;
 
 /// An extension trait for a `Map` whose keys have a defined total ordering.
 /// This trait provides convenience methods which take advantage of the map's ordering.
@@ -11,7 +13,11 @@ use std::hash::{Hash, Hasher};
 pub trait SortedMap<K, V> : Sized
     where K: Clone + Ord,
           V: Clone {
-    /// Returns the first (least) key currently in this map, and its corresponding value.
+          type Range;
+          type RangeMut;
+          type RangeRemove;
+
+    /// Returns an immutable reference to the first (least) key currently in this map.
     /// Returns `None` if this map is empty.
     ///
     /// # Examples
@@ -25,15 +31,13 @@ pub trait SortedMap<K, V> : Sized
     /// fn main() {
     ///     let map: BTreeMap<u32, u32> =
     ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-    ///     assert_eq!(map.first().unwrap(), (1u32, 1u32));
+    ///     assert_eq!(map.first().unwrap(), &1u32);
     /// }
     /// ```
-    // FIXME: Return reference here?
     #[experimental]
-    fn first(&self) -> Option<(K, V)>;
+    fn first(&self) -> Option<&K>;
 
-    /// Removes and returns the first (least) key currently in this map, and its corresponding
-    /// value.
+    /// Removes and returns the first (least) key currently in this map and its associated value.
     /// Returns `None` if this map is empty.
     ///
     /// # Examples
@@ -55,7 +59,7 @@ pub trait SortedMap<K, V> : Sized
     #[experimental]
     fn first_remove(&mut self) -> Option<(K, V)>;
 
-    /// Returns the last (greatest) key currently in this map, and its corresponding value.
+    /// Returns an immutable reference to the last (greatest) key currently in this map.
     /// Returns `None` if this map is empty.
     ///
     /// # Examples
@@ -69,15 +73,13 @@ pub trait SortedMap<K, V> : Sized
     /// fn main() {
     ///     let map: BTreeMap<u32, u32> =
     ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-    ///     assert_eq!(map.last().unwrap(), (5u32, 5u32));
+    ///     assert_eq!(map.last().unwrap(), &5u32);
     /// }
     /// ```
-    // FIXME: Return reference here?
     #[experimental]
-    fn last(&self) -> Option<(K, V)>;
+    fn last(&self) -> Option<&K>;
 
-    /// Removes and returns the last (greatest) key currently in this map, and its
-    /// corresponding value.
+    /// Removes and returns the last (greatest) key currently in this map and its associated value.
     /// Returns `None` if this map is empty.
     ///
     /// # Examples
@@ -99,8 +101,8 @@ pub trait SortedMap<K, V> : Sized
     #[experimental]
     fn last_remove(&mut self) -> Option<(K, V)>;
 
-    /// Returns the key-value pairs of this map whose keys are less than (or equal to,
-    /// if `inclusive` is true) `key`, as a new instance of the same type of map.
+    /// Returns an immutable reference to the least key in this map greater than or equal to `key`.
+    /// Returns `None` if there is no such key.
     ///
     /// # Examples
     ///
@@ -113,21 +115,37 @@ pub trait SortedMap<K, V> : Sized
     /// fn main() {
     ///     let map: BTreeMap<u32, u32> =
     ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-    ///
-    ///     let head_map = map.head_map(&3, true);
-    ///     // The original map shouldn't have changed.
-    ///     assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
-    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);
-    ///
-    ///     assert_eq!(head_map.into_iter().collect::<Vec<(u32, u32)>>(),
-    ///         vec![(1u32, 1u32), (2, 2), (3, 3)]);
+    ///     assert_eq!(map.ceiling(&3).unwrap(), &3u32);
     /// }
     /// ```
     #[experimental]
-    fn head_map(&self, key: &K, inclusive: bool) -> Self;
+    fn ceiling(&self, key: &K) -> Option<&K>;
 
-    /// Returns the key-value pairs of this map whose keys range from `from_key` to
-    /// `to_key`, as a new instance of the same type of map.
+    /// Removes and returns the least key in this map greater than or equal to `key` and its
+    /// associated value.
+    /// Returns `None` if there is no such element.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeMap;
+    /// use sorted_collections::SortedMap;
+    ///
+    /// fn main() {
+    ///     let mut map: BTreeMap<u32, u32> =
+    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
+    ///     assert_eq!(map.ceiling_remove(&3).unwrap(), (3u32, 3u32));
+    ///     assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
+    ///         vec![(1u32, 1u32), (2, 2), (4, 4), (5, 5)]);
+    /// }
+    /// ```
+    #[experimental]
+    fn ceiling_remove(&mut self, key: &K) -> Option<(K, V)>;
+
+    /// Returns an immutable reference to the greatest key in this map less than or equal to `key`.
+    /// Returns `None` if there is no such key.
     ///
     /// # Examples
     ///
@@ -140,25 +158,176 @@ pub trait SortedMap<K, V> : Sized
     /// fn main() {
     ///     let map: BTreeMap<u32, u32> =
     ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
+    ///     assert_eq!(map.floor(&3).unwrap(), &3u32);
+    /// }
+    /// ```
+    #[experimental]
+    fn floor(&self, key: &K) -> Option<&K>;
+
+    /// Removes and returns the greatest key in this map less than or equal to `key` and its
+    /// associated value.
+    /// Returns `None` if there is no such element.
     ///
-    ///     let sub_map = map.sub_map(&2, false, &4, true);
-    ///     // The original map shouldn't have changed.
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeMap;
+    /// use sorted_collections::SortedMap;
+    ///
+    /// fn main() {
+    ///     let mut map: BTreeMap<u32, u32> =
+    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
+    ///     assert_eq!(map.floor_remove(&3).unwrap(), (3u32, 3u32));
     ///     assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
-    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);
+    ///         vec![(1u32, 1u32), (2, 2), (4, 4), (5, 5)]);
+    /// }
+    /// ```
+    #[experimental]
+    fn floor_remove(&mut self, key: &K) -> Option<(K, V)>;
+
+    /// Returns an immutable reference to the least key in this map strictly greater than `key`.
+    /// Returns `None` if there is no such key.
     ///
-    ///     assert_eq!(sub_map.into_iter().collect::<Vec<(u32, u32)>>(),
-    ///         vec![(3u32, 3u32), (4, 4)]);
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeMap;
+    /// use sorted_collections::SortedMap;
+    ///
+    /// fn main() {
+    ///     let map: BTreeMap<u32, u32> =
+    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
+    ///     assert_eq!(map.higher(&3).unwrap(), &4u32);
+    /// }
+    /// ```
+    #[experimental]
+    fn higher(&self, key: &K) -> Option<&K>;
+
+    /// Removes and returns the least key in this map strictly greater than `key` and its
+    /// associated value.
+    /// Returns `None` if there is no such element.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeMap;
+    /// use sorted_collections::SortedMap;
+    ///
+    /// fn main() {
+    ///     let mut map: BTreeMap<u32, u32> =
+    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
+    ///     assert_eq!(map.higher_remove(&3).unwrap(), (4u32, 4u32));
+    ///     assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
+    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (5, 5)]);
+    /// }
+    /// ```
+    #[experimental]
+    fn higher_remove(&mut self, key: &K) -> Option<(K, V)>;
+
+
+    /// Returns an immutable reference to the greatest key in this map strictly less than `key`.
+    /// Returns `None` if there is no such key.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeMap;
+    /// use sorted_collections::SortedMap;
+    ///
+    /// fn main() {
+    ///     let map: BTreeMap<u32, u32> =
+    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
+    ///     assert_eq!(map.lower(&3).unwrap(), &2u32);
+    /// }
+    /// ```
+    #[experimental]
+    fn lower(&self, key: &K) -> Option<&K>;
+
+    /// Removes and returns the greatest key in this map strictly less than `key` and its
+    /// associated value.
+    /// Returns `None` if there is no such element.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeMap;
+    /// use sorted_collections::SortedMap;
+    ///
+    /// fn main() {
+    ///     let mut map: BTreeMap<u32, u32> =
+    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
+    ///     assert_eq!(map.lower_remove(&3).unwrap(), (2u32, 2u32));
+    ///     assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
+    ///         vec![(1u32, 1u32), (3, 3), (4, 4), (5, 5)]);
+    /// }
+    /// ```
+    #[experimental]
+    fn lower_remove(&mut self, key: &K) -> Option<(K, V)>;
+
+    /// Returns an iterator over pairs of immutable key-value references into this map,
+    /// with the pairs being iterated being those whose keys are in the range [from_key, to_key).
+    /// Note that this iterator need not necessarily yield the pairs in ascending order by key!
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeMap;
+    /// use sorted_collections::SortedMap;
+    ///
+    /// fn main() {
+    ///     let map: BTreeMap<u32, u32> =
+    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
+    ///     assert_eq!(map.range(&2, &4).map(|(&k, &v)| (k, v)).collect::<Vec<(u32, u32)>>(),
+    ///         vec![(2u32, 2u32), (3, 3)]);
+    /// }
+    /// ```
+    #[experimental]
+    fn range(&self, from_key: &K, to_key: &K) -> Self::Range;
+
+    /// Returns an iterator over pairs of immutable-key/mutable-value references into this map,
+    /// with the pairs being iterated being those whose keys are in the range [from_key, to_key).
+    /// Note that this iterator need not necessarily yield the pairs in ascending order by key!
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeMap;
+    /// use sorted_collections::SortedMap;
+    ///
+    /// fn main() {
+    ///     let mut map: BTreeMap<u32, u32> =
+    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
+    ///     for (_, v) in map.range_mut(&2, &4) {
+    ///         *v += 1;
+    ///     }
+    ///     assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
+    ///         vec![(1u32, 1u32), (2, 3), (3, 4), (4, 4), (5, 5)]);
     /// }
     /// ```
     ///
     /// # Panics
     ///
-    /// This function panics if `from_key < to_key`.
+    /// This function panics if `from_elem > to_elem`.
     #[experimental]
-    fn sub_map(&self, from_key: &K, from_inclusive: bool, to_key: &K, to_inclusive: bool) -> Self;
+    fn range_mut(&mut self, from_key: &K, to_key: &K) -> Self::RangeMut;
 
-    /// Returns the key-value pairs of this map whose keys are greater than (or equal to,
-    /// if `inclusive` is true) `key`, as a new instance of the same type of map.
+    /// Removes the key-value pairs of this map whose keys lie in the range [from_key, to_key),
+    /// and returns a by-value iterator over the removed pairs.  Note that this iterator need
+    /// not necessarily yield the values in ascending order by key!
     ///
     /// # Examples
     ///
@@ -169,221 +338,285 @@ pub trait SortedMap<K, V> : Sized
     /// use sorted_collections::SortedMap;
     ///
     /// fn main() {
-    ///     let map: BTreeMap<u32, u32> =
+    ///     let mut map: BTreeMap<u32, u32> =
     ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-    ///
-    ///     let tail_map = map.tail_map(&3, true);
-    ///     // The original map shouldn't have changed.
+    ///     assert_eq!(map.range_remove(&2, &4).collect::<Vec<(u32, u32)>>(),
+    ///         vec![(2u32, 2u32), (3, 3)]);
     ///     assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
-    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);
-    ///
-    ///     assert_eq!(tail_map.into_iter().collect::<Vec<(u32, u32)>>(),
-    ///         vec![(3u32, 3u32), (4, 4), (5, 5)]);
+    ///         vec![(1u32, 1u32), (4, 4), (5, 5)]);
     /// }
     /// ```
     #[experimental]
-    fn tail_map(&self, key: &K, inclusive: bool) -> Self;
-
-    /// Returns the least key greater than or equal to `key`, and its corresponding value.
-    /// Returns `None` if there is no such key.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// extern crate "sorted-collections" as sorted_collections;
-    ///
-    /// use std::collections::BTreeMap;
-    /// use sorted_collections::SortedMap;
-    ///
-    /// fn main() {
-    ///     let map: BTreeMap<u32, u32> =
-    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-    ///
-    ///     assert_eq!(map.ceiling(&3).unwrap(), (3u32, 3u32));
-    ///     // The original map shouldn't have changed.
-    ///     assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
-    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);
-    /// }
-    /// ```
-    #[experimental]
-    fn ceiling(&self, key: &K) -> Option<(K, V)> {
-        let tail = self.tail_map(key, true);
-        tail.first()
-    }
-
-    /// Returns the greatest key less than or equal to `key`, and its corresponding value.
-    /// Returns `None` if there is no such key.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// extern crate "sorted-collections" as sorted_collections;
-    ///
-    /// use std::collections::BTreeMap;
-    /// use sorted_collections::SortedMap;
-    ///
-    /// fn main() {
-    ///     let map: BTreeMap<u32, u32> =
-    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-    ///
-    ///     assert_eq!(map.floor(&3).unwrap(), (3u32, 3u32));
-    ///     // The original map shouldn't have changed.
-    ///     assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
-    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);
-    /// }
-    /// ```
-    #[experimental]
-    fn floor(&self, key: &K) -> Option<(K, V)> {
-        let head = self.head_map(key, true);
-        head.last()
-    }
-
-    /// Returns the least key strictly greater than the given key, and its corresponding value.
-    /// Returns `None` if there is no such key.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// extern crate "sorted-collections" as sorted_collections;
-    ///
-    /// use std::collections::BTreeMap;
-    /// use sorted_collections::SortedMap;
-    ///
-    /// fn main() {
-    ///     let map: BTreeMap<u32, u32> =
-    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-    ///
-    ///     assert_eq!(map.higher(&3).unwrap(), (4u32, 4u32));
-    ///     // The original map shouldn't have changed.
-    ///     assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
-    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);
-    /// }
-    /// ```
-    #[experimental]
-    fn higher(&self, key: &K) -> Option<(K, V)> {
-        let tail = self.tail_map(key, false);
-        tail.first()
-    }
-
-    /// Returns the greatest key strictly less than the given key, and its corresponding value.
-    /// Returns `None` if there is no such key.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// extern crate "sorted-collections" as sorted_collections;
-    ///
-    /// use std::collections::BTreeMap;
-    /// use sorted_collections::SortedMap;
-    ///
-    /// fn main() {
-    ///     let map: BTreeMap<u32, u32> =
-    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-    ///
-    ///     assert_eq!(map.lower(&3).unwrap(), (2u32, 2u32));
-    ///     // The original map shouldn't have changed.
-    ///     assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
-    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);
-    /// }
-    /// ```
-    #[experimental]
-    fn lower(&self, key: &K) -> Option<(K, V)> {
-        let head = self.head_map(key, false);
-        head.last()
-    }
+    fn range_remove(&mut self, from_key: &K, to_key: &K) -> Self::RangeRemove;
 }
 
 // A generic reusable impl of SortedMap.
 macro_rules! sortedmap_impl {
-    ($typ:ty) => (
-        fn first(&self) -> Option<(K, V)> {
+    ($typ:ty, $range:ident, $rangeret:ty, $rangemut:ident, $rangemutret:ty, $rangeremove:ident, $rangeremoveret:ty) => (
+        fn first(&self) -> Option<&K> {
             if self.is_empty() { return None }
 
-            let key = self.keys().min().cloned().unwrap();
-            let val = self.get(&key).cloned().unwrap();
-
-            Some((key, val))
+            Some(self.keys().min().unwrap())
         }
 
         fn first_remove(&mut self) -> Option<(K, V)> {
             if self.is_empty() { return None }
 
-            let key = self.keys().min().cloned().unwrap();
+            let key = self.first().cloned().unwrap();
             let val = self.remove(&key);
             assert!(val.is_some());
 
             Some((key, val.unwrap()))
         }
 
-        fn last(&self) -> Option<(K, V)> {
+        fn last(&self) -> Option<&K> {
             if self.is_empty() { return None }
 
-            let key = self.keys().max().cloned().unwrap();
-            let val = self.get(&key).cloned().unwrap();
-
-            Some((key, val))
+            Some(self.keys().max().unwrap())
         }
 
         fn last_remove(&mut self) -> Option<(K, V)> {
             if self.is_empty() { return None }
 
-            let key = self.keys().max().cloned().unwrap();
+            let key = self.last().cloned().unwrap();
             let val = self.remove(&key);
             assert!(val.is_some());
 
             Some((key, val.unwrap()))
         }
 
-        fn head_map(&self, key: &K, inclusive: bool) -> $typ {
-            let it = self.keys().cloned().zip(self.values().cloned());
-            if inclusive {
-                return it.filter_map(|(k, v)| if k <= *key { Some((k, v)) } else { None }).collect();
-            } else {
-                return it.filter_map(|(k, v)| if k < *key { Some((k, v)) } else { None }).collect();
+        fn ceiling(&self, key: &K) -> Option<&K> {
+            if self.is_empty() { return None }
+
+            Some(self.keys().filter(|&k| k >= key).min().unwrap())
+        }
+
+        fn ceiling_remove(&mut self, key: &K) -> Option<(K, V)> {
+            if self.is_empty() { return None }
+
+            let ceiling = self.ceiling(key).cloned().unwrap();
+            let val = self.remove(&ceiling).unwrap();
+            Some((ceiling, val))
+        }
+
+        fn floor(&self, key: &K) -> Option<&K> {
+            if self.is_empty() { return None }
+
+            Some(self.keys().filter(|&k| k <= key).max().unwrap())
+        }
+
+        fn floor_remove(&mut self, key: &K) -> Option<(K, V)> {
+            if self.is_empty() { return None }
+
+            let floor = self.floor(key).cloned().unwrap();
+            let val = self.remove(&floor).unwrap();
+            Some((floor, val))
+        }
+
+        fn higher(&self, key: &K) -> Option<&K> {
+            if self.is_empty() { return None }
+
+            Some(self.keys().filter(|&k| k > key).min().unwrap())
+        }
+
+        fn higher_remove(&mut self, key: &K) -> Option<(K, V)> {
+            if self.is_empty() { return None }
+
+            let higher = self.higher(key).cloned().unwrap();
+            let val = self.remove(&higher).unwrap();
+            Some((higher, val))
+        }
+
+        fn lower(&self, key: &K) -> Option<&K> {
+            if self.is_empty() { return None }
+
+            Some(self.keys().filter(|&k| k < key).max().unwrap())
+        }
+
+        fn lower_remove(&mut self, key: &K) -> Option<(K, V)> {
+            if self.is_empty() { return None }
+
+            let lower = self.lower(key).cloned().unwrap();
+            let val = self.remove(&lower).unwrap();
+            Some((lower, val))
+        }
+
+        fn range(&self, from_key: &K, to_key: &K) -> $rangeret {
+            $range {
+                iter: self.iter().peekable(),
+                lower: from_key.clone(),
+                upper: to_key.clone(),
             }
         }
 
-        fn sub_map(&self, from_key: &K, from_inclusive: bool, to_key: &K, to_inclusive: bool) -> $typ {
-            assert!(from_key <= to_key);
-
-            let it = self.keys().cloned().zip(self.values().cloned());
-            if from_inclusive && to_inclusive {
-                return it.filter_map(|(k, v)| if k >= *from_key && k <= *to_key { Some((k, v)) } else { None }).collect();
-            } else if from_inclusive && !to_inclusive {
-                return it.filter_map(|(k, v)| if k >= *from_key && k < *to_key { Some((k, v)) } else { None }).collect();
-            } else if !from_inclusive && to_inclusive {
-                return it.filter_map(|(k, v)| if k > *from_key && k <= *to_key { Some((k, v)) } else { None }).collect();
-            } else {
-                return it.filter_map(|(k, v)| if k > *from_key && k < *to_key { Some((k, v)) } else { None }).collect();
+        fn range_mut(&mut self, from_key: &K, to_key: &K) -> $rangemutret {
+            $rangemut {
+                iter: self.iter_mut().peekable(),
+                lower: from_key.clone(),
+                upper: to_key.clone(),
             }
         }
 
-        fn tail_map(&self, key: &K, inclusive: bool) -> $typ {
-            let it = self.keys().cloned().zip(self.values().cloned());
-            if inclusive {
-                return it.filter_map(|(k, v)| if k >= *key { Some((k, v)) } else { None }).collect();
-            } else {
-                return it.filter_map(|(k, v)| if k > *key { Some((k, v)) } else { None }).collect();
+        fn range_remove(&mut self, from_key: &K, to_key: &K) -> $rangeremoveret {
+            let remove: $typ = self.keys().cloned().zip(self.values().cloned())
+                .filter_map(|(k, v)| if k >= *from_key && k < *to_key { Some((k, v)) } else { None }).collect();
+            for key in remove.keys() {
+                self.remove(key);
             }
+            $rangeremove { iter: remove.into_iter() }
         }
     );
 }
 
 // An impl of SortedMap for the standard library BTreeMap
 #[experimental]
-impl<K, V> SortedMap<K, V> for BTreeMap<K, V>
+impl<'a, K, V> SortedMap<K, V> for BTreeMap<K, V>
     where K: Clone + Ord,
           V: Clone {
-    sortedmap_impl!(BTreeMap<K, V>);
+    type Range = BTreeMapRange<'a, K, V>;
+    type RangeMut = BTreeMapRangeMut<'a, K, V>;
+    type RangeRemove = BTreeMapRangeRemove<K, V>;
+
+    sortedmap_impl!(BTreeMap<K, V>, BTreeMapRange, BTreeMapRange<K, V>, BTreeMapRangeMut, BTreeMapRangeMut<K, V>, BTreeMapRangeRemove, BTreeMapRangeRemove<K, V>);
 }
 // An impl of SortedMap for the standard library HashMap.
 #[experimental]
-impl<K, V, S, H> SortedMap<K, V> for HashMap<K, V, S>
+impl<'a, K, V, S, H> SortedMap<K, V> for HashMap<K, V, S>
     where K: Clone + Eq + Hash<H> + Ord,
           V: Clone,
           S: HashState<Hasher=H> + Default,
           H: Hasher<Output=u64> {
-    sortedmap_impl!(HashMap<K, V, S>);
+    type Range = HashMapRange<'a, K, V>;
+    type RangeMut = HashMapRangeMut<'a, K, V>;
+    type RangeRemove = HashMapRangeRemove<K, V>;
+
+    sortedmap_impl!(HashMap<K, V, S>, HashMapRange, HashMapRange<K, V>, HashMapRangeMut, HashMapRangeMut<K, V>, HashMapRangeRemove, HashMapRangeRemove<K, V>);
+}
+
+#[experimental]
+pub struct BTreeMapRange<'a, K: 'a, V: 'a> {
+    iter: Peekable<(&'a K, &'a V), btree_map::Iter<'a, K, V>>,
+    lower: K,
+    upper: K,
+}
+
+#[experimental]
+impl<'a, K: Ord, V> Iterator for BTreeMapRange<'a, K, V> {
+    type Item = (&'a K, &'a V);
+
+    fn next(&mut self) -> Option<(&'a K, &'a V)> {
+        loop {
+            if self.iter.is_empty() { return None; }
+
+            if (*self.iter.peek().unwrap()).0 >= &self.lower
+                && (*self.iter.peek().unwrap()).0 < &self.upper { return self.iter.next(); }
+            else { self.iter.next(); }
+        }
+    }
+}
+
+#[experimental]
+pub struct BTreeMapRangeMut<'a, K: 'a, V: 'a> {
+    iter: Peekable<(&'a K, &'a mut V), btree_map::IterMut<'a, K, V>>,
+    lower: K,
+    upper: K,
+}
+
+#[experimental]
+impl<'a, K: Ord, V> Iterator for BTreeMapRangeMut<'a, K, V> {
+    type Item = (&'a K, &'a mut V);
+
+    fn next(&mut self) -> Option<(&'a K, &'a mut V)> {
+        loop {
+            if self.iter.is_empty() { return None; }
+
+            if (*self.iter.peek().unwrap()).0 >= &self.lower
+                && (*self.iter.peek().unwrap()).0 < &self.upper { return self.iter.next(); }
+            else { self.iter.next(); }
+        }
+    }
+}
+
+#[experimental]
+pub struct BTreeMapRangeRemove<K, V> {
+    iter: btree_map::IntoIter<K, V>
+}
+
+#[experimental]
+impl<K, V> Iterator for BTreeMapRangeRemove<K, V> {
+    type Item = (K, V);
+
+    fn next(&mut self) -> Option<(K, V)> { self.iter.next() }
+    fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
+}
+#[experimental]
+impl<K, V> DoubleEndedIterator for BTreeMapRangeRemove<K, V> {
+    fn next_back(&mut self) -> Option<(K, V)> { self.iter.next_back() }
+}
+#[experimental]
+impl<K, V> ExactSizeIterator for BTreeMapRangeRemove<K, V> {
+    fn len(&self) -> usize { self.iter.len() }
+}
+
+#[experimental]
+pub struct HashMapRange<'a, K: 'a, V: 'a> {
+    iter: Peekable<(&'a K, &'a V), hash_map::Iter<'a, K, V>>,
+    lower: K,
+    upper: K,
+}
+
+#[experimental]
+impl<'a, K: Ord, V> Iterator for HashMapRange<'a, K, V> {
+    type Item = (&'a K, &'a V);
+
+    fn next(&mut self) -> Option<(&'a K, &'a V)> {
+        loop {
+            if self.iter.is_empty() { return None; }
+
+            if (*self.iter.peek().unwrap()).0 >= &self.lower
+                && (*self.iter.peek().unwrap()).0 < &self.upper { return self.iter.next(); }
+            else { self.iter.next(); }
+        }
+    }
+}
+
+#[experimental]
+pub struct HashMapRangeMut<'a, K: 'a, V: 'a> {
+    iter: Peekable<(&'a K, &'a mut V), hash_map::IterMut<'a, K, V>>,
+    lower: K,
+    upper: K,
+}
+
+#[experimental]
+impl<'a, K: Ord, V> Iterator for HashMapRangeMut<'a, K, V> {
+    type Item = (&'a K, &'a mut V);
+
+    fn next(&mut self) -> Option<(&'a K, &'a mut V)> {
+        loop {
+            if self.iter.is_empty() { return None; }
+
+            if (*self.iter.peek().unwrap()).0 >= &self.lower
+                && (*self.iter.peek().unwrap()).0 < &self.upper { return self.iter.next(); }
+            else { self.iter.next(); }
+        }
+    }
+}
+
+#[experimental]
+pub struct HashMapRangeRemove<K, V> {
+    iter: hash_map::IntoIter<K, V>
+}
+
+#[experimental]
+impl<K, V> Iterator for HashMapRangeRemove<K, V> {
+    type Item = (K, V);
+
+    fn next(&mut self) -> Option<(K, V)> { self.iter.next() }
+    fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
+}
+#[experimental]
+impl<K, V> ExactSizeIterator for HashMapRangeRemove<K, V> {
+    fn len(&self) -> usize { self.iter.len() }
 }
 
 #[cfg(test)]
@@ -395,7 +628,7 @@ mod tests {
     #[test]
     fn test_first() {
         let map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-        assert_eq!(map.first().unwrap(), (1u32, 1u32));
+        assert_eq!(map.first().unwrap(), &1u32);
     }
 
     #[test]
@@ -408,7 +641,7 @@ mod tests {
     #[test]
     fn test_last() {
         let map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-        assert_eq!(map.last().unwrap(), (5u32, 5u32));
+        assert_eq!(map.last().unwrap(), &5u32);
     }
 
     #[test]
@@ -419,96 +652,83 @@ mod tests {
     }
 
     #[test]
-    fn test_head_map_noinclusive() {
-        let map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-        let head_map = map.head_map(&3, false);
-        assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);
-        assert_eq!(head_map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(1u32, 1u32), (2, 2)]);
-    }
-
-    #[test]
-    fn test_head_map_inclusive() {
-        let map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-        let head_map = map.head_map(&3, true);
-        assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);
-        assert_eq!(head_map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(1u32, 1u32), (2, 2), (3, 3)]);
-    }
-
-    #[test]
-    fn test_sub_map_noinclusive() {
-        let map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-        let sub_map = map.sub_map(&2, false, &4, false);
-        assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);
-        assert_eq!(sub_map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(3u32, 3u32)]);
-    }
-
-    #[test]
-    fn test_sub_map_nofrom_to() {
-        let map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-        let sub_map = map.sub_map(&2, false, &4, true);
-        assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);
-        assert_eq!(sub_map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(3u32, 3u32), (4, 4)]);
-    }
-
-    #[test]
-    fn test_sub_from_noto() {
-        let map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-        let sub_map = map.sub_map(&2, true, &4, false);
-        assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);
-        assert_eq!(sub_map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(2u32, 2u32), (3, 3)]);
-    }
-
-    #[test]
-    fn test_sub_map_inclusive() {
-        let map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-        let sub_map = map.sub_map(&2, true, &4, true);
-        assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);
-        assert_eq!(sub_map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(2u32, 2u32), (3, 3), (4, 4)]);
-    }
-
-    #[test]
-    fn test_tail_map_noinclusive() {
-        let map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-        let tail_map = map.tail_map(&3, false);
-        assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);
-        assert_eq!(tail_map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(4u32, 4u32), (5, 5)]);
-    }
-
-    #[test]
-    fn test_tail_map_inclusive() {
-        let map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-        let tail_map = map.tail_map(&3, true);
-        assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);
-        assert_eq!(tail_map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(3u32, 3u32), (4, 4), (5, 5)]);
-    }
-
-    #[test]
     fn test_ceiling() {
         let map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-        assert_eq!(map.ceiling(&3).unwrap(), (3u32, 3u32));
+        assert_eq!(map.ceiling(&3).unwrap(), &3u32);
         assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);
+    }
+
+    #[test]
+    fn test_ceiling_remove() {
+        let mut map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
+        assert_eq!(map.ceiling_remove(&3).unwrap(), (3u32, 3u32));
+        assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(1u32, 1u32), (2, 2), (4, 4), (5, 5)]);
     }
 
     #[test]
     fn test_floor() {
         let map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-        assert_eq!(map.floor(&3).unwrap(), (3u32, 3u32));
+        assert_eq!(map.floor(&3).unwrap(), &3u32);
         assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);
+    }
 
+    #[test]
+    fn test_floor_remove() {
+        let mut map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
+        assert_eq!(map.floor_remove(&3).unwrap(), (3u32, 3u32));
+        assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(1u32, 1u32), (2, 2), (4, 4), (5, 5)]);
     }
 
     #[test]
     fn test_higher() {
         let map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-        assert_eq!(map.higher(&3).unwrap(), (4u32, 4u32));
+        assert_eq!(map.higher(&3).unwrap(), &4u32);
         assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);
+    }
+
+    #[test]
+    fn test_higher_remove() {
+        let mut map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
+        assert_eq!(map.higher_remove(&3).unwrap(), (4u32, 4u32));
+        assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(1u32, 1u32), (2, 2), (3, 3), (5, 5)]);
     }
 
     #[test]
     fn test_lower() {
         let map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-        assert_eq!(map.lower(&3).unwrap(), (2u32, 2u32));
+        assert_eq!(map.lower(&3).unwrap(), &2u32);
         assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)]);
+    }
 
+    #[test]
+    fn test_lower_remove() {
+        let mut map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
+        assert_eq!(map.lower_remove(&3).unwrap(), (2u32, 2u32));
+        assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(), vec![(1u32, 1u32), (3, 3), (4, 4), (5, 5)]);
+    }
+
+    #[test]
+    fn test_range() {
+        let map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
+        assert_eq!(map.range(&2, &4).map(|(&k, &v)| (k, v)).collect::<Vec<(u32, u32)>>(),
+            vec![(2u32, 2u32), (3, 3)]);
+    }
+
+    #[test]
+    fn test_range_mut() {
+        let mut map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
+        for (_, v) in map.range_mut(&2, &4) {
+            *v += 1;
+        }
+        assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
+            vec![(1u32, 1u32), (2, 3), (3, 4), (4, 4), (5, 5)]);
+    }
+
+    #[test]
+    fn test_range_remove() {
+        let mut map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
+        assert_eq!(map.range_remove(&2, &4).collect::<Vec<(u32, u32)>>(), vec![(2u32, 2u32), (3, 3)]);
+        assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
+            vec![(1u32, 1u32), (4, 4), (5, 5)]);
     }
 }

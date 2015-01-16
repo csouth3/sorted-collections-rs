@@ -1,7 +1,9 @@
-use std::collections::{BTreeSet, HashSet};
+use std::collections::btree_set::{BTreeSet, self};
+use std::collections::hash_set::{HashSet, self};
 use std::collections::hash_state::HashState;
 use std::default::Default;
 use std::hash::{Hash, Hasher};
+use std::iter::Peekable;
 
 /// An extension trait for a `Set` whose elements have a defined total ordering.
 /// This trait provides convenience methods which take advantage of the set's ordering.
@@ -10,7 +12,10 @@ use std::hash::{Hash, Hasher};
 #[experimental]
 pub trait SortedSet<T> : Sized
     where T: Clone + Ord {
-    /// Returns the first (least) element currently in this set.
+    type Range;
+    type RangeRemove;
+
+    /// Returns an immutable reference to the first (least) element currently in this set.
     /// Returns `None` if this set is empty.
     ///
     /// # Examples
@@ -23,12 +28,11 @@ pub trait SortedSet<T> : Sized
     ///
     /// fn main() {
     ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-    ///     assert_eq!(set.first().unwrap(), 1u32);
+    ///     assert_eq!(set.first().unwrap(), &1u32);
     /// }
     /// ```
-    // FIXME: Return reference here?
     #[experimental]
-    fn first(&self) -> Option<T>;
+    fn first(&self) -> Option<&T>;
 
     /// Removes and returns the first (least) element currently in this set.
     /// Returns `None` if this set is empty.
@@ -50,7 +54,7 @@ pub trait SortedSet<T> : Sized
     #[experimental]
     fn first_remove(&mut self) -> Option<T>;
 
-    /// Returns the last (greatest) element currently in this set.
+    /// Returns an immutable reference to the last (greatest) element currently in this set.
     /// Returns `None` if this set is empty.
     ///
     /// # Examples
@@ -63,12 +67,11 @@ pub trait SortedSet<T> : Sized
     ///
     /// fn main() {
     ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-    ///     assert_eq!(set.last().unwrap(), 5u32);
+    ///     assert_eq!(set.last().unwrap(), &5u32);
     /// }
     /// ```
-    // FIXME: Return reference here?
     #[experimental]
-    fn last(&self) -> Option<T>;
+    fn last(&self) -> Option<&T>;
 
     /// Removes and returns the last (greatest) element currently in this set.
     /// Returns `None` if this set is empty.
@@ -90,8 +93,8 @@ pub trait SortedSet<T> : Sized
     #[experimental]
     fn last_remove(&mut self) -> Option<T>;
 
-    /// Returns the elements of this set which are less than (or equal to, if `inclusive`
-    /// is true) `elem`, as a new instance of the same type of set.
+    /// Returns an immutable reference to the least element in this set greater than or equal to `elem`.
+    /// Returns `None` if there is no such element.
     ///
     /// # Examples
     ///
@@ -103,17 +106,34 @@ pub trait SortedSet<T> : Sized
     ///
     /// fn main() {
     ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-    ///     let head_set = set.head_set(&3, true);
-    ///     // The original set shouldn't change.
-    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
-    ///     assert_eq!(head_set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3]);
+    ///     assert_eq!(set.ceiling(&3).unwrap(), &3u32);
     /// }
     /// ```
     #[experimental]
-    fn head_set(&self, elem: &T, inclusive: bool) -> Self;
+    fn ceiling(&self, elem: &T) -> Option<&T>;
 
-    /// Returns the elements of this set ranging from `from_elem` to `to_elem`, as
-    /// a new instance of the same type of set.
+    /// Removes and returns the least element in this set greater than or equal to `elem`.
+    /// Returns `None` if there is no such element.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeSet;
+    /// use sorted_collections::SortedSet;
+    ///
+    /// fn main() {
+    ///     let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+    ///     assert_eq!(set.ceiling_remove(&3).unwrap(), 3u32);
+    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 4, 5]);
+    /// }
+    /// ```
+    #[experimental]
+    fn ceiling_remove(&mut self, elem: &T) -> Option<T>;
+
+    /// Returns an immutable reference to the greatest element in this set less than or equal to `elem`.
+    /// Returns `None` if there is no such element.
     ///
     /// # Examples
     ///
@@ -125,11 +145,146 @@ pub trait SortedSet<T> : Sized
     ///
     /// fn main() {
     ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-    ///     let sub_set = set.sub_set(&2, false, &4, true);
-    ///     // The original set shouldn't change.
-    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
-    ///     // 2 isn't in the resulting set, while 4 is, just as we expected.
-    ///     assert_eq!(sub_set.into_iter().collect::<Vec<u32>>(), vec![3u32, 4]);
+    ///     assert_eq!(set.floor(&3).unwrap(), &3u32);
+    /// }
+    /// ```
+    #[experimental]
+    fn floor(&self, elem: &T) -> Option<&T>;
+
+    /// Removes and returns the greatest element in this set less than or equal to `elem`.
+    /// Returns `None` if there is no such element.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeSet;
+    /// use sorted_collections::SortedSet;
+    ///
+    /// fn main() {
+    ///     let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+    ///     assert_eq!(set.floor_remove(&3).unwrap(), 3u32);
+    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 4, 5]);
+    /// }
+    /// ```
+    #[experimental]
+    fn floor_remove(&mut self, elem: &T) -> Option<T>;
+
+    /// Returns an immutable reference to the least element in this set strictly greater than `elem`.
+    /// Returns `None` if there is no such element.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeSet;
+    /// use sorted_collections::SortedSet;
+    ///
+    /// fn main() {
+    ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+    ///     assert_eq!(set.higher(&3).unwrap(), &4u32);
+    /// }
+    /// ```
+    #[experimental]
+    fn higher(&self, elem: &T) -> Option<&T>;
+
+    /// Removes and returns the least element in this set strictly greater than `elem`.
+    /// Returns `None` if there is no such element.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeSet;
+    /// use sorted_collections::SortedSet;
+    ///
+    /// fn main() {
+    ///     let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+    ///     assert_eq!(set.higher_remove(&3).unwrap(), 4u32);
+    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 5]);
+    /// }
+    /// ```
+    #[experimental]
+    fn higher_remove(&mut self, elem: &T) -> Option<T>;
+
+    /// Returns an immutable reference to the greatest element in this set strictly less than `elem`.
+    /// returns `none` if there is no such element.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeSet;
+    /// use sorted_collections::SortedSet;
+    ///
+    /// fn main() {
+    ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+    ///     assert_eq!(set.lower(&3).unwrap(), &2u32);
+    /// }
+    /// ```
+    #[experimental]
+    fn lower(&self, elem: &T) -> Option<&T>;
+
+    /// Removes and returns the greatest element in this set strictly less than `elem`.
+    /// returns `none` if there is no such element.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeSet;
+    /// use sorted_collections::SortedSet;
+    ///
+    /// fn main() {
+    ///     let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+    ///     assert_eq!(set.lower_remove(&3).unwrap(), 2u32);
+    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 3, 4, 5]);
+    /// }
+    /// ```
+    #[experimental]
+    fn lower_remove(&mut self, elem: &T) -> Option<T>;
+
+    /// Returns an iterator over immutable references to the elements
+    /// of this set in the range [from_elem, to_elem).  Note that this iterator
+    /// need not necessarily yield the values in ascending order!
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeSet;
+    /// use sorted_collections::SortedSet;
+    ///
+    /// fn main() {
+    ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+    ///     assert_eq!(set.range(&2, &4).map(|&x| x).collect::<Vec<u32>>(), vec![2u32, 3]);
+    /// }
+    /// ```
+    #[experimental]
+    fn range(&self, from_elem: &T, to_elem: &T) -> Self::Range;
+
+    /// Removes the elements of this set in the range [from_elem, to_elem), and returns
+    /// a by-value iterator over the removed elements.  Note that this iterator need not
+    /// necessarily yield the values in ascending order!
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// extern crate "sorted-collections" as sorted_collections;
+    ///
+    /// use std::collections::BTreeSet;
+    /// use sorted_collections::SortedSet;
+    ///
+    /// fn main() {
+    ///     let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+    ///     assert_eq!(set.range_remove(&2, &4).collect::<Vec<u32>>(), vec![2u32, 3]);
+    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 4, 5]);
     /// }
     /// ```
     ///
@@ -137,133 +292,17 @@ pub trait SortedSet<T> : Sized
     ///
     /// This function panics if `from_elem > to_elem`.
     #[experimental]
-    fn sub_set(&self, from_elem: &T, from_inclusive: bool, to_elem: &T, to_inclusive: bool) -> Self;
+    fn range_remove(&mut self, from_elem: &T, to_elem: &T) -> Self::RangeRemove;
 
-    /// Returns the elements of this set which are greater than (or equal to, if
-    /// `inclusive` is true) `elem`, as a new instance of the same type of set.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// extern crate "sorted-collections" as sorted_collections;
-    ///
-    /// use std::collections::BTreeSet;
-    /// use sorted_collections::SortedSet;
-    ///
-    /// fn main() {
-    ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-    ///     let tail_set = set.tail_set(&3, true);
-    ///     // The original set shouldn't change.
-    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
-    ///     assert_eq!(tail_set.into_iter().collect::<Vec<u32>>(), vec![3u32, 4, 5]);
-    /// }
-    /// ```
-    #[experimental]
-    fn tail_set(&self, elem: &T, inclusive: bool) -> Self;
-
-    /// Returns the least element in this set greater than or equal to `elem`.
-    /// Returns `None` if there is no such element.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// extern crate "sorted-collections" as sorted_collections;
-    ///
-    /// use std::collections::BTreeSet;
-    /// use sorted_collections::SortedSet;
-    ///
-    /// fn main() {
-    ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-    ///     assert_eq!(set.ceiling(&3).unwrap(), 3u32);
-    ///     // The original set shouldn't change.
-    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
-    /// }
-    /// ```
-    #[experimental]
-    fn ceiling(&self, elem: &T) -> Option<T> {
-        let tail = self.tail_set(elem, true);
-        tail.first()
-    }
-
-    /// Returns the greatest element in this set less than or equal to `elem`.
-    /// Returns `None` if there is no such element.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// extern crate "sorted-collections" as sorted_collections;
-    ///
-    /// use std::collections::BTreeSet;
-    /// use sorted_collections::SortedSet;
-    ///
-    /// fn main() {
-    ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-    ///     assert_eq!(set.floor(&3).unwrap(), 3u32);
-    ///     // The original set shouldn't change.
-    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
-    /// }
-    /// ```
-    #[experimental]
-    fn floor(&self, elem: &T) -> Option<T> {
-        let head = self.head_set(elem, true);
-        head.last()
-    }
-
-    /// Returns the least element in this set strictly greater than `elem`.
-    /// Returns `None` if there is no such element.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// extern crate "sorted-collections" as sorted_collections;
-    ///
-    /// use std::collections::BTreeSet;
-    /// use sorted_collections::SortedSet;
-    ///
-    /// fn main() {
-    ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-    ///     assert_eq!(set.higher(&3).unwrap(), 4u32);
-    ///     // The original set shouldn't change.
-    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
-    /// }
-    /// ```
-    #[experimental]
-    fn higher(&self, elem: &T) -> Option<T> {
-        let tail = self.tail_set(elem, false);
-        tail.first()
-    }
-
-    /// Returns the greatest element in this set strictly less than `elem`.
-    /// Returns `None` if there is no such element.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// extern crate "sorted-collections" as sorted_collections;
-    ///
-    /// use std::collections::BTreeSet;
-    /// use sorted_collections::SortedSet;
-    ///
-    /// fn main() {
-    ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-    ///     assert_eq!(set.lower(&3).unwrap(), 2u32);
-    ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
-    /// }
-    /// ```
-    #[experimental]
-    fn lower(&self, elem: &T) -> Option<T> {
-        let head = self.head_set(elem, false);
-        head.last()
-    }
 }
 
 // A generic reusable impl of SortedSet.
 macro_rules! sortedset_impl {
-    ($typ:ty) => (
-        fn first(&self) -> Option<T> {
+    ($typ:ty, $range:ident, $rangeret:ty, $rangeremove: ident, $rangeremoveret:ty)=> (
+        fn first(&self) -> Option<&T> {
             if self.is_empty() { return None }
 
-            Some(self.iter().min().cloned().unwrap())
+            Some(self.iter().min().unwrap())
         }
 
         fn first_remove(&mut self) -> Option<T> {
@@ -275,10 +314,10 @@ macro_rules! sortedset_impl {
             Some(ret)
         }
 
-        fn last(&self) -> Option<T> {
+        fn last(&self) -> Option<&T> {
             if self.is_empty() { return None }
 
-            Some(self.iter().max().cloned().unwrap())
+            Some(self.iter().max().unwrap())
         }
 
         fn last_remove(&mut self) -> Option<T> {
@@ -290,51 +329,196 @@ macro_rules! sortedset_impl {
             Some(ret)
         }
 
-        fn head_set(&self, elem: &T, inclusive: bool) -> $typ {
-            if inclusive {
-                return self.iter().cloned().filter(|x| x <= elem).collect();
-            } else {
-                return self.iter().cloned().filter(|x| x < elem).collect();
+        fn ceiling(&self, elem: &T) -> Option<&T> {
+            if self.is_empty() { return None }
+
+            let tail = self.range(elem, self.last().unwrap());
+            tail.min()
+        }
+
+        fn ceiling_remove(&mut self, elem: &T) -> Option<T> {
+            if self.is_empty() { return None }
+
+            let ceiling = self.ceiling(elem).cloned().unwrap();
+            assert!(self.remove(&ceiling));
+            Some(ceiling)
+        }
+
+        fn floor(&self, elem: &T) -> Option<&T> {
+            if self.is_empty() { return None }
+
+            let head = self.range(self.first().unwrap(), self.last().unwrap()).filter(|&x| x <= elem);
+            head.max()
+        }
+
+        fn floor_remove(&mut self, elem: &T) -> Option<T> {
+            if self.is_empty() { return None }
+
+            let floor = self.floor(elem).cloned().unwrap();
+            assert!(self.remove(&floor));
+            Some(floor)
+        }
+
+        fn higher(&self, elem: &T) -> Option<&T> {
+            if self.is_empty() { return None }
+
+            let mut tail = self.range(elem, self.last().unwrap()).peekable();
+            while *tail.peek().unwrap() == elem { tail.next(); }
+            tail.next()
+        }
+
+        fn higher_remove(&mut self, elem: &T) -> Option<T> {
+            if self.is_empty() { return None }
+
+            let higher = self.higher(elem).cloned().unwrap();
+            assert!(self.remove(&higher));
+            Some(higher)
+        }
+
+        fn lower(&self, elem: &T) -> Option<&T> {
+            if self.is_empty() { return None }
+
+            let head = self.range(self.first().unwrap(), elem);
+            head.max()
+        }
+
+        fn lower_remove(&mut self, elem: &T) -> Option<T> {
+            if self.is_empty() { return None }
+
+            let lower = self.lower(elem).cloned().unwrap();
+            assert!(self.remove(&lower));
+            Some(lower)
+        }
+
+        fn range(&self, from_elem: &T, to_elem: &T) -> $rangeret {
+            $range {
+                iter: self.iter().peekable(),
+                lower: from_elem.clone(),
+                upper: to_elem.clone(),
             }
         }
 
-        fn sub_set(&self, from_elem: &T, from_inclusive: bool, to_elem: &T, to_inclusive: bool) -> $typ {
+        fn range_remove(&mut self, from_elem: &T, to_elem: &T) -> $rangeremoveret {
             assert!(from_elem <= to_elem);
 
-            if from_inclusive && to_inclusive {
-                return self.iter().cloned().filter(|x| x >= from_elem && x <= to_elem).collect();
-            } else if from_inclusive && !to_inclusive {
-                return self.iter().cloned().filter(|x| x >= from_elem && x < to_elem).collect();
-            } else if !from_inclusive && to_inclusive {
-                return self.iter().cloned().filter(|x| x > from_elem && x <= to_elem).collect();
-            } else {
-                return self.iter().cloned().filter(|x| x > from_elem && x < to_elem).collect();
+            let remove: $typ = self.iter().cloned().filter(|x| x >= from_elem && x < to_elem).collect();
+            for elem in remove.iter() {
+                self.remove(elem);
             }
-        }
-
-        fn tail_set(&self, elem: &T, inclusive: bool) -> $typ {
-            if inclusive {
-                return self.iter().cloned().filter(|x| x >= elem).collect();
-            } else {
-                return self.iter().cloned().filter(|x| x > elem).collect();
-            }
+            $rangeremove { iter: remove.into_iter() }
         }
     );
 }
 
 // An impl of SortedSet for the standard library BTreeSet
 #[experimental]
-impl<T> SortedSet<T> for BTreeSet<T>
+impl<'a, T> SortedSet<T> for BTreeSet<T>
     where T: Clone + Ord {
-    sortedset_impl!(BTreeSet<T>);
+    type Range = BTreeSetRange<'a, T>;
+    type RangeRemove = BTreeSetRangeRemove<T>;
+
+    sortedset_impl!(BTreeSet<T>, BTreeSetRange, BTreeSetRange<T>, BTreeSetRangeRemove, BTreeSetRangeRemove<T>);
 }
 // An impl of SortedSet for the standard library HashSet
 #[experimental]
-impl<T, S, H> SortedSet<T> for HashSet<T, S>
+impl<'a, T, S, H> SortedSet<T> for HashSet<T, S>
     where T: Clone + Eq + Hash<H> + Ord,
           S: HashState<Hasher=H> + Default,
           H: Hasher<Output=u64> {
-    sortedset_impl!(HashSet<T, S>);
+    type Range = HashSetRange<'a, T>;
+    type RangeRemove = HashSetRangeRemove<T>;
+
+    sortedset_impl!(HashSet<T, S>, HashSetRange, HashSetRange<T>, HashSetRangeRemove, HashSetRangeRemove<T>);
+}
+
+#[experimental]
+pub struct BTreeSetRange<'a, T: 'a> {
+    iter: Peekable<&'a T, btree_set::Iter<'a, T>>,
+    lower: T,
+    upper: T,
+}
+
+#[experimental]
+impl<'a, T: Ord> Iterator for BTreeSetRange<'a, T> {
+    type Item = &'a T;
+
+    fn next(&mut self) -> Option<&'a T> {
+        loop {
+            // If iterator is empty, return None.
+            if self.iter.is_empty() { return None; }
+
+            // If the next item is in range, yield it.
+            if (*self.iter.peek().unwrap() >= &self.lower)
+                && (*self.iter.peek().unwrap() < &self.upper) { return self.iter.next(); }
+
+            // Otherwise, advance the iterator.
+            else { self.iter.next(); }
+        }
+    }
+}
+
+#[experimental]
+pub struct BTreeSetRangeRemove<T> {
+    iter: btree_set::IntoIter<T>
+}
+
+#[experimental]
+impl<T> Iterator for BTreeSetRangeRemove<T> {
+    type Item = T;
+
+    fn next(&mut self) -> Option<T> { self.iter.next() }
+    fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
+}
+#[experimental]
+impl<T> DoubleEndedIterator for BTreeSetRangeRemove<T> {
+    fn next_back(&mut self) -> Option<T> { self.iter.next_back() }
+}
+#[experimental]
+impl<T> ExactSizeIterator for BTreeSetRangeRemove<T> {
+    fn len(&self) -> usize { self.iter.len() }
+}
+
+#[experimental]
+pub struct HashSetRange<'a, T: 'a> {
+    iter: Peekable<&'a T, hash_set::Iter<'a, T>>,
+    lower: T, 
+    upper: T,
+}
+
+#[experimental]
+impl<'a, T: Ord> Iterator for HashSetRange<'a, T> {
+    type Item = &'a T;
+
+    fn next(&mut self) -> Option<&'a T> {
+        loop {
+            // If the iterator is empty, return None.
+            if self.iter.is_empty() { return None; }
+
+            // If the next item is in range, yield it.
+            if (*self.iter.peek().unwrap() >= &self.lower)
+                && (*self.iter.peek().unwrap() < &self.upper) { return self.iter.next(); }
+
+            // Otherwise, advance the iterator.
+            else { self.iter.next(); }
+        }
+    }
+}
+
+#[experimental]
+pub struct HashSetRangeRemove<T> {
+    iter: hash_set::IntoIter<T>
+}
+
+#[experimental]
+impl<T> Iterator for HashSetRangeRemove<T> {
+    type Item = T;
+
+    fn next(&mut self) -> Option<T> { self.iter.next() }
+    fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
+}
+#[experimental]
+impl<T> ExactSizeIterator for HashSetRangeRemove<T> {
+    fn len(&self) -> usize { self.iter.len() }
 }
 
 #[cfg(test)]
@@ -346,7 +530,7 @@ mod tests {
     #[test]
     fn test_first() {
         let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        assert_eq!(set.first().unwrap(), 1u32);
+        assert_eq!(set.first().unwrap(), &1u32);
     }
 
     #[test]
@@ -359,7 +543,7 @@ mod tests {
     #[test]
     fn test_last() {
         let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        assert_eq!(set.last().unwrap(), 5u32);
+        assert_eq!(set.last().unwrap(), &5u32);
     }
 
     #[test]
@@ -370,95 +554,71 @@ mod tests {
     }
 
     #[test]
-    fn test_head_set_noinclusive() {
-        let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        let head_set = set.head_set(&3, false);
-        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
-        assert_eq!(head_set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2]);
-    }
-
-    #[test]
-    fn test_head_set_inclusive() {
-        let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        let head_set = set.head_set(&3, true);
-        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
-        assert_eq!(head_set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3]);
-
-    }
-
-    #[test]
-    fn test_sub_set_noinclusive() {
-        let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        let sub_set = set.sub_set(&2, false, &4, false);
-        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
-        assert_eq!(sub_set.into_iter().collect::<Vec<u32>>(), vec![3u32]);
-    }
-
-    #[test]
-    fn test_sub_set_nofrom_to() {
-        let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        let sub_set = set.sub_set(&2, false, &4, true);
-        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
-        assert_eq!(sub_set.into_iter().collect::<Vec<u32>>(), vec![3u32, 4]);
-    }
-
-    #[test]
-    fn test_sub_set_from_noto() {
-        let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        let sub_set = set.sub_set(&2, true, &4, false);
-        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
-        assert_eq!(sub_set.into_iter().collect::<Vec<u32>>(), vec![2u32, 3]);
-    }
-
-    #[test]
-    fn test_sub_set_inclusive() {
-        let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        let sub_set = set.sub_set(&2, true, &4, true);
-        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
-        assert_eq!(sub_set.into_iter().collect::<Vec<u32>>(), vec![2u32, 3, 4]);
-    }
-
-    #[test]
-    fn test_tail_set_noinclusive() {
-        let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        let tail_set = set.tail_set(&3, false);
-        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
-        assert_eq!(tail_set.into_iter().collect::<Vec<u32>>(), vec![4u32, 5]);
-    }
-
-    #[test]
-    fn test_tail_set_inclusive() {
-        let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        let tail_set = set.tail_set(&3, true);
-        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
-        assert_eq!(tail_set.into_iter().collect::<Vec<u32>>(), vec![3u32, 4, 5]);
-    }
-
-    #[test]
     fn test_ceiling() {
         let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        assert_eq!(set.ceiling(&3).unwrap(), 3u32);
+        assert_eq!(set.ceiling(&3).unwrap(), &3u32);
         assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+    }
+
+    #[test]
+    fn test_ceiling_remove() {
+        let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+        assert_eq!(set.ceiling_remove(&3).unwrap(), 3u32);
+        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 4, 5]);
     }
 
     #[test]
     fn test_floor() {
         let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        assert_eq!(set.floor(&3).unwrap(), 3u32);
+        assert_eq!(set.floor(&3).unwrap(), &3u32);
         assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+    }
+
+    #[test]
+    fn test_floor_remove() {
+        let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+        assert_eq!(set.floor_remove(&3).unwrap(), 3u32);
+        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 4, 5]);
     }
 
     #[test]
     fn test_higher() {
         let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        assert_eq!(set.higher(&3).unwrap(), 4u32);
+        assert_eq!(set.higher(&3).unwrap(), &4u32);
         assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+    }
+
+    #[test]
+    fn test_higher_remove() {
+        let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+        assert_eq!(set.higher_remove(&3).unwrap(), 4u32);
+        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 5]);
     }
 
     #[test]
     fn test_lower() {
         let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        assert_eq!(set.lower(&3).unwrap(), 2u32);
+        assert_eq!(set.lower(&3).unwrap(), &2u32);
         assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4, 5]);
+    }
+
+    #[test]
+    fn test_lower_remove() {
+        let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+        assert_eq!(set.lower_remove(&3).unwrap(), 2u32);
+        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 3, 4, 5]);
+    }
+
+    #[test]
+    fn test_range() {
+        let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+        assert_eq!(set.range(&2, &4).map(|&x| x).collect::<Vec<u32>>(), vec![2u32, 3]);
+    }
+
+    #[test]
+    fn test_range_remove() {
+        let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
+        assert_eq!(set.range_remove(&2, &4).collect::<Vec<u32>>(), vec![2u32, 3]);
+        assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 4, 5]);
     }
 }
