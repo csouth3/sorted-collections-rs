@@ -12,7 +12,14 @@ use std::iter::Peekable;
 #[experimental]
 pub trait SortedSet<T> : Sized
     where T: Clone + Ord {
+
+    /// An iterator over immutable references to this set's elements within a given range.
+    #[experimental]
     type Range;
+
+    /// A by-value iterator yielding elements within a given range which have just been removed
+    /// from this set.
+    #[experimental]
     type RangeRemove;
 
     /// Returns an immutable reference to the first (least) element currently in this set.
@@ -211,7 +218,7 @@ pub trait SortedSet<T> : Sized
     fn higher_remove(&mut self, elem: &T) -> Option<T>;
 
     /// Returns an immutable reference to the greatest element in this set strictly less than `elem`.
-    /// returns `none` if there is no such element.
+    /// Returns `None` if there is no such element.
     ///
     /// # Examples
     ///
@@ -230,7 +237,7 @@ pub trait SortedSet<T> : Sized
     fn lower(&self, elem: &T) -> Option<&T>;
 
     /// Removes and returns the greatest element in this set strictly less than `elem`.
-    /// returns `none` if there is no such element.
+    /// Returns `None` if there is no such element.
     ///
     /// # Examples
     ///
@@ -287,10 +294,6 @@ pub trait SortedSet<T> : Sized
     ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 4, 5]);
     /// }
     /// ```
-    ///
-    /// # Panics
-    ///
-    /// This function panics if `from_elem > to_elem`.
     #[experimental]
     fn range_remove(&mut self, from_elem: &T, to_elem: &T) -> Self::RangeRemove;
 
@@ -300,94 +303,81 @@ pub trait SortedSet<T> : Sized
 macro_rules! sortedset_impl {
     ($typ:ty, $range:ident, $rangeret:ty, $rangeremove: ident, $rangeremoveret:ty)=> (
         fn first(&self) -> Option<&T> {
-            if self.is_empty() { return None }
-
-            Some(self.iter().min().unwrap())
+            self.iter().min()
         }
 
         fn first_remove(&mut self) -> Option<T> {
-            if self.is_empty() { return None }
-
-            let ret = self.iter().min().cloned().unwrap();
-            assert!(self.remove(&ret));
-
-            Some(ret)
+            if let Some(ret) = self.first().cloned() {
+                assert!(self.remove(&ret));
+                Some(ret)
+            } else {
+                None
+            }
         }
 
         fn last(&self) -> Option<&T> {
-            if self.is_empty() { return None }
-
-            Some(self.iter().max().unwrap())
+            self.iter().max()
         }
 
         fn last_remove(&mut self) -> Option<T> {
-            if self.is_empty() { return None }
-
-            let ret = self.iter().max().cloned().unwrap();
-            assert!(self.remove(&ret));
-
-            Some(ret)
+            if let Some(ret) = self.iter().last().cloned() {
+                assert!(self.remove(&ret));
+                Some(ret)
+            } else {
+                None
+            }
         }
 
         fn ceiling(&self, elem: &T) -> Option<&T> {
-            if self.is_empty() { return None }
-
-            let tail = self.range(elem, self.last().unwrap());
-            tail.min()
+            self.range(elem, self.last().unwrap()).min()
         }
 
         fn ceiling_remove(&mut self, elem: &T) -> Option<T> {
-            if self.is_empty() { return None }
-
-            let ceiling = self.ceiling(elem).cloned().unwrap();
-            assert!(self.remove(&ceiling));
-            Some(ceiling)
+            if let Some(ceiling) = self.ceiling(elem).cloned() {
+                assert!(self.remove(&ceiling));
+                Some(ceiling)
+            } else {
+                None
+            }
         }
 
         fn floor(&self, elem: &T) -> Option<&T> {
-            if self.is_empty() { return None }
-
-            let head = self.range(self.first().unwrap(), self.last().unwrap()).filter(|&x| x <= elem);
-            head.max()
+            self.iter().filter(|&x| x <= elem).max()
         }
 
         fn floor_remove(&mut self, elem: &T) -> Option<T> {
-            if self.is_empty() { return None }
-
-            let floor = self.floor(elem).cloned().unwrap();
-            assert!(self.remove(&floor));
-            Some(floor)
+            if let Some(floor) = self.floor(elem).cloned() {
+                assert!(self.remove(&floor));
+                Some(floor)
+            } else {
+                None
+            }
         }
 
         fn higher(&self, elem: &T) -> Option<&T> {
-            if self.is_empty() { return None }
-
-            let mut tail = self.range(elem, self.last().unwrap()).peekable();
-            while *tail.peek().unwrap() == elem { tail.next(); }
-            tail.next()
+            self.iter().filter(|&x| x > elem).min()
         }
 
         fn higher_remove(&mut self, elem: &T) -> Option<T> {
-            if self.is_empty() { return None }
-
-            let higher = self.higher(elem).cloned().unwrap();
-            assert!(self.remove(&higher));
-            Some(higher)
+            if let Some(higher) = self.higher(elem).cloned() {
+                assert!(self.remove(&higher));
+                Some(higher)
+            } else {
+                None
+            }
         }
 
         fn lower(&self, elem: &T) -> Option<&T> {
-            if self.is_empty() { return None }
-
-            let head = self.range(self.first().unwrap(), elem);
-            head.max()
+            self.range(self.first().unwrap(), elem).max()
         }
 
         fn lower_remove(&mut self, elem: &T) -> Option<T> {
-            if self.is_empty() { return None }
-
-            let lower = self.lower(elem).cloned().unwrap();
-            assert!(self.remove(&lower));
-            Some(lower)
+            if let Some(lower) = self.lower(elem).cloned() {
+                assert!(self.remove(&lower));
+                Some(lower)
+            } else {
+                None
+            }
         }
 
         fn range(&self, from_elem: &T, to_elem: &T) -> $rangeret {
@@ -399,8 +389,6 @@ macro_rules! sortedset_impl {
         }
 
         fn range_remove(&mut self, from_elem: &T, to_elem: &T) -> $rangeremoveret {
-            assert!(from_elem <= to_elem);
-
             let remove: $typ = self.iter().cloned().filter(|x| x >= from_elem && x < to_elem).collect();
             for elem in remove.iter() {
                 self.remove(elem);

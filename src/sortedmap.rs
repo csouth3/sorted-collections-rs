@@ -13,9 +13,21 @@ use std::iter::Peekable;
 pub trait SortedMap<K, V> : Sized
     where K: Clone + Ord,
           V: Clone {
-          type Range;
-          type RangeMut;
-          type RangeRemove;
+
+    /// An iterator over immutable references to the key-value pairs in this map whose keys fall
+    /// within a given range.
+    #[experimental]
+    type Range;
+
+    /// An iterator over mutable references to the key-value pairs in this map whose keys fall
+    /// within a given range.
+    #[experimental]
+    type RangeMut;
+
+    /// A by-value iterator yielding key-value pairs whose keys fall within a given range and
+    /// which have just been removed from this map.
+    #[experimental]
+    type RangeRemove;
 
     /// Returns an immutable reference to the first (least) key currently in this map.
     /// Returns `None` if this map is empty.
@@ -318,10 +330,6 @@ pub trait SortedMap<K, V> : Sized
     ///         vec![(1u32, 1u32), (2, 3), (3, 4), (4, 4), (5, 5)]);
     /// }
     /// ```
-    ///
-    /// # Panics
-    ///
-    /// This function panics if `from_elem > to_elem`.
     #[experimental]
     fn range_mut(&mut self, from_key: &K, to_key: &K) -> Self::RangeMut;
 
@@ -354,91 +362,83 @@ pub trait SortedMap<K, V> : Sized
 macro_rules! sortedmap_impl {
     ($typ:ty, $range:ident, $rangeret:ty, $rangemut:ident, $rangemutret:ty, $rangeremove:ident, $rangeremoveret:ty) => (
         fn first(&self) -> Option<&K> {
-            if self.is_empty() { return None }
-
-            Some(self.keys().min().unwrap())
+            self.keys().min()
         }
 
         fn first_remove(&mut self) -> Option<(K, V)> {
-            if self.is_empty() { return None }
-
-            let key = self.first().cloned().unwrap();
-            let val = self.remove(&key);
-            assert!(val.is_some());
-
-            Some((key, val.unwrap()))
+            if let Some(key) = self.first().cloned() {
+                let val = self.remove(&key);
+                assert!(val.is_some());
+                Some((key, val.unwrap()))
+            } else {
+                None
+            }
         }
 
         fn last(&self) -> Option<&K> {
-            if self.is_empty() { return None }
-
-            Some(self.keys().max().unwrap())
+            self.keys().max()
         }
 
         fn last_remove(&mut self) -> Option<(K, V)> {
-            if self.is_empty() { return None }
-
-            let key = self.last().cloned().unwrap();
-            let val = self.remove(&key);
-            assert!(val.is_some());
-
-            Some((key, val.unwrap()))
+            if let Some(key) = self.last().cloned() {
+                let val = self.remove(&key);
+                assert!(val.is_some());
+                Some((key, val.unwrap()))
+            } else {
+                None
+            }
         }
 
         fn ceiling(&self, key: &K) -> Option<&K> {
-            if self.is_empty() { return None }
-
-            Some(self.keys().filter(|&k| k >= key).min().unwrap())
+            self.keys().filter(|&k| k >= key).min()
         }
 
         fn ceiling_remove(&mut self, key: &K) -> Option<(K, V)> {
-            if self.is_empty() { return None }
-
-            let ceiling = self.ceiling(key).cloned().unwrap();
-            let val = self.remove(&ceiling).unwrap();
-            Some((ceiling, val))
+            if let Some(ceiling) = self.ceiling(key).cloned() {
+                let val = self.remove(&ceiling).unwrap();
+                Some((ceiling, val))
+            } else {
+                None
+            }
         }
 
         fn floor(&self, key: &K) -> Option<&K> {
-            if self.is_empty() { return None }
-
-            Some(self.keys().filter(|&k| k <= key).max().unwrap())
+            self.keys().filter(|&k| k <= key).max()
         }
 
         fn floor_remove(&mut self, key: &K) -> Option<(K, V)> {
-            if self.is_empty() { return None }
-
-            let floor = self.floor(key).cloned().unwrap();
-            let val = self.remove(&floor).unwrap();
-            Some((floor, val))
+            if let Some(floor) = self.floor(key).cloned() {
+                let val = self.remove(&floor).unwrap();
+                Some((floor, val))
+            } else {
+                None
+            }
         }
 
         fn higher(&self, key: &K) -> Option<&K> {
-            if self.is_empty() { return None }
-
-            Some(self.keys().filter(|&k| k > key).min().unwrap())
+            self.keys().filter(|&k| k > key).min()
         }
 
         fn higher_remove(&mut self, key: &K) -> Option<(K, V)> {
-            if self.is_empty() { return None }
-
-            let higher = self.higher(key).cloned().unwrap();
-            let val = self.remove(&higher).unwrap();
-            Some((higher, val))
+            if let Some(higher) = self.higher(key).cloned() {
+                let val = self.remove(&higher).unwrap();
+                Some((higher, val))
+            } else {
+                None
+            }
         }
 
         fn lower(&self, key: &K) -> Option<&K> {
-            if self.is_empty() { return None }
-
-            Some(self.keys().filter(|&k| k < key).max().unwrap())
+            self.keys().filter(|&k| k < key).max()
         }
 
         fn lower_remove(&mut self, key: &K) -> Option<(K, V)> {
-            if self.is_empty() { return None }
-
-            let lower = self.lower(key).cloned().unwrap();
-            let val = self.remove(&lower).unwrap();
-            Some((lower, val))
+            if let Some(lower) = self.lower(key).cloned() {
+                let val = self.remove(&lower).unwrap();
+                Some((lower, val))
+            } else {
+                None
+            }
         }
 
         fn range(&self, from_key: &K, to_key: &K) -> $rangeret {
