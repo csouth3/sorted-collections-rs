@@ -1,3 +1,9 @@
+// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
+// http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
+// <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
+// option. This file may not be copied, modified, or distributed
+// except according to those terms.
+
 use std::collections::btree_set::{BTreeSet, self};
 use std::collections::hash_set::{HashSet, self};
 use std::collections::hash_state::HashState;
@@ -296,7 +302,6 @@ pub trait SortedSet<T> : Sized
     /// ```
     #[experimental]
     fn range_remove(&mut self, from_elem: &T, to_elem: &T) -> Self::RangeRemove;
-
 }
 
 // A generic reusable impl of SortedSet.
@@ -320,7 +325,7 @@ macro_rules! sortedset_impl {
         }
 
         fn last_remove(&mut self) -> Option<T> {
-            if let Some(ret) = self.iter().last().cloned() {
+            if let Some(ret) = self.last().cloned() {
                 assert!(self.remove(&ret));
                 Some(ret)
             } else {
@@ -391,7 +396,7 @@ macro_rules! sortedset_impl {
         fn range_remove(&mut self, from_elem: &T, to_elem: &T) -> $rangeremoveret {
             let remove: $typ = self.iter().cloned().filter(|x| x >= from_elem && x < to_elem).collect();
             for elem in remove.iter() {
-                self.remove(elem);
+                assert!(self.remove(elem));
             }
             $rangeremove { iter: remove.into_iter() }
         }
@@ -401,7 +406,8 @@ macro_rules! sortedset_impl {
 // An impl of SortedSet for the standard library BTreeSet
 #[experimental]
 impl<'a, T> SortedSet<T> for BTreeSet<T>
-    where T: Clone + Ord {
+    where T: Clone + Ord
+{
     type Range = BTreeSetRange<'a, T>;
     type RangeRemove = BTreeSetRangeRemove<T>;
 
@@ -412,7 +418,8 @@ impl<'a, T> SortedSet<T> for BTreeSet<T>
 impl<'a, T, S, H> SortedSet<T> for HashSet<T, S>
     where T: Clone + Eq + Hash<H> + Ord,
           S: HashState<Hasher=H> + Default,
-          H: Hasher<Output=u64> {
+          H: Hasher<Output=u64>
+{
     type Range = HashSetRange<'a, T>;
     type RangeRemove = HashSetRangeRemove<T>;
 

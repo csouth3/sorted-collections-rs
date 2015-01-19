@@ -1,3 +1,9 @@
+// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
+// http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
+// <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
+// option. This file may not be copied, modified, or distributed
+// except according to those terms.
+
 use std::collections::btree_map::{BTreeMap, self};
 use std::collections::hash_map::{HashMap, self};
 use std::collections::hash_state::HashState;
@@ -395,8 +401,9 @@ macro_rules! sortedmap_impl {
 
         fn ceiling_remove(&mut self, key: &K) -> Option<(K, V)> {
             if let Some(ceiling) = self.ceiling(key).cloned() {
-                let val = self.remove(&ceiling).unwrap();
-                Some((ceiling, val))
+                let val = self.remove(&ceiling);
+                assert!(val.is_some());
+                Some((ceiling, val.unwrap()))
             } else {
                 None
             }
@@ -408,8 +415,9 @@ macro_rules! sortedmap_impl {
 
         fn floor_remove(&mut self, key: &K) -> Option<(K, V)> {
             if let Some(floor) = self.floor(key).cloned() {
-                let val = self.remove(&floor).unwrap();
-                Some((floor, val))
+                let val = self.remove(&floor);
+                assert!(val.is_some());
+                Some((floor, val.unwrap()))
             } else {
                 None
             }
@@ -421,8 +429,9 @@ macro_rules! sortedmap_impl {
 
         fn higher_remove(&mut self, key: &K) -> Option<(K, V)> {
             if let Some(higher) = self.higher(key).cloned() {
-                let val = self.remove(&higher).unwrap();
-                Some((higher, val))
+                let val = self.remove(&higher);
+                assert!(val.is_some());
+                Some((higher, val.unwrap()))
             } else {
                 None
             }
@@ -434,8 +443,9 @@ macro_rules! sortedmap_impl {
 
         fn lower_remove(&mut self, key: &K) -> Option<(K, V)> {
             if let Some(lower) = self.lower(key).cloned() {
-                let val = self.remove(&lower).unwrap();
-                Some((lower, val))
+                let val = self.remove(&lower);
+                assert!(val.is_some());
+                Some((lower, val.unwrap()))
             } else {
                 None
             }
@@ -461,7 +471,7 @@ macro_rules! sortedmap_impl {
             let remove: $typ = self.keys().cloned().zip(self.values().cloned())
                 .filter_map(|(k, v)| if k >= *from_key && k < *to_key { Some((k, v)) } else { None }).collect();
             for key in remove.keys() {
-                self.remove(key);
+                assert!(self.remove(key).is_some());
             }
             $rangeremove { iter: remove.into_iter() }
         }
@@ -472,7 +482,8 @@ macro_rules! sortedmap_impl {
 #[experimental]
 impl<'a, K, V> SortedMap<K, V> for BTreeMap<K, V>
     where K: Clone + Ord,
-          V: Clone {
+          V: Clone
+{
     type Range = BTreeMapRange<'a, K, V>;
     type RangeMut = BTreeMapRangeMut<'a, K, V>;
     type RangeRemove = BTreeMapRangeRemove<K, V>;
@@ -485,7 +496,8 @@ impl<'a, K, V, S, H> SortedMap<K, V> for HashMap<K, V, S>
     where K: Clone + Eq + Hash<H> + Ord,
           V: Clone,
           S: HashState<Hasher=H> + Default,
-          H: Hasher<Output=u64> {
+          H: Hasher<Output=u64>
+{
     type Range = HashMapRange<'a, K, V>;
     type RangeMut = HashMapRangeMut<'a, K, V>;
     type RangeRemove = HashMapRangeRemove<K, V>;
