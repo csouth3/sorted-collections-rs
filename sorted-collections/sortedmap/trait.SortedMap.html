@@ -26,7 +26,7 @@
 
     <section class="sidebar">
         
-        <p class='location'><a href='../index.html'>sorted-collections</a>::<wbr><a href='index.html'>sortedmap</a></p><div class='block struct'><h2>Structs</h2><a class='struct ' href='struct.BTreeMapRange.html'>BTreeMapRange</a><a class='struct ' href='struct.BTreeMapRangeMut.html'>BTreeMapRangeMut</a><a class='struct ' href='struct.BTreeMapRangeRemove.html'>BTreeMapRangeRemove</a><a class='struct ' href='struct.HashMapRange.html'>HashMapRange</a><a class='struct ' href='struct.HashMapRangeMut.html'>HashMapRangeMut</a><a class='struct ' href='struct.HashMapRangeRemove.html'>HashMapRangeRemove</a></div><div class='block trait'><h2>Traits</h2><a class='trait current' href='trait.SortedMap.html'>SortedMap</a></div>
+        <p class='location'><a href='../index.html'>sorted-collections</a>::<wbr><a href='index.html'>sortedmap</a></p><div class='block struct'><h2>Structs</h2><a class='struct ' href='struct.BTreeMapRangeIter.html'>BTreeMapRangeIter</a><a class='struct ' href='struct.BTreeMapRangeIterMut.html'>BTreeMapRangeIterMut</a><a class='struct ' href='struct.BTreeMapRangeRemoveIter.html'>BTreeMapRangeRemoveIter</a><a class='struct ' href='struct.HashMapRangeIter.html'>HashMapRangeIter</a><a class='struct ' href='struct.HashMapRangeIterMut.html'>HashMapRangeIterMut</a><a class='struct ' href='struct.HashMapRangeRemoveIter.html'>HashMapRangeRemoveIter</a></div><div class='block trait'><h2>Traits</h2><a class='trait current' href='trait.SortedMap.html'>SortedMap</a></div>
     </section>
 
     <nav class="sub">
@@ -44,11 +44,11 @@
 <h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>sorted-collections</a>::<wbr><a href='index.html'>sortedmap</a>::<wbr><a class='trait' href=''>SortedMap</a><wbr><a class='stability Experimental' title=''>Experimental</a></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]
             </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-20' href='../../src/sorted-collections/sortedmap.rs.html#13-351'>[src]</a></span></h1>
+        </span><a id='src-20' href='../../src/sorted-collections/sortedmap.rs.html#19-365'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait SortedMap&lt;K, V&gt;: <a class='trait' href='http://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a> <span class='where'>where K: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a>, V: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a></span> {
-    type Range;
-    type RangeMut;
-    type RangeRemove;
+    type RangeIter;
+    type RangeIterMut;
+    type RangeRemoveIter;
 
     fn <a href='#tymethod.first' class='fnname'>first</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;K&gt;;
     fn <a href='#tymethod.first_remove' class='fnname'>first_remove</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;;
@@ -62,9 +62,9 @@
     fn <a href='#tymethod.higher_remove' class='fnname'>higher_remove</a>(&amp;mut self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;;
     fn <a href='#tymethod.lower' class='fnname'>lower</a>(&amp;self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;K&gt;;
     fn <a href='#tymethod.lower_remove' class='fnname'>lower_remove</a>(&amp;mut self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;;
-    fn <a href='#tymethod.range' class='fnname'>range</a>(&amp;self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMap.html' title='sorted-collections::sortedmap::SortedMap'>Range</a>;
-    fn <a href='#tymethod.range_mut' class='fnname'>range_mut</a>(&amp;mut self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMap.html' title='sorted-collections::sortedmap::SortedMap'>RangeMut</a>;
-    fn <a href='#tymethod.range_remove' class='fnname'>range_remove</a>(&amp;mut self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMap.html' title='sorted-collections::sortedmap::SortedMap'>RangeRemove</a>;
+    fn <a href='#tymethod.range_iter' class='fnname'>range_iter</a>(&amp;self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMap.html' title='sorted-collections::sortedmap::SortedMap'>RangeIter</a>;
+    fn <a href='#tymethod.range_iter_mut' class='fnname'>range_iter_mut</a>(&amp;mut self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMap.html' title='sorted-collections::sortedmap::SortedMap'>RangeIterMut</a>;
+    fn <a href='#tymethod.range_remove_iter' class='fnname'>range_remove_iter</a>(&amp;mut self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMap.html' title='sorted-collections::sortedmap::SortedMap'>RangeRemoveIter</a>;
 }</pre><div class='docblock'><p>An extension trait for a <code>Map</code> whose keys have a defined total ordering.
 This trait provides convenience methods which take advantage of the map&#39;s ordering.
 The provided methods may be overriden if desired to provide more efficient
@@ -72,14 +72,20 @@ implementations.</p>
 </div>
             <h2 id='associated-types'>Associated Types</h2>
             <div class='methods'>
-        <h3 id='associatedtype.Range' class='method'><a class='stability Unmarked' title='No stability level'></a><code>type Range</code></h3><h3 id='associatedtype.RangeMut' class='method'><a class='stability Unmarked' title='No stability level'></a><code>type RangeMut</code></h3><h3 id='associatedtype.RangeRemove' class='method'><a class='stability Unmarked' title='No stability level'></a><code>type RangeRemove</code></h3></div>
+        <h3 id='associatedtype.RangeIter' class='method'><a class='stability Unmarked' title='No stability level'></a><code>type RangeIter</code></h3><div class='docblock'><p>An iterator over immutable references to the key-value pairs in this map whose keys fall
+within a given range.</p>
+</div><h3 id='associatedtype.RangeIterMut' class='method'><a class='stability Unmarked' title='No stability level'></a><code>type RangeIterMut</code></h3><div class='docblock'><p>An iterator over mutable references to the key-value pairs in this map whose keys fall
+within a given range.</p>
+</div><h3 id='associatedtype.RangeRemoveIter' class='method'><a class='stability Unmarked' title='No stability level'></a><code>type RangeRemoveIter</code></h3><div class='docblock'><p>A by-value iterator yielding key-value pairs whose keys fall within a given range and
+which have just been removed from this map.</p>
+</div></div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
         <h3 id='tymethod.first' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.first' class='fnname'>first</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;K&gt;</code></h3><div class='docblock'><p>Returns an immutable reference to the first (least) key currently in this map.
 Returns <code>None</code> if this map is empty.</p>
 
 <h1 id="examples" class='section-header'><a
-                           href="#examples">Examples</a></h1><pre class='rust '>
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
@@ -95,7 +101,7 @@ Returns <code>None</code> if this map is empty.</p>
 Returns <code>None</code> if this map is empty.</p>
 
 <h1 id="examples" class='section-header'><a
-                           href="#examples">Examples</a></h1><pre class='rust '>
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
@@ -113,7 +119,7 @@ Returns <code>None</code> if this map is empty.</p>
 Returns <code>None</code> if this map is empty.</p>
 
 <h1 id="examples" class='section-header'><a
-                           href="#examples">Examples</a></h1><pre class='rust '>
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
@@ -129,7 +135,7 @@ Returns <code>None</code> if this map is empty.</p>
 Returns <code>None</code> if this map is empty.</p>
 
 <h1 id="examples" class='section-header'><a
-                           href="#examples">Examples</a></h1><pre class='rust '>
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
@@ -147,7 +153,7 @@ Returns <code>None</code> if this map is empty.</p>
 Returns <code>None</code> if there is no such key.</p>
 
 <h1 id="examples" class='section-header'><a
-                           href="#examples">Examples</a></h1><pre class='rust '>
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
@@ -164,7 +170,7 @@ associated value.
 Returns <code>None</code> if there is no such element.</p>
 
 <h1 id="examples" class='section-header'><a
-                           href="#examples">Examples</a></h1><pre class='rust '>
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
@@ -182,7 +188,7 @@ Returns <code>None</code> if there is no such element.</p>
 Returns <code>None</code> if there is no such key.</p>
 
 <h1 id="examples" class='section-header'><a
-                           href="#examples">Examples</a></h1><pre class='rust '>
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
@@ -199,7 +205,7 @@ associated value.
 Returns <code>None</code> if there is no such element.</p>
 
 <h1 id="examples" class='section-header'><a
-                           href="#examples">Examples</a></h1><pre class='rust '>
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
@@ -217,7 +223,7 @@ Returns <code>None</code> if there is no such element.</p>
 Returns <code>None</code> if there is no such key.</p>
 
 <h1 id="examples" class='section-header'><a
-                           href="#examples">Examples</a></h1><pre class='rust '>
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
@@ -234,7 +240,7 @@ associated value.
 Returns <code>None</code> if there is no such element.</p>
 
 <h1 id="examples" class='section-header'><a
-                           href="#examples">Examples</a></h1><pre class='rust '>
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
@@ -252,7 +258,7 @@ Returns <code>None</code> if there is no such element.</p>
 Returns <code>None</code> if there is no such key.</p>
 
 <h1 id="examples" class='section-header'><a
-                           href="#examples">Examples</a></h1><pre class='rust '>
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
@@ -269,7 +275,7 @@ associated value.
 Returns <code>None</code> if there is no such element.</p>
 
 <h1 id="examples" class='section-header'><a
-                           href="#examples">Examples</a></h1><pre class='rust '>
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
@@ -283,12 +289,12 @@ Returns <code>None</code> if there is no such element.</p>
         <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)]);
 }
 </pre>
-</div><h3 id='tymethod.range' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.range' class='fnname'>range</a>(&amp;self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMap.html' title='sorted-collections::sortedmap::SortedMap'>Range</a></code></h3><div class='docblock'><p>Returns an iterator over pairs of immutable key-value references into this map,
+</div><h3 id='tymethod.range_iter' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.range_iter' class='fnname'>range_iter</a>(&amp;self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMap.html' title='sorted-collections::sortedmap::SortedMap'>RangeIter</a></code></h3><div class='docblock'><p>Returns an iterator over pairs of immutable key-value references into this map,
 with the pairs being iterated being those whose keys are in the range [from_key, to_key).
 Note that this iterator need not necessarily yield the pairs in ascending order by key!</p>
 
 <h1 id="examples" class='section-header'><a
-                           href="#examples">Examples</a></h1><pre class='rust '>
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
@@ -297,16 +303,16 @@ Note that this iterator need not necessarily yield the pairs in ascending order 
 <span class='kw'>fn</span> <span class='ident'>main</span>() {
     <span class='kw'>let</span> <span class='ident'>map</span>: <span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>u32</span>, <span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span>
         <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
-    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>range</span>(<span class='kw-2'>&amp;</span><span class='number'>2</span>, <span class='kw-2'>&amp;</span><span class='number'>4</span>).<span class='ident'>map</span>(<span class='op'>|</span>(<span class='kw-2'>&amp;</span><span class='ident'>k</span>, <span class='kw-2'>&amp;</span><span class='ident'>v</span>)<span class='op'>|</span> (<span class='ident'>k</span>, <span class='ident'>v</span>)).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>u32</span>, <span class='ident'>u32</span>)<span class='op'>&gt;&gt;</span>(),
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>range_iter</span>(<span class='kw-2'>&amp;</span><span class='number'>2</span>, <span class='kw-2'>&amp;</span><span class='number'>4</span>).<span class='ident'>map</span>(<span class='op'>|</span>(<span class='kw-2'>&amp;</span><span class='ident'>k</span>, <span class='kw-2'>&amp;</span><span class='ident'>v</span>)<span class='op'>|</span> (<span class='ident'>k</span>, <span class='ident'>v</span>)).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>u32</span>, <span class='ident'>u32</span>)<span class='op'>&gt;&gt;</span>(),
         <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>2u32</span>, <span class='number'>2u32</span>), (<span class='number'>3</span>, <span class='number'>3</span>)]);
 }
 </pre>
-</div><h3 id='tymethod.range_mut' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.range_mut' class='fnname'>range_mut</a>(&amp;mut self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMap.html' title='sorted-collections::sortedmap::SortedMap'>RangeMut</a></code></h3><div class='docblock'><p>Returns an iterator over pairs of immutable-key/mutable-value references into this map,
+</div><h3 id='tymethod.range_iter_mut' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.range_iter_mut' class='fnname'>range_iter_mut</a>(&amp;mut self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMap.html' title='sorted-collections::sortedmap::SortedMap'>RangeIterMut</a></code></h3><div class='docblock'><p>Returns an iterator over pairs of immutable-key/mutable-value references into this map,
 with the pairs being iterated being those whose keys are in the range [from_key, to_key).
 Note that this iterator need not necessarily yield the pairs in ascending order by key!</p>
 
 <h1 id="examples" class='section-header'><a
-                           href="#examples">Examples</a></h1><pre class='rust '>
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
@@ -315,23 +321,19 @@ Note that this iterator need not necessarily yield the pairs in ascending order 
 <span class='kw'>fn</span> <span class='ident'>main</span>() {
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>map</span>: <span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>u32</span>, <span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span>
         <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
-    <span class='kw'>for</span> (_, <span class='ident'>v</span>) <span class='kw'>in</span> <span class='ident'>map</span>.<span class='ident'>range_mut</span>(<span class='kw-2'>&amp;</span><span class='number'>2</span>, <span class='kw-2'>&amp;</span><span class='number'>4</span>) {
+    <span class='kw'>for</span> (_, <span class='ident'>v</span>) <span class='kw'>in</span> <span class='ident'>map</span>.<span class='ident'>range_iter_mut</span>(<span class='kw-2'>&amp;</span><span class='number'>2</span>, <span class='kw-2'>&amp;</span><span class='number'>4</span>) {
         <span class='op'>*</span><span class='ident'>v</span> <span class='op'>+=</span> <span class='number'>1</span>;
     }
     <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>u32</span>, <span class='ident'>u32</span>)<span class='op'>&gt;&gt;</span>(),
         <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>3</span>), (<span class='number'>3</span>, <span class='number'>4</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)]);
 }
 </pre>
-
-<h1 id="panics" class='section-header'><a
-                           href="#panics">Panics</a></h1>
-<p>This function panics if <code>from_elem &gt; to_elem</code>.</p>
-</div><h3 id='tymethod.range_remove' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.range_remove' class='fnname'>range_remove</a>(&amp;mut self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMap.html' title='sorted-collections::sortedmap::SortedMap'>RangeRemove</a></code></h3><div class='docblock'><p>Removes the key-value pairs of this map whose keys lie in the range [from_key, to_key),
+</div><h3 id='tymethod.range_remove_iter' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.range_remove_iter' class='fnname'>range_remove_iter</a>(&amp;mut self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMap.html' title='sorted-collections::sortedmap::SortedMap'>RangeRemoveIter</a></code></h3><div class='docblock'><p>Removes the key-value pairs of this map whose keys lie in the range [from_key, to_key),
 and returns a by-value iterator over the removed pairs.  Note that this iterator need
 not necessarily yield the values in ascending order by key!</p>
 
 <h1 id="examples" class='section-header'><a
-                           href="#examples">Examples</a></h1><pre class='rust '>
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
 
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
@@ -340,7 +342,7 @@ not necessarily yield the values in ascending order by key!</p>
 <span class='kw'>fn</span> <span class='ident'>main</span>() {
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>map</span>: <span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>u32</span>, <span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span>
         <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
-    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>range_remove</span>(<span class='kw-2'>&amp;</span><span class='number'>2</span>, <span class='kw-2'>&amp;</span><span class='number'>4</span>).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>u32</span>, <span class='ident'>u32</span>)<span class='op'>&gt;&gt;</span>(),
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>range_remove_iter</span>(<span class='kw-2'>&amp;</span><span class='number'>2</span>, <span class='kw-2'>&amp;</span><span class='number'>4</span>).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>u32</span>, <span class='ident'>u32</span>)<span class='op'>&gt;&gt;</span>(),
         <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>2u32</span>, <span class='number'>2u32</span>), (<span class='number'>3</span>, <span class='number'>3</span>)]);
     <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>u32</span>, <span class='ident'>u32</span>)<span class='op'>&gt;&gt;</span>(),
         <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)]);
