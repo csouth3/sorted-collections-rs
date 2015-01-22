@@ -23,17 +23,17 @@ pub trait SortedMap<K, V> : Sized
     /// An iterator over immutable references to the key-value pairs in this map whose keys fall
     /// within a given range.
     #[experimental]
-    type Range;
+    type RangeIter;
 
     /// An iterator over mutable references to the key-value pairs in this map whose keys fall
     /// within a given range.
     #[experimental]
-    type RangeMut;
+    type RangeIterMut;
 
     /// A by-value iterator yielding key-value pairs whose keys fall within a given range and
     /// which have just been removed from this map.
     #[experimental]
-    type RangeRemove;
+    type RangeRemoveIter;
 
     /// Returns an immutable reference to the first (least) key currently in this map.
     /// Returns `None` if this map is empty.
@@ -307,12 +307,12 @@ pub trait SortedMap<K, V> : Sized
     /// fn main() {
     ///     let map: BTreeMap<u32, u32> =
     ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-    ///     assert_eq!(map.range(&2, &4).map(|(&k, &v)| (k, v)).collect::<Vec<(u32, u32)>>(),
+    ///     assert_eq!(map.range_iter(&2, &4).map(|(&k, &v)| (k, v)).collect::<Vec<(u32, u32)>>(),
     ///         vec![(2u32, 2u32), (3, 3)]);
     /// }
     /// ```
     #[experimental]
-    fn range(&self, from_key: &K, to_key: &K) -> Self::Range;
+    fn range_iter(&self, from_key: &K, to_key: &K) -> Self::RangeIter;
 
     /// Returns an iterator over pairs of immutable-key/mutable-value references into this map,
     /// with the pairs being iterated being those whose keys are in the range [from_key, to_key).
@@ -329,7 +329,7 @@ pub trait SortedMap<K, V> : Sized
     /// fn main() {
     ///     let mut map: BTreeMap<u32, u32> =
     ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-    ///     for (_, v) in map.range_mut(&2, &4) {
+    ///     for (_, v) in map.range_iter_mut(&2, &4) {
     ///         *v += 1;
     ///     }
     ///     assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
@@ -337,7 +337,7 @@ pub trait SortedMap<K, V> : Sized
     /// }
     /// ```
     #[experimental]
-    fn range_mut(&mut self, from_key: &K, to_key: &K) -> Self::RangeMut;
+    fn range_iter_mut(&mut self, from_key: &K, to_key: &K) -> Self::RangeIterMut;
 
     /// Removes the key-value pairs of this map whose keys lie in the range [from_key, to_key),
     /// and returns a by-value iterator over the removed pairs.  Note that this iterator need
@@ -354,14 +354,14 @@ pub trait SortedMap<K, V> : Sized
     /// fn main() {
     ///     let mut map: BTreeMap<u32, u32> =
     ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-    ///     assert_eq!(map.range_remove(&2, &4).collect::<Vec<(u32, u32)>>(),
+    ///     assert_eq!(map.range_remove_iter(&2, &4).collect::<Vec<(u32, u32)>>(),
     ///         vec![(2u32, 2u32), (3, 3)]);
     ///     assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
     ///         vec![(1u32, 1u32), (4, 4), (5, 5)]);
     /// }
     /// ```
     #[experimental]
-    fn range_remove(&mut self, from_key: &K, to_key: &K) -> Self::RangeRemove;
+    fn range_remove_iter(&mut self, from_key: &K, to_key: &K) -> Self::RangeRemoveIter;
 }
 
 // A generic reusable impl of SortedMap.
@@ -451,7 +451,7 @@ macro_rules! sortedmap_impl {
             }
         }
 
-        fn range(&self, from_key: &K, to_key: &K) -> $rangeret {
+        fn range_iter(&self, from_key: &K, to_key: &K) -> $rangeret {
             $range {
                 iter: self.iter().peekable(),
                 lower: from_key.clone(),
@@ -459,7 +459,7 @@ macro_rules! sortedmap_impl {
             }
         }
 
-        fn range_mut(&mut self, from_key: &K, to_key: &K) -> $rangemutret {
+        fn range_iter_mut(&mut self, from_key: &K, to_key: &K) -> $rangemutret {
             $rangemut {
                 iter: self.iter_mut().peekable(),
                 lower: from_key.clone(),
@@ -467,7 +467,7 @@ macro_rules! sortedmap_impl {
             }
         }
 
-        fn range_remove(&mut self, from_key: &K, to_key: &K) -> $rangeremoveret {
+        fn range_remove_iter(&mut self, from_key: &K, to_key: &K) -> $rangeremoveret {
             let remove: $typ = self.keys().cloned().zip(self.values().cloned())
                 .filter_map(|(k, v)| if k >= *from_key && k < *to_key { Some((k, v)) } else { None }).collect();
             for key in remove.keys() {
@@ -484,11 +484,11 @@ impl<'a, K, V> SortedMap<K, V> for BTreeMap<K, V>
     where K: Clone + Ord,
           V: Clone
 {
-    type Range = BTreeMapRange<'a, K, V>;
-    type RangeMut = BTreeMapRangeMut<'a, K, V>;
-    type RangeRemove = BTreeMapRangeRemove<K, V>;
+    type RangeIter = BTreeMapRangeIter<'a, K, V>;
+    type RangeIterMut = BTreeMapRangeIterMut<'a, K, V>;
+    type RangeRemoveIter = BTreeMapRangeRemoveIter<K, V>;
 
-    sortedmap_impl!(BTreeMap<K, V>, BTreeMapRange, BTreeMapRange<K, V>, BTreeMapRangeMut, BTreeMapRangeMut<K, V>, BTreeMapRangeRemove, BTreeMapRangeRemove<K, V>);
+    sortedmap_impl!(BTreeMap<K, V>, BTreeMapRangeIter, BTreeMapRangeIter<K, V>, BTreeMapRangeIterMut, BTreeMapRangeIterMut<K, V>, BTreeMapRangeRemoveIter, BTreeMapRangeRemoveIter<K, V>);
 }
 // An impl of SortedMap for the standard library HashMap.
 #[experimental]
@@ -498,22 +498,22 @@ impl<'a, K, V, S, H> SortedMap<K, V> for HashMap<K, V, S>
           S: HashState<Hasher=H> + Default,
           H: Hasher<Output=u64>
 {
-    type Range = HashMapRange<'a, K, V>;
-    type RangeMut = HashMapRangeMut<'a, K, V>;
-    type RangeRemove = HashMapRangeRemove<K, V>;
+    type RangeIter = HashMapRangeIter<'a, K, V>;
+    type RangeIterMut = HashMapRangeIterMut<'a, K, V>;
+    type RangeRemoveIter = HashMapRangeRemoveIter<K, V>;
 
-    sortedmap_impl!(HashMap<K, V, S>, HashMapRange, HashMapRange<K, V>, HashMapRangeMut, HashMapRangeMut<K, V>, HashMapRangeRemove, HashMapRangeRemove<K, V>);
+    sortedmap_impl!(HashMap<K, V, S>, HashMapRangeIter, HashMapRangeIter<K, V>, HashMapRangeIterMut, HashMapRangeIterMut<K, V>, HashMapRangeRemoveIter, HashMapRangeRemoveIter<K, V>);
 }
 
 #[experimental]
-pub struct BTreeMapRange<'a, K: 'a, V: 'a> {
+pub struct BTreeMapRangeIter<'a, K: 'a, V: 'a> {
     iter: Peekable<(&'a K, &'a V), btree_map::Iter<'a, K, V>>,
     lower: K,
     upper: K,
 }
 
 #[experimental]
-impl<'a, K: Ord, V> Iterator for BTreeMapRange<'a, K, V> {
+impl<'a, K: Ord, V> Iterator for BTreeMapRangeIter<'a, K, V> {
     type Item = (&'a K, &'a V);
 
     fn next(&mut self) -> Option<(&'a K, &'a V)> {
@@ -528,14 +528,14 @@ impl<'a, K: Ord, V> Iterator for BTreeMapRange<'a, K, V> {
 }
 
 #[experimental]
-pub struct BTreeMapRangeMut<'a, K: 'a, V: 'a> {
+pub struct BTreeMapRangeIterMut<'a, K: 'a, V: 'a> {
     iter: Peekable<(&'a K, &'a mut V), btree_map::IterMut<'a, K, V>>,
     lower: K,
     upper: K,
 }
 
 #[experimental]
-impl<'a, K: Ord, V> Iterator for BTreeMapRangeMut<'a, K, V> {
+impl<'a, K: Ord, V> Iterator for BTreeMapRangeIterMut<'a, K, V> {
     type Item = (&'a K, &'a mut V);
 
     fn next(&mut self) -> Option<(&'a K, &'a mut V)> {
@@ -550,35 +550,35 @@ impl<'a, K: Ord, V> Iterator for BTreeMapRangeMut<'a, K, V> {
 }
 
 #[experimental]
-pub struct BTreeMapRangeRemove<K, V> {
+pub struct BTreeMapRangeRemoveIter<K, V> {
     iter: btree_map::IntoIter<K, V>
 }
 
 #[experimental]
-impl<K, V> Iterator for BTreeMapRangeRemove<K, V> {
+impl<K, V> Iterator for BTreeMapRangeRemoveIter<K, V> {
     type Item = (K, V);
 
     fn next(&mut self) -> Option<(K, V)> { self.iter.next() }
     fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
 }
 #[experimental]
-impl<K, V> DoubleEndedIterator for BTreeMapRangeRemove<K, V> {
+impl<K, V> DoubleEndedIterator for BTreeMapRangeRemoveIter<K, V> {
     fn next_back(&mut self) -> Option<(K, V)> { self.iter.next_back() }
 }
 #[experimental]
-impl<K, V> ExactSizeIterator for BTreeMapRangeRemove<K, V> {
+impl<K, V> ExactSizeIterator for BTreeMapRangeRemoveIter<K, V> {
     fn len(&self) -> usize { self.iter.len() }
 }
 
 #[experimental]
-pub struct HashMapRange<'a, K: 'a, V: 'a> {
+pub struct HashMapRangeIter<'a, K: 'a, V: 'a> {
     iter: Peekable<(&'a K, &'a V), hash_map::Iter<'a, K, V>>,
     lower: K,
     upper: K,
 }
 
 #[experimental]
-impl<'a, K: Ord, V> Iterator for HashMapRange<'a, K, V> {
+impl<'a, K: Ord, V> Iterator for HashMapRangeIter<'a, K, V> {
     type Item = (&'a K, &'a V);
 
     fn next(&mut self) -> Option<(&'a K, &'a V)> {
@@ -593,14 +593,14 @@ impl<'a, K: Ord, V> Iterator for HashMapRange<'a, K, V> {
 }
 
 #[experimental]
-pub struct HashMapRangeMut<'a, K: 'a, V: 'a> {
+pub struct HashMapRangeIterMut<'a, K: 'a, V: 'a> {
     iter: Peekable<(&'a K, &'a mut V), hash_map::IterMut<'a, K, V>>,
     lower: K,
     upper: K,
 }
 
 #[experimental]
-impl<'a, K: Ord, V> Iterator for HashMapRangeMut<'a, K, V> {
+impl<'a, K: Ord, V> Iterator for HashMapRangeIterMut<'a, K, V> {
     type Item = (&'a K, &'a mut V);
 
     fn next(&mut self) -> Option<(&'a K, &'a mut V)> {
@@ -615,19 +615,19 @@ impl<'a, K: Ord, V> Iterator for HashMapRangeMut<'a, K, V> {
 }
 
 #[experimental]
-pub struct HashMapRangeRemove<K, V> {
+pub struct HashMapRangeRemoveIter<K, V> {
     iter: hash_map::IntoIter<K, V>
 }
 
 #[experimental]
-impl<K, V> Iterator for HashMapRangeRemove<K, V> {
+impl<K, V> Iterator for HashMapRangeRemoveIter<K, V> {
     type Item = (K, V);
 
     fn next(&mut self) -> Option<(K, V)> { self.iter.next() }
     fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
 }
 #[experimental]
-impl<K, V> ExactSizeIterator for HashMapRangeRemove<K, V> {
+impl<K, V> ExactSizeIterator for HashMapRangeRemoveIter<K, V> {
     fn len(&self) -> usize { self.iter.len() }
 }
 
@@ -720,16 +720,16 @@ mod tests {
     }
 
     #[test]
-    fn test_range() {
+    fn test_range_iter() {
         let map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-        assert_eq!(map.range(&2, &4).map(|(&k, &v)| (k, v)).collect::<Vec<(u32, u32)>>(),
+        assert_eq!(map.range_iter(&2, &4).map(|(&k, &v)| (k, v)).collect::<Vec<(u32, u32)>>(),
             vec![(2u32, 2u32), (3, 3)]);
     }
 
     #[test]
-    fn test_range_mut() {
+    fn test_range_iter_mut() {
         let mut map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-        for (_, v) in map.range_mut(&2, &4) {
+        for (_, v) in map.range_iter_mut(&2, &4) {
             *v += 1;
         }
         assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
@@ -737,9 +737,9 @@ mod tests {
     }
 
     #[test]
-    fn test_range_remove() {
+    fn test_range_remove_iter() {
         let mut map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-        assert_eq!(map.range_remove(&2, &4).collect::<Vec<(u32, u32)>>(), vec![(2u32, 2u32), (3, 3)]);
+        assert_eq!(map.range_remove_iter(&2, &4).collect::<Vec<(u32, u32)>>(), vec![(2u32, 2u32), (3, 3)]);
         assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
             vec![(1u32, 1u32), (4, 4), (5, 5)]);
     }
