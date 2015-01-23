@@ -4,17 +4,11 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+use std::collections::Bound::{Included, Excluded};
 use std::collections::btree_set::{BTreeSet, self};
-use std::collections::hash_set::{HashSet, self};
-use std::collections::hash_state::HashState;
-use std::default::Default;
-use std::hash::{Hash, Hasher};
-use std::iter::Peekable;
 
 /// An extension trait for a `Set` whose elements have a defined total ordering.
 /// This trait provides convenience methods which take advantage of the set's ordering.
-/// The provided methods may be overridden if desired to provide more efficient
-/// implementations.
 #[experimental]
 pub trait SortedSet<T> : Sized
     where T: Clone + Ord {
@@ -263,8 +257,7 @@ pub trait SortedSet<T> : Sized
     fn lower_remove(&mut self, elem: &T) -> Option<T>;
 
     /// Returns an iterator over immutable references to the elements
-    /// of this set in the range [from_elem, to_elem).  Note that this iterator
-    /// need not necessarily yield the values in ascending order!
+    /// of this set in the range [from_elem, to_elem).
     ///
     /// # Examples
     ///
@@ -283,8 +276,7 @@ pub trait SortedSet<T> : Sized
     fn range_iter(&self, from_elem: &T, to_elem: &T) -> Self::RangeIter;
 
     /// Removes the elements of this set in the range [from_elem, to_elem), and returns
-    /// a by-value iterator over the removed elements.  Note that this iterator need not
-    /// necessarily yield the values in ascending order!
+    /// a by-value iterator over the removed elements.
     ///
     /// # Examples
     ///
@@ -306,7 +298,7 @@ pub trait SortedSet<T> : Sized
 
 // A generic reusable impl of SortedSet.
 macro_rules! sortedset_impl {
-    ($typ:ty, $range:ident, $rangeret:ty, $rangeremove: ident, $rangeremoveret:ty)=> (
+    ($typ:ty) => (
         fn first(&self) -> Option<&T> {
             self.iter().min()
         }
@@ -384,22 +376,6 @@ macro_rules! sortedset_impl {
                 None
             }
         }
-
-        fn range_iter(&self, from_elem: &T, to_elem: &T) -> $rangeret {
-            $range {
-                iter: self.iter().peekable(),
-                lower: from_elem.clone(),
-                upper: to_elem.clone(),
-            }
-        }
-
-        fn range_remove_iter(&mut self, from_elem: &T, to_elem: &T) -> $rangeremoveret {
-            let remove: $typ = self.range_iter(from_elem, to_elem).cloned().collect();
-            for elem in remove.iter() {
-                assert!(self.remove(elem));
-            }
-            $rangeremove { iter: remove.into_iter() }
-        }
     );
 }
 
@@ -411,45 +387,36 @@ impl<'a, T> SortedSet<T> for BTreeSet<T>
     type RangeIter = BTreeSetRangeIter<'a, T>;
     type RangeRemoveIter = BTreeSetRangeRemoveIter<T>;
 
-    sortedset_impl!(BTreeSet<T>, BTreeSetRangeIter, BTreeSetRangeIter<T>, BTreeSetRangeRemoveIter, BTreeSetRangeRemoveIter<T>);
-}
-// An impl of SortedSet for the standard library HashSet
-#[experimental]
-impl<'a, T, S, H> SortedSet<T> for HashSet<T, S>
-    where T: Clone + Eq + Hash<H> + Ord,
-          S: HashState<Hasher=H> + Default,
-          H: Hasher<Output=u64>
-{
-    type RangeIter = HashSetRangeIter<'a, T>;
-    type RangeRemoveIter = HashSetRangeRemoveIter<T>;
+    sortedset_impl!(BTreeSet<T>);
 
-    sortedset_impl!(HashSet<T, S>, HashSetRangeIter, HashSetRangeIter<T>, HashSetRangeRemoveIter, HashSetRangeRemoveIter<T>);
+    fn range_iter(&self, from_elem: &T, to_elem: &T) -> BTreeSetRangeIter<T> {
+        BTreeSetRangeIter { iter: self.range(Included(from_elem), Excluded(to_elem)) }
+    }
+
+    fn range_remove_iter(&mut self, from_elem: &T, to_elem: &T) -> BTreeSetRangeRemoveIter<T> {
+        let ret: BTreeSet<T> = self.range_iter(from_elem, to_elem).cloned().collect();
+        for elem in ret.iter() {
+            assert!(self.remove(elem));
+        }
+        BTreeSetRangeRemoveIter { iter: ret.into_iter() }
+    }
 }
 
 #[experimental]
 pub struct BTreeSetRangeIter<'a, T: 'a> {
-    iter: Peekable<&'a T, btree_set::Iter<'a, T>>,
-    lower: T,
-    upper: T,
+    iter: btree_set::Range<'a, T>
 }
 
 #[experimental]
-impl<'a, T: Ord> Iterator for BTreeSetRangeIter<'a, T> {
+impl<'a, T> Iterator for BTreeSetRangeIter<'a, T> {
     type Item = &'a T;
 
-    fn next(&mut self) -> Option<&'a T> {
-        loop {
-            // If iterator is empty, return None.
-            if self.iter.is_empty() { return None; }
-
-            // If the next item is in range, yield it.
-            if (*self.iter.peek().unwrap() >= &self.lower)
-                && (*self.iter.peek().unwrap() < &self.upper) { return self.iter.next(); }
-
-            // Otherwise, advance the iterator.
-            else { self.iter.next(); }
-        }
-    }
+    fn next(&mut self) -> Option<&'a T> { self.iter.next() }
+    fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
+}
+#[experimental]
+impl<'a, T> DoubleEndedIterator for BTreeSetRangeIter<'a, T> {
+    fn next_back(&mut self) -> Option<&'a T> { self.iter.next_back() }
 }
 
 #[experimental]
@@ -470,49 +437,6 @@ impl<T> DoubleEndedIterator for BTreeSetRangeRemoveIter<T> {
 }
 #[experimental]
 impl<T> ExactSizeIterator for BTreeSetRangeRemoveIter<T> {
-    fn len(&self) -> usize { self.iter.len() }
-}
-
-#[experimental]
-pub struct HashSetRangeIter<'a, T: 'a> {
-    iter: Peekable<&'a T, hash_set::Iter<'a, T>>,
-    lower: T, 
-    upper: T,
-}
-
-#[experimental]
-impl<'a, T: Ord> Iterator for HashSetRangeIter<'a, T> {
-    type Item = &'a T;
-
-    fn next(&mut self) -> Option<&'a T> {
-        loop {
-            // If the iterator is empty, return None.
-            if self.iter.is_empty() { return None; }
-
-            // If the next item is in range, yield it.
-            if (*self.iter.peek().unwrap() >= &self.lower)
-                && (*self.iter.peek().unwrap() < &self.upper) { return self.iter.next(); }
-
-            // Otherwise, advance the iterator.
-            else { self.iter.next(); }
-        }
-    }
-}
-
-#[experimental]
-pub struct HashSetRangeRemoveIter<T> {
-    iter: hash_set::IntoIter<T>
-}
-
-#[experimental]
-impl<T> Iterator for HashSetRangeRemoveIter<T> {
-    type Item = T;
-
-    fn next(&mut self) -> Option<T> { self.iter.next() }
-    fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
-}
-#[experimental]
-impl<T> ExactSizeIterator for HashSetRangeRemoveIter<T> {
     fn len(&self) -> usize { self.iter.len() }
 }
 
