@@ -10,7 +10,7 @@ use std::collections::btree_set::{BTreeSet, self};
 /// An extension trait for a `Set` whose elements have a defined total ordering.
 /// This trait provides convenience methods which take advantage of the set's ordering.
 #[experimental]
-pub trait SortedSet<T> : Sized
+pub trait SortedSet<T>
     where T: Clone + Ord {
 
     /// An iterator over immutable references to this set's elements within a given range.
