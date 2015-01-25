@@ -465,10 +465,9 @@ impl<'a, K, V> SortedMapExt<K, V> for BTreeMap<K, V>
     }
 
     fn range_remove_iter(&mut self, from_key: &K, to_key: &K) -> BTreeMapRangeRemoveIter<K, V> {
-        // FIXME: ewww...
         let ret: BTreeMap<K, V> = 
-                self.keys().cloned().zip(self.values().cloned())
-                .filter_map(|(k, v)| if k >= *from_key && k < *to_key { Some((k, v)) } else { None })
+                self.range_iter(from_key, to_key)
+                .map(|(ref k, ref v)| ((**k).clone(), (**v).clone()))
                 .collect();
 
         for key in ret.keys() {
