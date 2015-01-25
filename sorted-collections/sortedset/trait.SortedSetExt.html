@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `SortedSetExt` trait in crate `sorted-collections`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, SortedSetExt">
+
+    <title>sorted-collections::sortedset::SortedSetExt - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <section class="sidebar">
+        
+        <p class='location'><a href='../index.html'>sorted-collections</a>::<wbr><a href='index.html'>sortedset</a></p><div class='block struct'><h2>Structs</h2><a class='struct ' href='struct.BTreeSetRangeIter.html' title=''>BTreeSetRangeIter</a><a class='struct ' href='struct.BTreeSetRangeRemoveIter.html' title=''>BTreeSetRangeRemoveIter</a></div><div class='block trait'><h2>Traits</h2><a class='trait current' href='trait.SortedSetExt.html' title='An extension trait for a `Set` whose elements have a defined total ordering. This trait provides convenience methods which take advantage of the set&#39;s ordering.'>SortedSetExt</a></div>
+    </section>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press 'S' to search, '?' for more options..."
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content trait">
+<h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>sorted-collections</a>::<wbr><a href='index.html'>sortedset</a>::<wbr><a class='trait' href=''>SortedSetExt</a><wbr><a class='stability Experimental' title=''>Experimental</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="collapse-all" href="#">[-]
+            </a>&nbsp;<a id="expand-all" href="#">[+]</a>
+        </span><a id='src-1352' href='../../src/sorted-collections/sortedset.rs.html#13-297'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait SortedSetExt&lt;T&gt; <span class='where'>where T: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a></span> {
+    type RangeIter;
+    type RangeRemoveIter;
+
+    fn <a href='#tymethod.first' class='fnname'>first</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;T&gt;;
+    fn <a href='#tymethod.first_remove' class='fnname'>first_remove</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;;
+    fn <a href='#tymethod.last' class='fnname'>last</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;T&gt;;
+    fn <a href='#tymethod.last_remove' class='fnname'>last_remove</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;;
+    fn <a href='#tymethod.ceiling' class='fnname'>ceiling</a>(&amp;self, elem: &amp;T) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;T&gt;;
+    fn <a href='#tymethod.ceiling_remove' class='fnname'>ceiling_remove</a>(&amp;mut self, elem: &amp;T) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;;
+    fn <a href='#tymethod.floor' class='fnname'>floor</a>(&amp;self, elem: &amp;T) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;T&gt;;
+    fn <a href='#tymethod.floor_remove' class='fnname'>floor_remove</a>(&amp;mut self, elem: &amp;T) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;;
+    fn <a href='#tymethod.higher' class='fnname'>higher</a>(&amp;self, elem: &amp;T) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;T&gt;;
+    fn <a href='#tymethod.higher_remove' class='fnname'>higher_remove</a>(&amp;mut self, elem: &amp;T) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;;
+    fn <a href='#tymethod.lower' class='fnname'>lower</a>(&amp;self, elem: &amp;T) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;T&gt;;
+    fn <a href='#tymethod.lower_remove' class='fnname'>lower_remove</a>(&amp;mut self, elem: &amp;T) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;;
+    fn <a href='#tymethod.range_iter' class='fnname'>range_iter</a>(&amp;self, from_elem: &amp;T, to_elem: &amp;T) -&gt; <a class='trait' href='../../sorted-collections/sortedset/trait.SortedSetExt.html' title='sorted-collections::sortedset::SortedSetExt'>RangeIter</a>;
+    fn <a href='#tymethod.range_remove_iter' class='fnname'>range_remove_iter</a>(&amp;mut self, from_elem: &amp;T, to_elem: &amp;T) -&gt; <a class='trait' href='../../sorted-collections/sortedset/trait.SortedSetExt.html' title='sorted-collections::sortedset::SortedSetExt'>RangeRemoveIter</a>;
+}</pre><div class='docblock'><p>An extension trait for a <code>Set</code> whose elements have a defined total ordering.
+This trait provides convenience methods which take advantage of the set&#39;s ordering.</p>
+</div>
+            <h2 id='associated-types'>Associated Types</h2>
+            <div class='methods'>
+        <h3 id='associatedtype.RangeIter' class='method'><a class='stability Unmarked' title='No stability level'></a><code>type RangeIter</code></h3><div class='docblock'><p>An iterator over immutable references to this set&#39;s elements within a given range.</p>
+</div><h3 id='associatedtype.RangeRemoveIter' class='method'><a class='stability Unmarked' title='No stability level'></a><code>type RangeRemoveIter</code></h3><div class='docblock'><p>A by-value iterator yielding elements within a given range which have just been removed
+from this set.</p>
+</div></div>
+            <h2 id='required-methods'>Required Methods</h2>
+            <div class='methods'>
+        <h3 id='tymethod.first' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.first' class='fnname'>first</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;T&gt;</code></h3><div class='docblock'><p>Returns an immutable reference to the first (least) element currently in this set.
+Returns <code>None</code> if this set is empty.</p>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
+
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeSet</span>;
+<span class='kw'>use</span> <span class='ident'>sorted_collections</span>::<span class='ident'>SortedSetExt</span>;
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='ident'>set</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>first</span>().<span class='ident'>unwrap</span>(), <span class='kw-2'>&amp;</span><span class='number'>1u32</span>);
+}
+</pre>
+</div><h3 id='tymethod.first_remove' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.first_remove' class='fnname'>first_remove</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;</code></h3><div class='docblock'><p>Removes and returns the first (least) element currently in this set.
+Returns <code>None</code> if this set is empty.</p>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
+
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeSet</span>;
+<span class='kw'>use</span> <span class='ident'>sorted_collections</span>::<span class='ident'>SortedSetExt</span>;
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>set</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>first_remove</span>().<span class='ident'>unwrap</span>(), <span class='number'>1u32</span>);
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;&gt;</span>(), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>2u32</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>]);
+}
+</pre>
+</div><h3 id='tymethod.last' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.last' class='fnname'>last</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;T&gt;</code></h3><div class='docblock'><p>Returns an immutable reference to the last (greatest) element currently in this set.
+Returns <code>None</code> if this set is empty.</p>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
+
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeSet</span>;
+<span class='kw'>use</span> <span class='ident'>sorted_collections</span>::<span class='ident'>SortedSetExt</span>;
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='ident'>set</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>last</span>().<span class='ident'>unwrap</span>(), <span class='kw-2'>&amp;</span><span class='number'>5u32</span>);
+}
+</pre>
+</div><h3 id='tymethod.last_remove' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.last_remove' class='fnname'>last_remove</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;</code></h3><div class='docblock'><p>Removes and returns the last (greatest) element currently in this set.
+Returns <code>None</code> if this set is empty.</p>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
+
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeSet</span>;
+<span class='kw'>use</span> <span class='ident'>sorted_collections</span>::<span class='ident'>SortedSetExt</span>;
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>set</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>last_remove</span>().<span class='ident'>unwrap</span>(), <span class='number'>5u32</span>);
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;&gt;</span>(), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>]);
+}
+</pre>
+</div><h3 id='tymethod.ceiling' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.ceiling' class='fnname'>ceiling</a>(&amp;self, elem: &amp;T) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;T&gt;</code></h3><div class='docblock'><p>Returns an immutable reference to the least element in this set greater than or equal to <code>elem</code>.
+Returns <code>None</code> if there is no such element.</p>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
+
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeSet</span>;
+<span class='kw'>use</span> <span class='ident'>sorted_collections</span>::<span class='ident'>SortedSetExt</span>;
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='ident'>set</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>ceiling</span>(<span class='kw-2'>&amp;</span><span class='number'>3</span>).<span class='ident'>unwrap</span>(), <span class='kw-2'>&amp;</span><span class='number'>3u32</span>);
+}
+</pre>
+</div><h3 id='tymethod.ceiling_remove' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.ceiling_remove' class='fnname'>ceiling_remove</a>(&amp;mut self, elem: &amp;T) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;</code></h3><div class='docblock'><p>Removes and returns the least element in this set greater than or equal to <code>elem</code>.
+Returns <code>None</code> if there is no such element.</p>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
+
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeSet</span>;
+<span class='kw'>use</span> <span class='ident'>sorted_collections</span>::<span class='ident'>SortedSetExt</span>;
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>set</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>ceiling_remove</span>(<span class='kw-2'>&amp;</span><span class='number'>3</span>).<span class='ident'>unwrap</span>(), <span class='number'>3u32</span>);
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;&gt;</span>(), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>4</span>, <span class='number'>5</span>]);
+}
+</pre>
+</div><h3 id='tymethod.floor' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.floor' class='fnname'>floor</a>(&amp;self, elem: &amp;T) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;T&gt;</code></h3><div class='docblock'><p>Returns an immutable reference to the greatest element in this set less than or equal to <code>elem</code>.
+Returns <code>None</code> if there is no such element.</p>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
+
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeSet</span>;
+<span class='kw'>use</span> <span class='ident'>sorted_collections</span>::<span class='ident'>SortedSetExt</span>;
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='ident'>set</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>floor</span>(<span class='kw-2'>&amp;</span><span class='number'>3</span>).<span class='ident'>unwrap</span>(), <span class='kw-2'>&amp;</span><span class='number'>3u32</span>);
+}
+</pre>
+</div><h3 id='tymethod.floor_remove' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.floor_remove' class='fnname'>floor_remove</a>(&amp;mut self, elem: &amp;T) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;</code></h3><div class='docblock'><p>Removes and returns the greatest element in this set less than or equal to <code>elem</code>.
+Returns <code>None</code> if there is no such element.</p>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
+
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeSet</span>;
+<span class='kw'>use</span> <span class='ident'>sorted_collections</span>::<span class='ident'>SortedSetExt</span>;
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>set</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>floor_remove</span>(<span class='kw-2'>&amp;</span><span class='number'>3</span>).<span class='ident'>unwrap</span>(), <span class='number'>3u32</span>);
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;&gt;</span>(), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>4</span>, <span class='number'>5</span>]);
+}
+</pre>
+</div><h3 id='tymethod.higher' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.higher' class='fnname'>higher</a>(&amp;self, elem: &amp;T) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;T&gt;</code></h3><div class='docblock'><p>Returns an immutable reference to the least element in this set strictly greater than <code>elem</code>.
+Returns <code>None</code> if there is no such element.</p>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
+
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeSet</span>;
+<span class='kw'>use</span> <span class='ident'>sorted_collections</span>::<span class='ident'>SortedSetExt</span>;
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='ident'>set</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>higher</span>(<span class='kw-2'>&amp;</span><span class='number'>3</span>).<span class='ident'>unwrap</span>(), <span class='kw-2'>&amp;</span><span class='number'>4u32</span>);
+}
+</pre>
+</div><h3 id='tymethod.higher_remove' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.higher_remove' class='fnname'>higher_remove</a>(&amp;mut self, elem: &amp;T) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;</code></h3><div class='docblock'><p>Removes and returns the least element in this set strictly greater than <code>elem</code>.
+Returns <code>None</code> if there is no such element.</p>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
+
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeSet</span>;
+<span class='kw'>use</span> <span class='ident'>sorted_collections</span>::<span class='ident'>SortedSetExt</span>;
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>set</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>higher_remove</span>(<span class='kw-2'>&amp;</span><span class='number'>3</span>).<span class='ident'>unwrap</span>(), <span class='number'>4u32</span>);
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;&gt;</span>(), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>5</span>]);
+}
+</pre>
+</div><h3 id='tymethod.lower' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.lower' class='fnname'>lower</a>(&amp;self, elem: &amp;T) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;T&gt;</code></h3><div class='docblock'><p>Returns an immutable reference to the greatest element in this set strictly less than <code>elem</code>.
+Returns <code>None</code> if there is no such element.</p>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
+
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeSet</span>;
+<span class='kw'>use</span> <span class='ident'>sorted_collections</span>::<span class='ident'>SortedSetExt</span>;
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='ident'>set</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>lower</span>(<span class='kw-2'>&amp;</span><span class='number'>3</span>).<span class='ident'>unwrap</span>(), <span class='kw-2'>&amp;</span><span class='number'>2u32</span>);
+}
+</pre>
+</div><h3 id='tymethod.lower_remove' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.lower_remove' class='fnname'>lower_remove</a>(&amp;mut self, elem: &amp;T) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;T&gt;</code></h3><div class='docblock'><p>Removes and returns the greatest element in this set strictly less than <code>elem</code>.
+Returns <code>None</code> if there is no such element.</p>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
+
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeSet</span>;
+<span class='kw'>use</span> <span class='ident'>sorted_collections</span>::<span class='ident'>SortedSetExt</span>;
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>set</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>lower_remove</span>(<span class='kw-2'>&amp;</span><span class='number'>3</span>).<span class='ident'>unwrap</span>(), <span class='number'>2u32</span>);
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;&gt;</span>(), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>]);
+}
+</pre>
+</div><h3 id='tymethod.range_iter' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.range_iter' class='fnname'>range_iter</a>(&amp;self, from_elem: &amp;T, to_elem: &amp;T) -&gt; <a class='trait' href='../../sorted-collections/sortedset/trait.SortedSetExt.html' title='sorted-collections::sortedset::SortedSetExt'>RangeIter</a></code></h3><div class='docblock'><p>Returns an iterator over immutable references to the elements
+of this set in the range [from_elem, to_elem).</p>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
+
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeSet</span>;
+<span class='kw'>use</span> <span class='ident'>sorted_collections</span>::<span class='ident'>SortedSetExt</span>;
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='ident'>set</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>range_iter</span>(<span class='kw-2'>&amp;</span><span class='number'>2</span>, <span class='kw-2'>&amp;</span><span class='number'>4</span>).<span class='ident'>map</span>(<span class='op'>|</span><span class='kw-2'>&amp;</span><span class='ident'>x</span><span class='op'>|</span> <span class='ident'>x</span>).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;&gt;</span>(), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>2u32</span>, <span class='number'>3</span>]);
+}
+</pre>
+</div><h3 id='tymethod.range_remove_iter' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.range_remove_iter' class='fnname'>range_remove_iter</a>(&amp;mut self, from_elem: &amp;T, to_elem: &amp;T) -&gt; <a class='trait' href='../../sorted-collections/sortedset/trait.SortedSetExt.html' title='sorted-collections::sortedset::SortedSetExt'>RangeRemoveIter</a></code></h3><div class='docblock'><p>Removes the elements of this set in the range [from_elem, to_elem), and returns
+a by-value iterator over the removed elements.</p>
+
+<h1 id="examples" class='section-header'><a
+                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
+<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
+
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeSet</span>;
+<span class='kw'>use</span> <span class='ident'>sorted_collections</span>::<span class='ident'>SortedSetExt</span>;
+
+<span class='kw'>fn</span> <span class='ident'>main</span>() {
+    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>set</span>: <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>2</span>, <span class='number'>3</span>, <span class='number'>4</span>, <span class='number'>5</span>].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>range_remove_iter</span>(<span class='kw-2'>&amp;</span><span class='number'>2</span>, <span class='kw-2'>&amp;</span><span class='number'>4</span>).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;&gt;</span>(), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>2u32</span>, <span class='number'>3</span>]);
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>set</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;&gt;</span>(), <span class='macro'>vec</span><span class='macro'>!</span>[<span class='number'>1u32</span>, <span class='number'>4</span>, <span class='number'>5</span>]);
+}
+</pre>
+</div></div>
+        <h2 id='implementors'>Implementors</h2>
+        <ul class='item-list' id='implementors-list'>
+    <li><a class='stability Experimental' title='Experimental'></a><code>impl&lt;'a, T&gt; <a class='trait' href='../../sorted-collections/sortedset/trait.SortedSetExt.html' title='sorted-collections::sortedset::SortedSetExt'>SortedSetExt</a>&lt;T&gt; for <a class='struct' href='http://doc.rust-lang.org/nightly/collections/btree/set/struct.BTreeSet.html' title='collections::btree::set::BTreeSet'>BTreeSet</a>&lt;T&gt; <span class='where'>where T: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a></span></code></li>
+</ul><script type="text/javascript" async
+                              src="../../implementors/sorted-collections/sortedset/trait.SortedSetExt.js">
+                      </script></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <div id="help" class="hidden">
+        <div class="shortcuts">
+            <h1>Keyboard shortcuts</h1>
+            <dl>
+                <dt>?</dt>
+                <dd>Show this help dialog</dd>
+                <dt>S</dt>
+                <dd>Focus the search field</dd>
+                <dt>&larrb;</dt>
+                <dd>Move up in search results</dd>
+                <dt>&rarrb;</dt>
+                <dd>Move down in search results</dd>
+                <dt>&#9166;</dt>
+                <dd>Go to active search result</dd>
+            </dl>
+        </div>
+        <div class="infos">
+            <h1>Search tricks</h1>
+            <p>
+                Prefix searches with a type followed by a colon (e.g.
+                <code>fn:</code>) to restrict the search to a given type.
+            </p>
+            <p>
+                Accepted types are: <code>fn</code>, <code>mod</code>,
+                <code>struct</code>, <code>enum</code>,
+                <code>trait</code>, <code>typedef</code> (or
+                <code>tdef</code>).
+            </p>
+        </div>
+    </div>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "sorted-collections";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script async src="../../search-index.js"></script>
+</body>
+</html>
