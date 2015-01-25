@@ -13,8 +13,8 @@
 
 #[cfg(test)] extern crate test;
 
-#[experimental] pub use sortedmap::SortedMap;
-#[experimental] pub use sortedset::SortedSet;
+#[experimental] pub use sortedmap::SortedMapExt;
+#[experimental] pub use sortedset::SortedSetExt;
 
 #[experimental] pub mod sortedmap;
 #[experimental] pub mod sortedset;

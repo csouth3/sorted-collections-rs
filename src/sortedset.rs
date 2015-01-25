@@ -10,9 +10,9 @@ use std::collections::btree_set::{BTreeSet, self};
 /// An extension trait for a `Set` whose elements have a defined total ordering.
 /// This trait provides convenience methods which take advantage of the set's ordering.
 #[experimental]
-pub trait SortedSet<T>
-    where T: Clone + Ord {
-
+pub trait SortedSetExt<T>
+    where T: Clone + Ord
+{
     /// An iterator over immutable references to this set's elements within a given range.
     #[experimental]
     type RangeIter;
@@ -31,7 +31,7 @@ pub trait SortedSet<T>
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeSet;
-    /// use sorted_collections::SortedSet;
+    /// use sorted_collections::SortedSetExt;
     ///
     /// fn main() {
     ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
@@ -50,7 +50,7 @@ pub trait SortedSet<T>
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeSet;
-    /// use sorted_collections::SortedSet;
+    /// use sorted_collections::SortedSetExt;
     ///
     /// fn main() {
     ///     let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
@@ -70,7 +70,7 @@ pub trait SortedSet<T>
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeSet;
-    /// use sorted_collections::SortedSet;
+    /// use sorted_collections::SortedSetExt;
     ///
     /// fn main() {
     ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
@@ -89,7 +89,7 @@ pub trait SortedSet<T>
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeSet;
-    /// use sorted_collections::SortedSet;
+    /// use sorted_collections::SortedSetExt;
     ///
     /// fn main() {
     ///     let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
@@ -109,7 +109,7 @@ pub trait SortedSet<T>
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeSet;
-    /// use sorted_collections::SortedSet;
+    /// use sorted_collections::SortedSetExt;
     ///
     /// fn main() {
     ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
@@ -128,7 +128,7 @@ pub trait SortedSet<T>
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeSet;
-    /// use sorted_collections::SortedSet;
+    /// use sorted_collections::SortedSetExt;
     ///
     /// fn main() {
     ///     let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
@@ -148,7 +148,7 @@ pub trait SortedSet<T>
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeSet;
-    /// use sorted_collections::SortedSet;
+    /// use sorted_collections::SortedSetExt;
     ///
     /// fn main() {
     ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
@@ -167,7 +167,7 @@ pub trait SortedSet<T>
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeSet;
-    /// use sorted_collections::SortedSet;
+    /// use sorted_collections::SortedSetExt;
     ///
     /// fn main() {
     ///     let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
@@ -187,7 +187,7 @@ pub trait SortedSet<T>
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeSet;
-    /// use sorted_collections::SortedSet;
+    /// use sorted_collections::SortedSetExt;
     ///
     /// fn main() {
     ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
@@ -206,7 +206,7 @@ pub trait SortedSet<T>
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeSet;
-    /// use sorted_collections::SortedSet;
+    /// use sorted_collections::SortedSetExt;
     ///
     /// fn main() {
     ///     let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
@@ -226,7 +226,7 @@ pub trait SortedSet<T>
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeSet;
-    /// use sorted_collections::SortedSet;
+    /// use sorted_collections::SortedSetExt;
     ///
     /// fn main() {
     ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
@@ -245,7 +245,7 @@ pub trait SortedSet<T>
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeSet;
-    /// use sorted_collections::SortedSet;
+    /// use sorted_collections::SortedSetExt;
     ///
     /// fn main() {
     ///     let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
@@ -265,7 +265,7 @@ pub trait SortedSet<T>
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeSet;
-    /// use sorted_collections::SortedSet;
+    /// use sorted_collections::SortedSetExt;
     ///
     /// fn main() {
     ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
@@ -284,7 +284,7 @@ pub trait SortedSet<T>
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeSet;
-    /// use sorted_collections::SortedSet;
+    /// use sorted_collections::SortedSetExt;
     ///
     /// fn main() {
     ///     let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
@@ -296,7 +296,7 @@ pub trait SortedSet<T>
     fn range_remove_iter(&mut self, from_elem: &T, to_elem: &T) -> Self::RangeRemoveIter;
 }
 
-// A generic reusable impl of SortedSet.
+// A generic reusable impl of SortedSetExt.
 macro_rules! sortedset_impl {
     ($typ:ty) => (
         fn first(&self) -> Option<&T> {
@@ -379,9 +379,9 @@ macro_rules! sortedset_impl {
     );
 }
 
-// An impl of SortedSet for the standard library BTreeSet
+// An impl of SortedSetExt for the standard library BTreeSet
 #[experimental]
-impl<'a, T> SortedSet<T> for BTreeSet<T>
+impl<'a, T> SortedSetExt<T> for BTreeSet<T>
     where T: Clone + Ord
 {
     type RangeIter = BTreeSetRangeIter<'a, T>;
@@ -444,7 +444,7 @@ impl<T> ExactSizeIterator for BTreeSetRangeRemoveIter<T> {
 mod tests {
     use std::collections::BTreeSet;
 
-    use super::SortedSet;
+    use super::SortedSetExt;
 
     #[test]
     fn test_first() {
