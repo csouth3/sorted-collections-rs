@@ -17,3 +17,7 @@ Version 0.0.4 (January 22, 2015)
 BTreeSet and Map just got bounded iterators in libcollections, so just as a stopgap
 until I decide more clearly what to do, rename some of my stuff to avoid the
 naming conflict.
+
+Version 0.0.5 (January 24, 2015)
+--------------------------------
+Various cleanups, removed support for Hash{Set, Map}, traits renamed.
