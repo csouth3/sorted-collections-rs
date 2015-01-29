@@ -9,24 +9,20 @@ use std::collections::btree_map::{BTreeMap, self};
 
 /// An extension trait for a `Map` whose keys have a defined total ordering.
 /// This trait provides convenience methods which take advantage of the map's ordering.
-#[experimental]
 pub trait SortedMapExt<K, V>
     where K: Clone + Ord,
           V: Clone 
 {
     /// An iterator over immutable references to the key-value pairs in this map whose keys fall
     /// within a given range.
-    #[experimental]
     type RangeIter;
 
     /// An iterator over mutable references to the key-value pairs in this map whose keys fall
     /// within a given range.
-    #[experimental]
     type RangeIterMut;
 
     /// A by-value iterator yielding key-value pairs whose keys fall within a given range and
     /// which have just been removed from this map.
-    #[experimental]
     type RangeRemoveIter;
 
     /// Returns an immutable reference to the first (least) key currently in this map.
@@ -46,7 +42,6 @@ pub trait SortedMapExt<K, V>
     ///     assert_eq!(map.first().unwrap(), &1u32);
     /// }
     /// ```
-    #[experimental]
     fn first(&self) -> Option<&K>;
 
     /// Removes and returns the first (least) key currently in this map and its associated value.
@@ -68,7 +63,6 @@ pub trait SortedMapExt<K, V>
     ///         vec![(2u32, 2u32), (3, 3), (4, 4), (5, 5)]);
     /// }
     /// ```
-    #[experimental]
     fn first_remove(&mut self) -> Option<(K, V)>;
 
     /// Returns an immutable reference to the last (greatest) key currently in this map.
@@ -88,7 +82,6 @@ pub trait SortedMapExt<K, V>
     ///     assert_eq!(map.last().unwrap(), &5u32);
     /// }
     /// ```
-    #[experimental]
     fn last(&self) -> Option<&K>;
 
     /// Removes and returns the last (greatest) key currently in this map and its associated value.
@@ -110,7 +103,6 @@ pub trait SortedMapExt<K, V>
     ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4)]);
     /// }
     /// ```
-    #[experimental]
     fn last_remove(&mut self) -> Option<(K, V)>;
 
     /// Returns an immutable reference to the least key in this map greater than or equal to `key`.
@@ -130,7 +122,6 @@ pub trait SortedMapExt<K, V>
     ///     assert_eq!(map.ceiling(&3).unwrap(), &3u32);
     /// }
     /// ```
-    #[experimental]
     fn ceiling(&self, key: &K) -> Option<&K>;
 
     /// Removes and returns the least key in this map greater than or equal to `key` and its
@@ -153,7 +144,6 @@ pub trait SortedMapExt<K, V>
     ///         vec![(1u32, 1u32), (2, 2), (4, 4), (5, 5)]);
     /// }
     /// ```
-    #[experimental]
     fn ceiling_remove(&mut self, key: &K) -> Option<(K, V)>;
 
     /// Returns an immutable reference to the greatest key in this map less than or equal to `key`.
@@ -173,7 +163,6 @@ pub trait SortedMapExt<K, V>
     ///     assert_eq!(map.floor(&3).unwrap(), &3u32);
     /// }
     /// ```
-    #[experimental]
     fn floor(&self, key: &K) -> Option<&K>;
 
     /// Removes and returns the greatest key in this map less than or equal to `key` and its
@@ -196,7 +185,6 @@ pub trait SortedMapExt<K, V>
     ///         vec![(1u32, 1u32), (2, 2), (4, 4), (5, 5)]);
     /// }
     /// ```
-    #[experimental]
     fn floor_remove(&mut self, key: &K) -> Option<(K, V)>;
 
     /// Returns an immutable reference to the least key in this map strictly greater than `key`.
@@ -216,7 +204,6 @@ pub trait SortedMapExt<K, V>
     ///     assert_eq!(map.higher(&3).unwrap(), &4u32);
     /// }
     /// ```
-    #[experimental]
     fn higher(&self, key: &K) -> Option<&K>;
 
     /// Removes and returns the least key in this map strictly greater than `key` and its
@@ -239,7 +226,6 @@ pub trait SortedMapExt<K, V>
     ///         vec![(1u32, 1u32), (2, 2), (3, 3), (5, 5)]);
     /// }
     /// ```
-    #[experimental]
     fn higher_remove(&mut self, key: &K) -> Option<(K, V)>;
 
 
@@ -260,7 +246,6 @@ pub trait SortedMapExt<K, V>
     ///     assert_eq!(map.lower(&3).unwrap(), &2u32);
     /// }
     /// ```
-    #[experimental]
     fn lower(&self, key: &K) -> Option<&K>;
 
     /// Removes and returns the greatest key in this map strictly less than `key` and its
@@ -283,7 +268,6 @@ pub trait SortedMapExt<K, V>
     ///         vec![(1u32, 1u32), (3, 3), (4, 4), (5, 5)]);
     /// }
     /// ```
-    #[experimental]
     fn lower_remove(&mut self, key: &K) -> Option<(K, V)>;
 
     /// Returns an iterator over pairs of immutable key-value references into this map,
@@ -304,7 +288,6 @@ pub trait SortedMapExt<K, V>
     ///         vec![(2u32, 2u32), (3, 3)]);
     /// }
     /// ```
-    #[experimental]
     fn range_iter(&self, from_key: &K, to_key: &K) -> Self::RangeIter;
 
     /// Returns an iterator over pairs of immutable-key/mutable-value references into this map,
@@ -328,7 +311,6 @@ pub trait SortedMapExt<K, V>
     ///         vec![(1u32, 1u32), (2, 3), (3, 4), (4, 4), (5, 5)]);
     /// }
     /// ```
-    #[experimental]
     fn range_iter_mut(&mut self, from_key: &K, to_key: &K) -> Self::RangeIterMut;
 
     /// Removes the key-value pairs of this map whose keys lie in the range [from_key, to_key),
@@ -351,7 +333,6 @@ pub trait SortedMapExt<K, V>
     ///         vec![(1u32, 1u32), (4, 4), (5, 5)]);
     /// }
     /// ```
-    #[experimental]
     fn range_remove_iter(&mut self, from_key: &K, to_key: &K) -> Self::RangeRemoveIter;
 }
 
@@ -445,7 +426,6 @@ macro_rules! sortedmap_impl {
 }
 
 // An impl of SortedMapExt for the standard library BTreeMap
-#[experimental]
 impl<'a, K, V> SortedMapExt<K, V> for BTreeMap<K, V>
     where K: Clone + Ord,
           V: Clone
@@ -477,57 +457,47 @@ impl<'a, K, V> SortedMapExt<K, V> for BTreeMap<K, V>
     }
 }
 
-#[experimental]
 pub struct BTreeMapRangeIter<'a, K: 'a, V: 'a> {
     iter: btree_map::Range<'a, K, V>
 }
 
-#[experimental]
 impl<'a, K, V> Iterator for BTreeMapRangeIter<'a, K, V> {
     type Item = (&'a K, &'a V);
 
     fn next(&mut self) -> Option<(&'a K, &'a V)> { self.iter.next() }
     fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
 }
-#[experimental]
 impl<'a, K, V> DoubleEndedIterator for BTreeMapRangeIter<'a, K, V> {
     fn next_back(&mut self) -> Option<(&'a K, &'a V)> { self.iter.next_back() }
 }
 
-#[experimental]
 pub struct BTreeMapRangeIterMut<'a, K: 'a, V: 'a> {
     iter: btree_map::RangeMut<'a, K, V>
 }
 
-#[experimental]
 impl<'a, K, V> Iterator for BTreeMapRangeIterMut<'a, K, V> {
     type Item = (&'a K, &'a mut V);
 
     fn next(&mut self) -> Option<(&'a K, &'a mut V)> { self.iter.next() }
     fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
 }
-#[experimental]
 impl<'a, K, V> DoubleEndedIterator for BTreeMapRangeIterMut<'a, K, V> {
     fn next_back(&mut self) -> Option<(&'a K, &'a mut V)> { self.iter.next_back() }
 }
 
-#[experimental]
 pub struct BTreeMapRangeRemoveIter<K, V> {
     iter: btree_map::IntoIter<K, V>
 }
 
-#[experimental]
 impl<K, V> Iterator for BTreeMapRangeRemoveIter<K, V> {
     type Item = (K, V);
 
     fn next(&mut self) -> Option<(K, V)> { self.iter.next() }
     fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
 }
-#[experimental]
 impl<K, V> DoubleEndedIterator for BTreeMapRangeRemoveIter<K, V> {
     fn next_back(&mut self) -> Option<(K, V)> { self.iter.next_back() }
 }
-#[experimental]
 impl<K, V> ExactSizeIterator for BTreeMapRangeRemoveIter<K, V> {
     fn len(&self) -> usize { self.iter.len() }
 }

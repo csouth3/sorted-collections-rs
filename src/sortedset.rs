@@ -9,17 +9,14 @@ use std::collections::btree_set::{BTreeSet, self};
 
 /// An extension trait for a `Set` whose elements have a defined total ordering.
 /// This trait provides convenience methods which take advantage of the set's ordering.
-#[experimental]
 pub trait SortedSetExt<T>
     where T: Clone + Ord
 {
     /// An iterator over immutable references to this set's elements within a given range.
-    #[experimental]
     type RangeIter;
 
     /// A by-value iterator yielding elements within a given range which have just been removed
     /// from this set.
-    #[experimental]
     type RangeRemoveIter;
 
     /// Returns an immutable reference to the first (least) element currently in this set.
@@ -38,7 +35,6 @@ pub trait SortedSetExt<T>
     ///     assert_eq!(set.first().unwrap(), &1u32);
     /// }
     /// ```
-    #[experimental]
     fn first(&self) -> Option<&T>;
 
     /// Removes and returns the first (least) element currently in this set.
@@ -58,7 +54,6 @@ pub trait SortedSetExt<T>
     ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![2u32, 3, 4, 5]);
     /// }
     /// ```
-    #[experimental]
     fn first_remove(&mut self) -> Option<T>;
 
     /// Returns an immutable reference to the last (greatest) element currently in this set.
@@ -77,7 +72,6 @@ pub trait SortedSetExt<T>
     ///     assert_eq!(set.last().unwrap(), &5u32);
     /// }
     /// ```
-    #[experimental]
     fn last(&self) -> Option<&T>;
 
     /// Removes and returns the last (greatest) element currently in this set.
@@ -97,7 +91,6 @@ pub trait SortedSetExt<T>
     ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 4]);
     /// }
     /// ```
-    #[experimental]
     fn last_remove(&mut self) -> Option<T>;
 
     /// Returns an immutable reference to the least element in this set greater than or equal to `elem`.
@@ -116,7 +109,6 @@ pub trait SortedSetExt<T>
     ///     assert_eq!(set.ceiling(&3).unwrap(), &3u32);
     /// }
     /// ```
-    #[experimental]
     fn ceiling(&self, elem: &T) -> Option<&T>;
 
     /// Removes and returns the least element in this set greater than or equal to `elem`.
@@ -136,7 +128,6 @@ pub trait SortedSetExt<T>
     ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 4, 5]);
     /// }
     /// ```
-    #[experimental]
     fn ceiling_remove(&mut self, elem: &T) -> Option<T>;
 
     /// Returns an immutable reference to the greatest element in this set less than or equal to `elem`.
@@ -155,7 +146,6 @@ pub trait SortedSetExt<T>
     ///     assert_eq!(set.floor(&3).unwrap(), &3u32);
     /// }
     /// ```
-    #[experimental]
     fn floor(&self, elem: &T) -> Option<&T>;
 
     /// Removes and returns the greatest element in this set less than or equal to `elem`.
@@ -175,7 +165,6 @@ pub trait SortedSetExt<T>
     ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 4, 5]);
     /// }
     /// ```
-    #[experimental]
     fn floor_remove(&mut self, elem: &T) -> Option<T>;
 
     /// Returns an immutable reference to the least element in this set strictly greater than `elem`.
@@ -194,7 +183,6 @@ pub trait SortedSetExt<T>
     ///     assert_eq!(set.higher(&3).unwrap(), &4u32);
     /// }
     /// ```
-    #[experimental]
     fn higher(&self, elem: &T) -> Option<&T>;
 
     /// Removes and returns the least element in this set strictly greater than `elem`.
@@ -214,7 +202,6 @@ pub trait SortedSetExt<T>
     ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 2, 3, 5]);
     /// }
     /// ```
-    #[experimental]
     fn higher_remove(&mut self, elem: &T) -> Option<T>;
 
     /// Returns an immutable reference to the greatest element in this set strictly less than `elem`.
@@ -233,7 +220,6 @@ pub trait SortedSetExt<T>
     ///     assert_eq!(set.lower(&3).unwrap(), &2u32);
     /// }
     /// ```
-    #[experimental]
     fn lower(&self, elem: &T) -> Option<&T>;
 
     /// Removes and returns the greatest element in this set strictly less than `elem`.
@@ -253,7 +239,6 @@ pub trait SortedSetExt<T>
     ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 3, 4, 5]);
     /// }
     /// ```
-    #[experimental]
     fn lower_remove(&mut self, elem: &T) -> Option<T>;
 
     /// Returns an iterator over immutable references to the elements
@@ -272,7 +257,6 @@ pub trait SortedSetExt<T>
     ///     assert_eq!(set.range_iter(&2, &4).map(|&x| x).collect::<Vec<u32>>(), vec![2u32, 3]);
     /// }
     /// ```
-    #[experimental]
     fn range_iter(&self, from_elem: &T, to_elem: &T) -> Self::RangeIter;
 
     /// Removes the elements of this set in the range [from_elem, to_elem), and returns
@@ -292,7 +276,6 @@ pub trait SortedSetExt<T>
     ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 4, 5]);
     /// }
     /// ```
-    #[experimental]
     fn range_remove_iter(&mut self, from_elem: &T, to_elem: &T) -> Self::RangeRemoveIter;
 }
 
@@ -380,7 +363,6 @@ macro_rules! sortedset_impl {
 }
 
 // An impl of SortedSetExt for the standard library BTreeSet
-#[experimental]
 impl<'a, T> SortedSetExt<T> for BTreeSet<T>
     where T: Clone + Ord
 {
@@ -402,40 +384,33 @@ impl<'a, T> SortedSetExt<T> for BTreeSet<T>
     }
 }
 
-#[experimental]
 pub struct BTreeSetRangeIter<'a, T: 'a> {
     iter: btree_set::Range<'a, T>
 }
 
-#[experimental]
 impl<'a, T> Iterator for BTreeSetRangeIter<'a, T> {
     type Item = &'a T;
 
     fn next(&mut self) -> Option<&'a T> { self.iter.next() }
     fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
 }
-#[experimental]
 impl<'a, T> DoubleEndedIterator for BTreeSetRangeIter<'a, T> {
     fn next_back(&mut self) -> Option<&'a T> { self.iter.next_back() }
 }
 
-#[experimental]
 pub struct BTreeSetRangeRemoveIter<T> {
     iter: btree_set::IntoIter<T>
 }
 
-#[experimental]
 impl<T> Iterator for BTreeSetRangeRemoveIter<T> {
     type Item = T;
 
     fn next(&mut self) -> Option<T> { self.iter.next() }
     fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
 }
-#[experimental]
 impl<T> DoubleEndedIterator for BTreeSetRangeRemoveIter<T> {
     fn next_back(&mut self) -> Option<T> { self.iter.next_back() }
 }
-#[experimental]
 impl<T> ExactSizeIterator for BTreeSetRangeRemoveIter<T> {
     fn len(&self) -> usize { self.iter.len() }
 }
