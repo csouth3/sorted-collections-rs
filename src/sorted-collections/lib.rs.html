@@ -58,8 +58,6 @@
 <span id="16">16</span>
 <span id="17">17</span>
 <span id="18">18</span>
-<span id="19">19</span>
-<span id="20">20</span>
 </pre><pre class='rust '>
 <span class='comment'>// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or</span>
 <span class='comment'>// http://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license</span>
@@ -70,17 +68,15 @@
 <span class='doccomment'>//! sorted-collections-rs is a library providing useful extension traits and convenience</span>
 <span class='doccomment'>//! methods for ordered collections in Rust.</span>
 
-<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>experimental</span>]</span>
+<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>feature</span>(<span class='ident'>collections</span>, <span class='ident'>core</span>)]</span>
 
-<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>allow</span>(<span class='ident'>unstable</span>)]</span>
+<span class='attribute'>#<span class='op'>!</span>[<span class='ident'>cfg_attr</span>(<span class='ident'>test</span>, <span class='ident'>feature</span>(<span class='ident'>test</span>))]</span> <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span> <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>test</span>;
 
-<span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span> <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='ident'>test</span>;
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>sortedmap</span>::<span class='ident'>SortedMapExt</span>;
+<span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>sortedset</span>::<span class='ident'>SortedSetExt</span>;
 
-<span class='attribute'>#[<span class='ident'>experimental</span>]</span> <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>sortedmap</span>::<span class='ident'>SortedMapExt</span>;
-<span class='attribute'>#[<span class='ident'>experimental</span>]</span> <span class='kw'>pub</span> <span class='kw'>use</span> <span class='ident'>sortedset</span>::<span class='ident'>SortedSetExt</span>;
-
-<span class='attribute'>#[<span class='ident'>experimental</span>]</span> <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>sortedmap</span>;
-<span class='attribute'>#[<span class='ident'>experimental</span>]</span> <span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>sortedset</span>;
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>sortedmap</span>;
+<span class='kw'>pub</span> <span class='kw'>mod</span> <span class='ident'>sortedset</span>;
 </pre>
 </section>
     <section id='search' class="content hidden"></section>

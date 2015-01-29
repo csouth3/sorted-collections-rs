@@ -558,31 +558,6 @@
 <span id="516">516</span>
 <span id="517">517</span>
 <span id="518">518</span>
-<span id="519">519</span>
-<span id="520">520</span>
-<span id="521">521</span>
-<span id="522">522</span>
-<span id="523">523</span>
-<span id="524">524</span>
-<span id="525">525</span>
-<span id="526">526</span>
-<span id="527">527</span>
-<span id="528">528</span>
-<span id="529">529</span>
-<span id="530">530</span>
-<span id="531">531</span>
-<span id="532">532</span>
-<span id="533">533</span>
-<span id="534">534</span>
-<span id="535">535</span>
-<span id="536">536</span>
-<span id="537">537</span>
-<span id="538">538</span>
-<span id="539">539</span>
-<span id="540">540</span>
-<span id="541">541</span>
-<span id="542">542</span>
-<span id="543">543</span>
 </pre><pre class='rust '>
 <span class='comment'>// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or</span>
 <span class='comment'>// http://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license</span>
@@ -595,17 +570,14 @@
 
 <span class='doccomment'>/// An extension trait for a `Set` whose elements have a defined total ordering.</span>
 <span class='doccomment'>/// This trait provides convenience methods which take advantage of the set&#39;s ordering.</span>
-<span class='attribute'>#[<span class='ident'>experimental</span>]</span>
 <span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>SortedSetExt</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>
     <span class='kw'>where</span> <span class='ident'>T</span>: <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Ord</span>
 {
     <span class='doccomment'>/// An iterator over immutable references to this set&#39;s elements within a given range.</span>
-    <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
     <span class='kw'>type</span> <span class='ident'>RangeIter</span>;
 
     <span class='doccomment'>/// A by-value iterator yielding elements within a given range which have just been removed</span>
     <span class='doccomment'>/// from this set.</span>
-    <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
     <span class='kw'>type</span> <span class='ident'>RangeRemoveIter</span>;
 
     <span class='doccomment'>/// Returns an immutable reference to the first (least) element currently in this set.</span>
@@ -624,7 +596,6 @@
     <span class='doccomment'>///     assert_eq!(set.first().unwrap(), &amp;1u32);</span>
     <span class='doccomment'>/// }</span>
     <span class='doccomment'>/// ```</span>
-    <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>first</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>T</span><span class='op'>&gt;</span>;
 
     <span class='doccomment'>/// Removes and returns the first (least) element currently in this set.</span>
@@ -644,7 +615,6 @@
     <span class='doccomment'>///     assert_eq!(set.into_iter().collect::&lt;Vec&lt;u32&gt;&gt;(), vec![2u32, 3, 4, 5]);</span>
     <span class='doccomment'>/// }</span>
     <span class='doccomment'>/// ```</span>
-    <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>first_remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>;
 
     <span class='doccomment'>/// Returns an immutable reference to the last (greatest) element currently in this set.</span>
@@ -663,7 +633,6 @@
     <span class='doccomment'>///     assert_eq!(set.last().unwrap(), &amp;5u32);</span>
     <span class='doccomment'>/// }</span>
     <span class='doccomment'>/// ```</span>
-    <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>last</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>T</span><span class='op'>&gt;</span>;
 
     <span class='doccomment'>/// Removes and returns the last (greatest) element currently in this set.</span>
@@ -683,7 +652,6 @@
     <span class='doccomment'>///     assert_eq!(set.into_iter().collect::&lt;Vec&lt;u32&gt;&gt;(), vec![1u32, 2, 3, 4]);</span>
     <span class='doccomment'>/// }</span>
     <span class='doccomment'>/// ```</span>
-    <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>last_remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>;
 
     <span class='doccomment'>/// Returns an immutable reference to the least element in this set greater than or equal to `elem`.</span>
@@ -702,7 +670,6 @@
     <span class='doccomment'>///     assert_eq!(set.ceiling(&amp;3).unwrap(), &amp;3u32);</span>
     <span class='doccomment'>/// }</span>
     <span class='doccomment'>/// ```</span>
-    <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>ceiling</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>elem</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>T</span><span class='op'>&gt;</span>;
 
     <span class='doccomment'>/// Removes and returns the least element in this set greater than or equal to `elem`.</span>
@@ -722,7 +689,6 @@
     <span class='doccomment'>///     assert_eq!(set.into_iter().collect::&lt;Vec&lt;u32&gt;&gt;(), vec![1u32, 2, 4, 5]);</span>
     <span class='doccomment'>/// }</span>
     <span class='doccomment'>/// ```</span>
-    <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>ceiling_remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>elem</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>;
 
     <span class='doccomment'>/// Returns an immutable reference to the greatest element in this set less than or equal to `elem`.</span>
@@ -741,7 +707,6 @@
     <span class='doccomment'>///     assert_eq!(set.floor(&amp;3).unwrap(), &amp;3u32);</span>
     <span class='doccomment'>/// }</span>
     <span class='doccomment'>/// ```</span>
-    <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>floor</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>elem</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>T</span><span class='op'>&gt;</span>;
 
     <span class='doccomment'>/// Removes and returns the greatest element in this set less than or equal to `elem`.</span>
@@ -761,7 +726,6 @@
     <span class='doccomment'>///     assert_eq!(set.into_iter().collect::&lt;Vec&lt;u32&gt;&gt;(), vec![1u32, 2, 4, 5]);</span>
     <span class='doccomment'>/// }</span>
     <span class='doccomment'>/// ```</span>
-    <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>floor_remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>elem</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>;
 
     <span class='doccomment'>/// Returns an immutable reference to the least element in this set strictly greater than `elem`.</span>
@@ -780,7 +744,6 @@
     <span class='doccomment'>///     assert_eq!(set.higher(&amp;3).unwrap(), &amp;4u32);</span>
     <span class='doccomment'>/// }</span>
     <span class='doccomment'>/// ```</span>
-    <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>higher</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>elem</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>T</span><span class='op'>&gt;</span>;
 
     <span class='doccomment'>/// Removes and returns the least element in this set strictly greater than `elem`.</span>
@@ -800,7 +763,6 @@
     <span class='doccomment'>///     assert_eq!(set.into_iter().collect::&lt;Vec&lt;u32&gt;&gt;(), vec![1u32, 2, 3, 5]);</span>
     <span class='doccomment'>/// }</span>
     <span class='doccomment'>/// ```</span>
-    <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>higher_remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>elem</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>;
 
     <span class='doccomment'>/// Returns an immutable reference to the greatest element in this set strictly less than `elem`.</span>
@@ -819,7 +781,6 @@
     <span class='doccomment'>///     assert_eq!(set.lower(&amp;3).unwrap(), &amp;2u32);</span>
     <span class='doccomment'>/// }</span>
     <span class='doccomment'>/// ```</span>
-    <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>lower</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>elem</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>T</span><span class='op'>&gt;</span>;
 
     <span class='doccomment'>/// Removes and returns the greatest element in this set strictly less than `elem`.</span>
@@ -839,7 +800,6 @@
     <span class='doccomment'>///     assert_eq!(set.into_iter().collect::&lt;Vec&lt;u32&gt;&gt;(), vec![1u32, 3, 4, 5]);</span>
     <span class='doccomment'>/// }</span>
     <span class='doccomment'>/// ```</span>
-    <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>lower_remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>elem</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>;
 
     <span class='doccomment'>/// Returns an iterator over immutable references to the elements</span>
@@ -858,7 +818,6 @@
     <span class='doccomment'>///     assert_eq!(set.range_iter(&amp;2, &amp;4).map(|&amp;x| x).collect::&lt;Vec&lt;u32&gt;&gt;(), vec![2u32, 3]);</span>
     <span class='doccomment'>/// }</span>
     <span class='doccomment'>/// ```</span>
-    <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>range_iter</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>from_elem</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>, <span class='ident'>to_elem</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='ident'>Self</span>::<span class='ident'>RangeIter</span>;
 
     <span class='doccomment'>/// Removes the elements of this set in the range [from_elem, to_elem), and returns</span>
@@ -878,7 +837,6 @@
     <span class='doccomment'>///     assert_eq!(set.into_iter().collect::&lt;Vec&lt;u32&gt;&gt;(), vec![1u32, 4, 5]);</span>
     <span class='doccomment'>/// }</span>
     <span class='doccomment'>/// ```</span>
-    <span class='attribute'>#[<span class='ident'>experimental</span>]</span>
     <span class='kw'>fn</span> <span class='ident'>range_remove_iter</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>from_elem</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>, <span class='ident'>to_elem</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='ident'>Self</span>::<span class='ident'>RangeRemoveIter</span>;
 }
 
@@ -966,7 +924,6 @@
 }
 
 <span class='comment'>// An impl of SortedSetExt for the standard library BTreeSet</span>
-<span class='attribute'>#[<span class='ident'>experimental</span>]</span>
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> <span class='ident'>SortedSetExt</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='kw'>for</span> <span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>
     <span class='kw'>where</span> <span class='ident'>T</span>: <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Ord</span>
 {
@@ -988,40 +945,33 @@
     }
 }
 
-<span class='attribute'>#[<span class='ident'>experimental</span>]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>BTreeSetRangeIter</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span>: <span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
     <span class='ident'>iter</span>: <span class='ident'>btree_set</span>::<span class='ident'>Range</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span>
 }
 
-<span class='attribute'>#[<span class='ident'>experimental</span>]</span>
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> <span class='ident'>Iterator</span> <span class='kw'>for</span> <span class='ident'>BTreeSetRangeIter</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>type</span> <span class='ident'>Item</span> <span class='op'>=</span> <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>T</span>;
 
     <span class='kw'>fn</span> <span class='ident'>next</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>T</span><span class='op'>&gt;</span> { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>next</span>() }
     <span class='kw'>fn</span> <span class='ident'>size_hint</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> (<span class='ident'>usize</span>, <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>) { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>size_hint</span>() }
 }
-<span class='attribute'>#[<span class='ident'>experimental</span>]</span>
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> <span class='ident'>DoubleEndedIterator</span> <span class='kw'>for</span> <span class='ident'>BTreeSetRangeIter</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>fn</span> <span class='ident'>next_back</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>T</span><span class='op'>&gt;</span> { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>next_back</span>() }
 }
 
-<span class='attribute'>#[<span class='ident'>experimental</span>]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>BTreeSetRangeRemoveIter</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='ident'>iter</span>: <span class='ident'>btree_set</span>::<span class='ident'>IntoIter</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>
 }
 
-<span class='attribute'>#[<span class='ident'>experimental</span>]</span>
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='ident'>Iterator</span> <span class='kw'>for</span> <span class='ident'>BTreeSetRangeRemoveIter</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>type</span> <span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>T</span>;
 
     <span class='kw'>fn</span> <span class='ident'>next</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>next</span>() }
     <span class='kw'>fn</span> <span class='ident'>size_hint</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> (<span class='ident'>usize</span>, <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>) { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>size_hint</span>() }
 }
-<span class='attribute'>#[<span class='ident'>experimental</span>]</span>
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='ident'>DoubleEndedIterator</span> <span class='kw'>for</span> <span class='ident'>BTreeSetRangeRemoveIter</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>fn</span> <span class='ident'>next_back</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>next_back</span>() }
 }
-<span class='attribute'>#[<span class='ident'>experimental</span>]</span>
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='ident'>ExactSizeIterator</span> <span class='kw'>for</span> <span class='ident'>BTreeSetRangeRemoveIter</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>fn</span> <span class='ident'>len</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>len</span>() }
 }

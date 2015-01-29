@@ -41,10 +41,10 @@
     </nav>
 
     <section id='main' class="content trait">
-<h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>sorted-collections</a>::<wbr><a href='index.html'>sortedmap</a>::<wbr><a class='trait' href=''>SortedMapExt</a><wbr><a class='stability Experimental' title=''>Experimental</a></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>sorted-collections</a>::<wbr><a href='index.html'>sortedmap</a>::<wbr><a class='trait' href=''>SortedMapExt</a><wbr></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]
             </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-14' href='../../src/sorted-collections/sortedmap.rs.html#13-356'>[src]</a></span></h1>
+        </span><a id='src-14' href='../../src/sorted-collections/sortedmap.rs.html#12-337'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait SortedMapExt&lt;K, V&gt; <span class='where'>where K: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a>, V: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a></span> {
     type RangeIter;
     type RangeIterMut;
@@ -79,7 +79,7 @@ which have just been removed from this map.</p>
 </div></div>
             <h2 id='required-methods'>Required Methods</h2>
             <div class='methods'>
-        <h3 id='tymethod.first' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.first' class='fnname'>first</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;K&gt;</code></h3><div class='docblock'><p>Returns an immutable reference to the first (least) key currently in this map.
+        <h3 id='tymethod.first' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.first' class='fnname'>first</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;K&gt;</code></h3><div class='docblock'><p>Returns an immutable reference to the first (least) key currently in this map.
 Returns <code>None</code> if this map is empty.</p>
 
 <h1 id="examples" class='section-header'><a
@@ -95,7 +95,7 @@ Returns <code>None</code> if this map is empty.</p>
     <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>first</span>().<span class='ident'>unwrap</span>(), <span class='kw-2'>&amp;</span><span class='number'>1u32</span>);
 }
 </pre>
-</div><h3 id='tymethod.first_remove' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.first_remove' class='fnname'>first_remove</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;</code></h3><div class='docblock'><p>Removes and returns the first (least) key currently in this map and its associated value.
+</div><h3 id='tymethod.first_remove' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.first_remove' class='fnname'>first_remove</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;</code></h3><div class='docblock'><p>Removes and returns the first (least) key currently in this map and its associated value.
 Returns <code>None</code> if this map is empty.</p>
 
 <h1 id="examples" class='section-header'><a
@@ -113,7 +113,7 @@ Returns <code>None</code> if this map is empty.</p>
         <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>2u32</span>, <span class='number'>2u32</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)]);
 }
 </pre>
-</div><h3 id='tymethod.last' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.last' class='fnname'>last</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;K&gt;</code></h3><div class='docblock'><p>Returns an immutable reference to the last (greatest) key currently in this map.
+</div><h3 id='tymethod.last' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.last' class='fnname'>last</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;K&gt;</code></h3><div class='docblock'><p>Returns an immutable reference to the last (greatest) key currently in this map.
 Returns <code>None</code> if this map is empty.</p>
 
 <h1 id="examples" class='section-header'><a
@@ -129,7 +129,7 @@ Returns <code>None</code> if this map is empty.</p>
     <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>last</span>().<span class='ident'>unwrap</span>(), <span class='kw-2'>&amp;</span><span class='number'>5u32</span>);
 }
 </pre>
-</div><h3 id='tymethod.last_remove' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.last_remove' class='fnname'>last_remove</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;</code></h3><div class='docblock'><p>Removes and returns the last (greatest) key currently in this map and its associated value.
+</div><h3 id='tymethod.last_remove' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.last_remove' class='fnname'>last_remove</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;</code></h3><div class='docblock'><p>Removes and returns the last (greatest) key currently in this map and its associated value.
 Returns <code>None</code> if this map is empty.</p>
 
 <h1 id="examples" class='section-header'><a
@@ -147,7 +147,7 @@ Returns <code>None</code> if this map is empty.</p>
         <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>)]);
 }
 </pre>
-</div><h3 id='tymethod.ceiling' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.ceiling' class='fnname'>ceiling</a>(&amp;self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;K&gt;</code></h3><div class='docblock'><p>Returns an immutable reference to the least key in this map greater than or equal to <code>key</code>.
+</div><h3 id='tymethod.ceiling' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.ceiling' class='fnname'>ceiling</a>(&amp;self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;K&gt;</code></h3><div class='docblock'><p>Returns an immutable reference to the least key in this map greater than or equal to <code>key</code>.
 Returns <code>None</code> if there is no such key.</p>
 
 <h1 id="examples" class='section-header'><a
@@ -163,7 +163,7 @@ Returns <code>None</code> if there is no such key.</p>
     <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>ceiling</span>(<span class='kw-2'>&amp;</span><span class='number'>3</span>).<span class='ident'>unwrap</span>(), <span class='kw-2'>&amp;</span><span class='number'>3u32</span>);
 }
 </pre>
-</div><h3 id='tymethod.ceiling_remove' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.ceiling_remove' class='fnname'>ceiling_remove</a>(&amp;mut self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;</code></h3><div class='docblock'><p>Removes and returns the least key in this map greater than or equal to <code>key</code> and its
+</div><h3 id='tymethod.ceiling_remove' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.ceiling_remove' class='fnname'>ceiling_remove</a>(&amp;mut self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;</code></h3><div class='docblock'><p>Removes and returns the least key in this map greater than or equal to <code>key</code> and its
 associated value.
 Returns <code>None</code> if there is no such element.</p>
 
@@ -182,7 +182,7 @@ Returns <code>None</code> if there is no such element.</p>
         <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)]);
 }
 </pre>
-</div><h3 id='tymethod.floor' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.floor' class='fnname'>floor</a>(&amp;self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;K&gt;</code></h3><div class='docblock'><p>Returns an immutable reference to the greatest key in this map less than or equal to <code>key</code>.
+</div><h3 id='tymethod.floor' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.floor' class='fnname'>floor</a>(&amp;self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;K&gt;</code></h3><div class='docblock'><p>Returns an immutable reference to the greatest key in this map less than or equal to <code>key</code>.
 Returns <code>None</code> if there is no such key.</p>
 
 <h1 id="examples" class='section-header'><a
@@ -198,7 +198,7 @@ Returns <code>None</code> if there is no such key.</p>
     <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>floor</span>(<span class='kw-2'>&amp;</span><span class='number'>3</span>).<span class='ident'>unwrap</span>(), <span class='kw-2'>&amp;</span><span class='number'>3u32</span>);
 }
 </pre>
-</div><h3 id='tymethod.floor_remove' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.floor_remove' class='fnname'>floor_remove</a>(&amp;mut self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;</code></h3><div class='docblock'><p>Removes and returns the greatest key in this map less than or equal to <code>key</code> and its
+</div><h3 id='tymethod.floor_remove' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.floor_remove' class='fnname'>floor_remove</a>(&amp;mut self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;</code></h3><div class='docblock'><p>Removes and returns the greatest key in this map less than or equal to <code>key</code> and its
 associated value.
 Returns <code>None</code> if there is no such element.</p>
 
@@ -217,7 +217,7 @@ Returns <code>None</code> if there is no such element.</p>
         <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)]);
 }
 </pre>
-</div><h3 id='tymethod.higher' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.higher' class='fnname'>higher</a>(&amp;self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;K&gt;</code></h3><div class='docblock'><p>Returns an immutable reference to the least key in this map strictly greater than <code>key</code>.
+</div><h3 id='tymethod.higher' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.higher' class='fnname'>higher</a>(&amp;self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;K&gt;</code></h3><div class='docblock'><p>Returns an immutable reference to the least key in this map strictly greater than <code>key</code>.
 Returns <code>None</code> if there is no such key.</p>
 
 <h1 id="examples" class='section-header'><a
@@ -233,7 +233,7 @@ Returns <code>None</code> if there is no such key.</p>
     <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>higher</span>(<span class='kw-2'>&amp;</span><span class='number'>3</span>).<span class='ident'>unwrap</span>(), <span class='kw-2'>&amp;</span><span class='number'>4u32</span>);
 }
 </pre>
-</div><h3 id='tymethod.higher_remove' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.higher_remove' class='fnname'>higher_remove</a>(&amp;mut self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;</code></h3><div class='docblock'><p>Removes and returns the least key in this map strictly greater than <code>key</code> and its
+</div><h3 id='tymethod.higher_remove' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.higher_remove' class='fnname'>higher_remove</a>(&amp;mut self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;</code></h3><div class='docblock'><p>Removes and returns the least key in this map strictly greater than <code>key</code> and its
 associated value.
 Returns <code>None</code> if there is no such element.</p>
 
@@ -252,7 +252,7 @@ Returns <code>None</code> if there is no such element.</p>
         <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>5</span>, <span class='number'>5</span>)]);
 }
 </pre>
-</div><h3 id='tymethod.lower' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.lower' class='fnname'>lower</a>(&amp;self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;K&gt;</code></h3><div class='docblock'><p>Returns an immutable reference to the greatest key in this map strictly less than <code>key</code>.
+</div><h3 id='tymethod.lower' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.lower' class='fnname'>lower</a>(&amp;self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;K&gt;</code></h3><div class='docblock'><p>Returns an immutable reference to the greatest key in this map strictly less than <code>key</code>.
 Returns <code>None</code> if there is no such key.</p>
 
 <h1 id="examples" class='section-header'><a
@@ -268,7 +268,7 @@ Returns <code>None</code> if there is no such key.</p>
     <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>lower</span>(<span class='kw-2'>&amp;</span><span class='number'>3</span>).<span class='ident'>unwrap</span>(), <span class='kw-2'>&amp;</span><span class='number'>2u32</span>);
 }
 </pre>
-</div><h3 id='tymethod.lower_remove' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.lower_remove' class='fnname'>lower_remove</a>(&amp;mut self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;</code></h3><div class='docblock'><p>Removes and returns the greatest key in this map strictly less than <code>key</code> and its
+</div><h3 id='tymethod.lower_remove' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.lower_remove' class='fnname'>lower_remove</a>(&amp;mut self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;</code></h3><div class='docblock'><p>Removes and returns the greatest key in this map strictly less than <code>key</code> and its
 associated value.
 Returns <code>None</code> if there is no such element.</p>
 
@@ -287,7 +287,7 @@ Returns <code>None</code> if there is no such element.</p>
         <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)]);
 }
 </pre>
-</div><h3 id='tymethod.range_iter' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.range_iter' class='fnname'>range_iter</a>(&amp;self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMapExt.html' title='sorted-collections::sortedmap::SortedMapExt'>RangeIter</a></code></h3><div class='docblock'><p>Returns an iterator over pairs of immutable key-value references into this map,
+</div><h3 id='tymethod.range_iter' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.range_iter' class='fnname'>range_iter</a>(&amp;self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMapExt.html' title='sorted-collections::sortedmap::SortedMapExt'>RangeIter</a></code></h3><div class='docblock'><p>Returns an iterator over pairs of immutable key-value references into this map,
 with the pairs being iterated being those whose keys are in the range [from_key, to_key).</p>
 
 <h1 id="examples" class='section-header'><a
@@ -304,7 +304,7 @@ with the pairs being iterated being those whose keys are in the range [from_key,
         <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>2u32</span>, <span class='number'>2u32</span>), (<span class='number'>3</span>, <span class='number'>3</span>)]);
 }
 </pre>
-</div><h3 id='tymethod.range_iter_mut' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.range_iter_mut' class='fnname'>range_iter_mut</a>(&amp;mut self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMapExt.html' title='sorted-collections::sortedmap::SortedMapExt'>RangeIterMut</a></code></h3><div class='docblock'><p>Returns an iterator over pairs of immutable-key/mutable-value references into this map,
+</div><h3 id='tymethod.range_iter_mut' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.range_iter_mut' class='fnname'>range_iter_mut</a>(&amp;mut self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMapExt.html' title='sorted-collections::sortedmap::SortedMapExt'>RangeIterMut</a></code></h3><div class='docblock'><p>Returns an iterator over pairs of immutable-key/mutable-value references into this map,
 with the pairs being iterated being those whose keys are in the range [from_key, to_key).</p>
 
 <h1 id="examples" class='section-header'><a
@@ -324,7 +324,7 @@ with the pairs being iterated being those whose keys are in the range [from_key,
         <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>3</span>), (<span class='number'>3</span>, <span class='number'>4</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)]);
 }
 </pre>
-</div><h3 id='tymethod.range_remove_iter' class='method'><a class='stability Experimental' title='Experimental'></a><code>fn <a href='#tymethod.range_remove_iter' class='fnname'>range_remove_iter</a>(&amp;mut self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMapExt.html' title='sorted-collections::sortedmap::SortedMapExt'>RangeRemoveIter</a></code></h3><div class='docblock'><p>Removes the key-value pairs of this map whose keys lie in the range [from_key, to_key),
+</div><h3 id='tymethod.range_remove_iter' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.range_remove_iter' class='fnname'>range_remove_iter</a>(&amp;mut self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMapExt.html' title='sorted-collections::sortedmap::SortedMapExt'>RangeRemoveIter</a></code></h3><div class='docblock'><p>Removes the key-value pairs of this map whose keys lie in the range [from_key, to_key),
 and returns a by-value iterator over the removed pairs.</p>
 
 <h1 id="examples" class='section-header'><a
@@ -346,7 +346,7 @@ and returns a by-value iterator over the removed pairs.</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
-    <li><a class='stability Experimental' title='Experimental'></a><code>impl&lt;'a, K, V&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMapExt.html' title='sorted-collections::sortedmap::SortedMapExt'>SortedMapExt</a>&lt;K, V&gt; for <a class='struct' href='http://doc.rust-lang.org/nightly/collections/btree/map/struct.BTreeMap.html' title='collections::btree::map::BTreeMap'>BTreeMap</a>&lt;K, V&gt; <span class='where'>where K: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a>, V: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a></span></code></li>
+    <li><a class='stability Unmarked' title='No stability level'></a><code>impl&lt;'a, K, V&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMapExt.html' title='sorted-collections::sortedmap::SortedMapExt'>SortedMapExt</a>&lt;K, V&gt; for <a class='struct' href='http://doc.rust-lang.org/nightly/collections/btree/map/struct.BTreeMap.html' title='collections::btree::map::BTreeMap'>BTreeMap</a>&lt;K, V&gt; <span class='where'>where K: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a>, V: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a></span></code></li>
 </ul><script type="text/javascript" async
                               src="../../implementors/sorted-collections/sortedmap/trait.SortedMapExt.js">
                       </script></section>
