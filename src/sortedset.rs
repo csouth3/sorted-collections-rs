@@ -4,20 +4,17 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use std::collections::Bound::{Included, Excluded};
+use std::collections::Bound::{Excluded, Included, Unbounded, self};
 use std::collections::btree_set::{BTreeSet, self};
 
 /// An extension trait for a `Set` whose elements have a defined total ordering.
-/// This trait provides convenience methods which take advantage of the set's ordering.
+/// This trait defines convenience methods which take advantage of the set's ordering.
 pub trait SortedSetExt<T>
     where T: Clone + Ord
 {
-    /// An iterator over immutable references to this set's elements within a given range.
-    type RangeIter;
-
     /// A by-value iterator yielding elements within a given range which have just been removed
     /// from this set.
-    type RangeRemoveIter;
+    type RangeRemove;
 
     /// Returns an immutable reference to the first (least) element currently in this set.
     /// Returns `None` if this set is empty.
@@ -241,47 +238,36 @@ pub trait SortedSetExt<T>
     /// ```
     fn lower_remove(&mut self, elem: &T) -> Option<T>;
 
-    /// Returns an iterator over immutable references to the elements
-    /// of this set in the range [from_elem, to_elem).
+    /// Removes the elements of this set in the range starting at `from_elem` and ending at
+    /// `to_elem`, and returns a double-ended by-value iterator yielding the removed elements.
+    ///
+    /// If `from_elem` is `Unbounded`, then it will be treated as "negative infinity", and
+    /// if `to_elem` is `Unbounded`, then it will be treated as "positive infinity".  Thus,
+    /// `range_remove(Unbounded, Unbounded)` will clear the set and return a by-value
+    /// iterator over all of the elements which were in it.
     ///
     /// # Examples
     ///
     /// ```
     /// extern crate "sorted-collections" as sorted_collections;
     ///
-    /// use std::collections::BTreeSet;
-    /// use sorted_collections::SortedSetExt;
-    ///
-    /// fn main() {
-    ///     let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-    ///     assert_eq!(set.range_iter(&2, &4).map(|&x| x).collect::<Vec<u32>>(), vec![2u32, 3]);
-    /// }
-    /// ```
-    fn range_iter(&self, from_elem: &T, to_elem: &T) -> Self::RangeIter;
-
-    /// Removes the elements of this set in the range [from_elem, to_elem), and returns
-    /// a by-value iterator over the removed elements.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// extern crate "sorted-collections" as sorted_collections;
-    ///
+    /// use std::collections::Bound::{Excluded, Included};
     /// use std::collections::BTreeSet;
     /// use sorted_collections::SortedSetExt;
     ///
     /// fn main() {
     ///     let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-    ///     assert_eq!(set.range_remove_iter(&2, &4).collect::<Vec<u32>>(), vec![2u32, 3]);
+    ///     assert_eq!(set.range_remove(Included(&2), Excluded(&4)).collect::<Vec<u32>>(),
+    ///         vec![2u32, 3]);
     ///     assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 4, 5]);
     /// }
     /// ```
-    fn range_remove_iter(&mut self, from_elem: &T, to_elem: &T) -> Self::RangeRemoveIter;
+    fn range_remove(&mut self, Bound<&T>, to_elem: Bound<&T>) -> Self::RangeRemove;
 }
 
 // A generic reusable impl of SortedSetExt.
 macro_rules! sortedset_impl {
-    ($typ:ty) => (
+    ($typ:ty, $rangeremove:ident, $rangeremoveret:ty) => (
         fn first(&self) -> Option<&T> {
             self.iter().min()
         }
@@ -309,7 +295,7 @@ macro_rules! sortedset_impl {
         }
 
         fn ceiling(&self, elem: &T) -> Option<&T> {
-            self.range_iter(elem, self.last().unwrap()).min()
+            self.range(Included(elem), Unbounded).min()
         }
 
         fn ceiling_remove(&mut self, elem: &T) -> Option<T> {
@@ -322,7 +308,7 @@ macro_rules! sortedset_impl {
         }
 
         fn floor(&self, elem: &T) -> Option<&T> {
-            self.iter().filter(|&x| x <= elem).max()
+            self.range(Unbounded, Included(elem)).max()
         }
 
         fn floor_remove(&mut self, elem: &T) -> Option<T> {
@@ -335,7 +321,7 @@ macro_rules! sortedset_impl {
         }
 
         fn higher(&self, elem: &T) -> Option<&T> {
-            self.iter().filter(|&x| x > elem).min()
+            self.range(Excluded(elem), Unbounded).min()
         }
 
         fn higher_remove(&mut self, elem: &T) -> Option<T> {
@@ -348,7 +334,7 @@ macro_rules! sortedset_impl {
         }
 
         fn lower(&self, elem: &T) -> Option<&T> {
-            self.range_iter(self.first().unwrap(), elem).max()
+            self.range(Unbounded, Excluded(elem)).max()
         }
 
         fn lower_remove(&mut self, elem: &T) -> Option<T> {
@@ -359,6 +345,14 @@ macro_rules! sortedset_impl {
                 None
             }
         }
+
+        fn range_remove(&mut self, from_elem: Bound<&T>, to_elem: Bound<&T>) -> $rangeremoveret {
+            let ret: $typ = self.range(from_elem, to_elem).cloned().collect();
+            for elem in ret.iter() {
+                assert!(self.remove(elem));
+            }
+            $rangeremove { iter: ret.into_iter() }
+        }
     );
 }
 
@@ -366,57 +360,31 @@ macro_rules! sortedset_impl {
 impl<'a, T> SortedSetExt<T> for BTreeSet<T>
     where T: Clone + Ord
 {
-    type RangeIter = BTreeSetRangeIter<'a, T>;
-    type RangeRemoveIter = BTreeSetRangeRemoveIter<T>;
+    type RangeRemove = BTreeSetRangeRemove<T>;
 
-    sortedset_impl!(BTreeSet<T>);
-
-    fn range_iter(&self, from_elem: &T, to_elem: &T) -> BTreeSetRangeIter<T> {
-        BTreeSetRangeIter { iter: self.range(Included(from_elem), Excluded(to_elem)) }
-    }
-
-    fn range_remove_iter(&mut self, from_elem: &T, to_elem: &T) -> BTreeSetRangeRemoveIter<T> {
-        let ret: BTreeSet<T> = self.range_iter(from_elem, to_elem).cloned().collect();
-        for elem in ret.iter() {
-            assert!(self.remove(elem));
-        }
-        BTreeSetRangeRemoveIter { iter: ret.into_iter() }
-    }
+    sortedset_impl!(BTreeSet<T>, BTreeSetRangeRemove, BTreeSetRangeRemove<T>);
 }
 
-pub struct BTreeSetRangeIter<'a, T: 'a> {
-    iter: btree_set::Range<'a, T>
-}
-
-impl<'a, T> Iterator for BTreeSetRangeIter<'a, T> {
-    type Item = &'a T;
-
-    fn next(&mut self) -> Option<&'a T> { self.iter.next() }
-    fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
-}
-impl<'a, T> DoubleEndedIterator for BTreeSetRangeIter<'a, T> {
-    fn next_back(&mut self) -> Option<&'a T> { self.iter.next_back() }
-}
-
-pub struct BTreeSetRangeRemoveIter<T> {
+pub struct BTreeSetRangeRemove<T> {
     iter: btree_set::IntoIter<T>
 }
 
-impl<T> Iterator for BTreeSetRangeRemoveIter<T> {
+impl<T> Iterator for BTreeSetRangeRemove<T> {
     type Item = T;
 
     fn next(&mut self) -> Option<T> { self.iter.next() }
     fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
 }
-impl<T> DoubleEndedIterator for BTreeSetRangeRemoveIter<T> {
+impl<T> DoubleEndedIterator for BTreeSetRangeRemove<T> {
     fn next_back(&mut self) -> Option<T> { self.iter.next_back() }
 }
-impl<T> ExactSizeIterator for BTreeSetRangeRemoveIter<T> {
+impl<T> ExactSizeIterator for BTreeSetRangeRemove<T> {
     fn len(&self) -> usize { self.iter.len() }
 }
 
 #[cfg(test)]
 mod tests {
+    use std::collections::Bound::{Excluded, Included};
     use std::collections::BTreeSet;
 
     use super::SortedSetExt;
@@ -504,15 +472,10 @@ mod tests {
     }
 
     #[test]
-    fn test_range_iter() {
-        let set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        assert_eq!(set.range_iter(&2, &4).map(|&x| x).collect::<Vec<u32>>(), vec![2u32, 3]);
-    }
-
-    #[test]
-    fn test_range_remove_iter() {
+    fn test_range_remove() {
         let mut set: BTreeSet<u32> = vec![1u32, 2, 3, 4, 5].into_iter().collect();
-        assert_eq!(set.range_remove_iter(&2, &4).collect::<Vec<u32>>(), vec![2u32, 3]);
+        assert_eq!(set.range_remove(Included(&2), Excluded(&4)).collect::<Vec<u32>>(),
+            vec![2u32, 3]);
         assert_eq!(set.into_iter().collect::<Vec<u32>>(), vec![1u32, 4, 5]);
     }
 }

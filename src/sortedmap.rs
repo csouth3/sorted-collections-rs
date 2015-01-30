@@ -4,26 +4,18 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use std::collections::Bound::{Included, Excluded};
+use std::collections::Bound;
 use std::collections::btree_map::{BTreeMap, self};
 
 /// An extension trait for a `Map` whose keys have a defined total ordering.
-/// This trait provides convenience methods which take advantage of the map's ordering.
+/// This trait defines convenience methods which take advantage of the map's ordering.
 pub trait SortedMapExt<K, V>
     where K: Clone + Ord,
           V: Clone 
 {
-    /// An iterator over immutable references to the key-value pairs in this map whose keys fall
-    /// within a given range.
-    type RangeIter;
-
-    /// An iterator over mutable references to the key-value pairs in this map whose keys fall
-    /// within a given range.
-    type RangeIterMut;
-
     /// A by-value iterator yielding key-value pairs whose keys fall within a given range and
     /// which have just been removed from this map.
-    type RangeRemoveIter;
+    type RangeRemove;
 
     /// Returns an immutable reference to the first (least) key currently in this map.
     /// Returns `None` if this map is empty.
@@ -270,75 +262,38 @@ pub trait SortedMapExt<K, V>
     /// ```
     fn lower_remove(&mut self, key: &K) -> Option<(K, V)>;
 
-    /// Returns an iterator over pairs of immutable key-value references into this map,
-    /// with the pairs being iterated being those whose keys are in the range [from_key, to_key).
+    /// Removes the key-value pairs of this map whose keys lie in the range starting at `from_key`
+    /// and ending at `to_key`, and returns a double-ended by-value iterator over the removed pairs.
+    ///
+    /// If `from_key` is `Unbounded`, then it will be treated as "negative infinity", and
+    /// if `to_key` is `Unbounded`, then it will be treated as "positive infinity".  Thus,
+    /// `range_remove(Unbounded, Unbounded)` will clear the map and return a by-value
+    /// iterator over all of the pairs which were in it.
     ///
     /// # Examples
     ///
     /// ```
     /// extern crate "sorted-collections" as sorted_collections;
     ///
-    /// use std::collections::BTreeMap;
-    /// use sorted_collections::SortedMapExt;
-    ///
-    /// fn main() {
-    ///     let map: BTreeMap<u32, u32> =
-    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-    ///     assert_eq!(map.range_iter(&2, &4).map(|(&k, &v)| (k, v)).collect::<Vec<(u32, u32)>>(),
-    ///         vec![(2u32, 2u32), (3, 3)]);
-    /// }
-    /// ```
-    fn range_iter(&self, from_key: &K, to_key: &K) -> Self::RangeIter;
-
-    /// Returns an iterator over pairs of immutable-key/mutable-value references into this map,
-    /// with the pairs being iterated being those whose keys are in the range [from_key, to_key).
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// extern crate "sorted-collections" as sorted_collections;
-    ///
+    /// use std::collections::Bound::{Excluded, Included};
     /// use std::collections::BTreeMap;
     /// use sorted_collections::SortedMapExt;
     ///
     /// fn main() {
     ///     let mut map: BTreeMap<u32, u32> =
     ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-    ///     for (_, v) in map.range_iter_mut(&2, &4) {
-    ///         *v += 1;
-    ///     }
-    ///     assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
-    ///         vec![(1u32, 1u32), (2, 3), (3, 4), (4, 4), (5, 5)]);
-    /// }
-    /// ```
-    fn range_iter_mut(&mut self, from_key: &K, to_key: &K) -> Self::RangeIterMut;
-
-    /// Removes the key-value pairs of this map whose keys lie in the range [from_key, to_key),
-    /// and returns a by-value iterator over the removed pairs.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// extern crate "sorted-collections" as sorted_collections;
-    ///
-    /// use std::collections::BTreeMap;
-    /// use sorted_collections::SortedMapExt;
-    ///
-    /// fn main() {
-    ///     let mut map: BTreeMap<u32, u32> =
-    ///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-    ///     assert_eq!(map.range_remove_iter(&2, &4).collect::<Vec<(u32, u32)>>(),
+    ///     assert_eq!(map.range_remove(Included(&2), Excluded(&4)).collect::<Vec<(u32, u32)>>(),
     ///         vec![(2u32, 2u32), (3, 3)]);
     ///     assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
     ///         vec![(1u32, 1u32), (4, 4), (5, 5)]);
     /// }
     /// ```
-    fn range_remove_iter(&mut self, from_key: &K, to_key: &K) -> Self::RangeRemoveIter;
+    fn range_remove(&mut self, from_key: Bound<&K>, to_key: Bound<&K>) -> Self::RangeRemove;
 }
 
 // A generic reusable impl of SortedMapExt.
 macro_rules! sortedmap_impl {
-    ($typ:ty) => (
+    ($typ:ty, $rangeremove:ident, $rangeremoveret:ty) => (
         fn first(&self) -> Option<&K> {
             self.keys().min()
         }
@@ -422,6 +377,17 @@ macro_rules! sortedmap_impl {
                 None
             }
         }
+
+        fn range_remove(&mut self, from_key: Bound<&K>, to_key: Bound<&K>) -> $rangeremoveret {
+            let ret: $typ = self.range(from_key, to_key)
+                                .map(|(ref k, ref v)| ((**k).clone(), (**v).clone()))
+                                .collect();
+
+            for key in ret.keys() {
+                assert!(self.remove(key).is_some())
+            }
+            $rangeremove { iter: ret.into_iter() }
+        }
     );
 }
 
@@ -430,80 +396,31 @@ impl<'a, K, V> SortedMapExt<K, V> for BTreeMap<K, V>
     where K: Clone + Ord,
           V: Clone
 {
-    type RangeIter = BTreeMapRangeIter<'a, K, V>;
-    type RangeIterMut = BTreeMapRangeIterMut<'a, K, V>;
-    type RangeRemoveIter = BTreeMapRangeRemoveIter<K, V>;
+    type RangeRemove = BTreeMapRangeRemove<K, V>;
 
-    sortedmap_impl!(BTreeMap<K, V>);
-
-    fn range_iter(&self, from_key: &K, to_key: &K) -> BTreeMapRangeIter<K, V> {
-        BTreeMapRangeIter { iter: self.range(Included(from_key), Excluded(to_key)) }
-    }
-
-    fn range_iter_mut(&mut self, from_key: &K, to_key: &K) -> BTreeMapRangeIterMut<K, V> {
-        BTreeMapRangeIterMut { iter: self.range_mut(Included(from_key), Excluded(to_key)) }
-    }
-
-    fn range_remove_iter(&mut self, from_key: &K, to_key: &K) -> BTreeMapRangeRemoveIter<K, V> {
-        let ret: BTreeMap<K, V> = 
-                self.range_iter(from_key, to_key)
-                .map(|(ref k, ref v)| ((**k).clone(), (**v).clone()))
-                .collect();
-
-        for key in ret.keys() {
-            assert!(self.remove(key).is_some());
-        }
-        BTreeMapRangeRemoveIter { iter: ret.into_iter() }
-    }
+    sortedmap_impl!(BTreeMap<K, V>, BTreeMapRangeRemove, BTreeMapRangeRemove<K, V>);
 }
 
-pub struct BTreeMapRangeIter<'a, K: 'a, V: 'a> {
-    iter: btree_map::Range<'a, K, V>
-}
-
-impl<'a, K, V> Iterator for BTreeMapRangeIter<'a, K, V> {
-    type Item = (&'a K, &'a V);
-
-    fn next(&mut self) -> Option<(&'a K, &'a V)> { self.iter.next() }
-    fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
-}
-impl<'a, K, V> DoubleEndedIterator for BTreeMapRangeIter<'a, K, V> {
-    fn next_back(&mut self) -> Option<(&'a K, &'a V)> { self.iter.next_back() }
-}
-
-pub struct BTreeMapRangeIterMut<'a, K: 'a, V: 'a> {
-    iter: btree_map::RangeMut<'a, K, V>
-}
-
-impl<'a, K, V> Iterator for BTreeMapRangeIterMut<'a, K, V> {
-    type Item = (&'a K, &'a mut V);
-
-    fn next(&mut self) -> Option<(&'a K, &'a mut V)> { self.iter.next() }
-    fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
-}
-impl<'a, K, V> DoubleEndedIterator for BTreeMapRangeIterMut<'a, K, V> {
-    fn next_back(&mut self) -> Option<(&'a K, &'a mut V)> { self.iter.next_back() }
-}
-
-pub struct BTreeMapRangeRemoveIter<K, V> {
+pub struct BTreeMapRangeRemove<K, V> {
     iter: btree_map::IntoIter<K, V>
 }
 
-impl<K, V> Iterator for BTreeMapRangeRemoveIter<K, V> {
+impl<K, V> Iterator for BTreeMapRangeRemove<K, V> {
     type Item = (K, V);
 
     fn next(&mut self) -> Option<(K, V)> { self.iter.next() }
     fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
 }
-impl<K, V> DoubleEndedIterator for BTreeMapRangeRemoveIter<K, V> {
+impl<K, V> DoubleEndedIterator for BTreeMapRangeRemove<K, V> {
     fn next_back(&mut self) -> Option<(K, V)> { self.iter.next_back() }
 }
-impl<K, V> ExactSizeIterator for BTreeMapRangeRemoveIter<K, V> {
+impl<K, V> ExactSizeIterator for BTreeMapRangeRemove<K, V> {
     fn len(&self) -> usize { self.iter.len() }
 }
 
 #[cfg(test)]
 mod tests {
+    use std::collections::Bound::{Excluded, Included};
     use std::collections::BTreeMap;
 
     use super::SortedMapExt;
@@ -591,26 +508,10 @@ mod tests {
     }
 
     #[test]
-    fn test_range_iter() {
-        let map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-        assert_eq!(map.range_iter(&2, &4).map(|(&k, &v)| (k, v)).collect::<Vec<(u32, u32)>>(),
+    fn test_range_remove() {
+        let mut map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
+        assert_eq!(map.range_remove(Included(&2), Excluded(&4)).collect::<Vec<(u32, u32)>>(),
             vec![(2u32, 2u32), (3, 3)]);
-    }
-
-    #[test]
-    fn test_range_iter_mut() {
-        let mut map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-        for (_, v) in map.range_iter_mut(&2, &4) {
-            *v += 1;
-        }
-        assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
-            vec![(1u32, 1u32), (2, 3), (3, 4), (4, 4), (5, 5)]);
-    }
-
-    #[test]
-    fn test_range_remove_iter() {
-        let mut map: BTreeMap<u32, u32> = vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();
-        assert_eq!(map.range_remove_iter(&2, &4).collect::<Vec<(u32, u32)>>(), vec![(2u32, 2u32), (3, 3)]);
         assert_eq!(map.into_iter().collect::<Vec<(u32, u32)>>(),
             vec![(1u32, 1u32), (4, 4), (5, 5)]);
     }
