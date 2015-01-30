@@ -26,7 +26,7 @@
 
     <section class="sidebar">
         
-        <p class='location'><a href='../index.html'>sorted-collections</a>::<wbr><a href='index.html'>sortedmap</a></p><div class='block struct'><h2>Structs</h2><a class='struct ' href='struct.BTreeMapRangeIter.html' title=''>BTreeMapRangeIter</a><a class='struct ' href='struct.BTreeMapRangeIterMut.html' title=''>BTreeMapRangeIterMut</a><a class='struct ' href='struct.BTreeMapRangeRemoveIter.html' title=''>BTreeMapRangeRemoveIter</a></div><div class='block trait'><h2>Traits</h2><a class='trait current' href='trait.SortedMapExt.html' title='An extension trait for a `Map` whose keys have a defined total ordering. This trait provides convenience methods which take advantage of the map&#39;s ordering.'>SortedMapExt</a></div>
+        <p class='location'><a href='../index.html'>sorted-collections</a>::<wbr><a href='index.html'>sortedmap</a></p><div class='block struct'><h2>Structs</h2><a class='struct ' href='struct.BTreeMapRangeRemove.html' title=''>BTreeMapRangeRemove</a></div><div class='block trait'><h2>Traits</h2><a class='trait current' href='trait.SortedMapExt.html' title='An extension trait for a `Map` whose keys have a defined total ordering. This trait defines convenience methods which take advantage of the map&#39;s ordering.'>SortedMapExt</a></div>
     </section>
 
     <nav class="sub">
@@ -44,11 +44,9 @@
 <h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>sorted-collections</a>::<wbr><a href='index.html'>sortedmap</a>::<wbr><a class='trait' href=''>SortedMapExt</a><wbr></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]
             </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-14' href='../../src/sorted-collections/sortedmap.rs.html#12-337'>[src]</a></span></h1>
+        </span><a id='src-12' href='../../src/sorted-collections/sortedmap.rs.html#12-292'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait SortedMapExt&lt;K, V&gt; <span class='where'>where K: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a>, V: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a></span> {
-    type RangeIter;
-    type RangeIterMut;
-    type RangeRemoveIter;
+    type RangeRemove;
 
     fn <a href='#tymethod.first' class='fnname'>first</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;K&gt;;
     fn <a href='#tymethod.first_remove' class='fnname'>first_remove</a>(&amp;mut self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;;
@@ -62,19 +60,13 @@
     fn <a href='#tymethod.higher_remove' class='fnname'>higher_remove</a>(&amp;mut self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;;
     fn <a href='#tymethod.lower' class='fnname'>lower</a>(&amp;self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;K&gt;;
     fn <a href='#tymethod.lower_remove' class='fnname'>lower_remove</a>(&amp;mut self, key: &amp;K) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a href='http://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(K, V)</a>&gt;;
-    fn <a href='#tymethod.range_iter' class='fnname'>range_iter</a>(&amp;self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMapExt.html' title='sorted-collections::sortedmap::SortedMapExt'>RangeIter</a>;
-    fn <a href='#tymethod.range_iter_mut' class='fnname'>range_iter_mut</a>(&amp;mut self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMapExt.html' title='sorted-collections::sortedmap::SortedMapExt'>RangeIterMut</a>;
-    fn <a href='#tymethod.range_remove_iter' class='fnname'>range_remove_iter</a>(&amp;mut self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMapExt.html' title='sorted-collections::sortedmap::SortedMapExt'>RangeRemoveIter</a>;
+    fn <a href='#tymethod.range_remove' class='fnname'>range_remove</a>(&amp;mut self, from_key: <a class='enum' href='http://doc.rust-lang.org/nightly/collections/enum.Bound.html' title='collections::Bound'>Bound</a>&lt;&amp;K&gt;, to_key: <a class='enum' href='http://doc.rust-lang.org/nightly/collections/enum.Bound.html' title='collections::Bound'>Bound</a>&lt;&amp;K&gt;) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMapExt.html' title='sorted-collections::sortedmap::SortedMapExt'>RangeRemove</a>;
 }</pre><div class='docblock'><p>An extension trait for a <code>Map</code> whose keys have a defined total ordering.
-This trait provides convenience methods which take advantage of the map&#39;s ordering.</p>
+This trait defines convenience methods which take advantage of the map&#39;s ordering.</p>
 </div>
             <h2 id='associated-types'>Associated Types</h2>
             <div class='methods'>
-        <h3 id='associatedtype.RangeIter' class='method'><a class='stability Unmarked' title='No stability level'></a><code>type RangeIter</code></h3><div class='docblock'><p>An iterator over immutable references to the key-value pairs in this map whose keys fall
-within a given range.</p>
-</div><h3 id='associatedtype.RangeIterMut' class='method'><a class='stability Unmarked' title='No stability level'></a><code>type RangeIterMut</code></h3><div class='docblock'><p>An iterator over mutable references to the key-value pairs in this map whose keys fall
-within a given range.</p>
-</div><h3 id='associatedtype.RangeRemoveIter' class='method'><a class='stability Unmarked' title='No stability level'></a><code>type RangeRemoveIter</code></h3><div class='docblock'><p>A by-value iterator yielding key-value pairs whose keys fall within a given range and
+        <h3 id='associatedtype.RangeRemove' class='method'><a class='stability Unmarked' title='No stability level'></a><code>type RangeRemove</code></h3><div class='docblock'><p>A by-value iterator yielding key-value pairs whose keys fall within a given range and
 which have just been removed from this map.</p>
 </div></div>
             <h2 id='required-methods'>Required Methods</h2>
@@ -287,57 +279,26 @@ Returns <code>None</code> if there is no such element.</p>
         <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)]);
 }
 </pre>
-</div><h3 id='tymethod.range_iter' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.range_iter' class='fnname'>range_iter</a>(&amp;self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMapExt.html' title='sorted-collections::sortedmap::SortedMapExt'>RangeIter</a></code></h3><div class='docblock'><p>Returns an iterator over pairs of immutable key-value references into this map,
-with the pairs being iterated being those whose keys are in the range [from_key, to_key).</p>
+</div><h3 id='tymethod.range_remove' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.range_remove' class='fnname'>range_remove</a>(&amp;mut self, from_key: <a class='enum' href='http://doc.rust-lang.org/nightly/collections/enum.Bound.html' title='collections::Bound'>Bound</a>&lt;&amp;K&gt;, to_key: <a class='enum' href='http://doc.rust-lang.org/nightly/collections/enum.Bound.html' title='collections::Bound'>Bound</a>&lt;&amp;K&gt;) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMapExt.html' title='sorted-collections::sortedmap::SortedMapExt'>RangeRemove</a></code></h3><div class='docblock'><p>Removes the key-value pairs of this map whose keys lie in the range starting at <code>from_key</code>
+and ending at <code>to_key</code>, and returns a double-ended by-value iterator over the removed pairs.</p>
+
+<p>If <code>from_key</code> is <code>Unbounded</code>, then it will be treated as &quot;negative infinity&quot;, and
+if <code>to_key</code> is <code>Unbounded</code>, then it will be treated as &quot;positive infinity&quot;.  Thus,
+<code>range_remove(Unbounded, Unbounded)</code> will clear the map and return a by-value
+iterator over all of the pairs which were in it.</p>
 
 <h1 id="examples" class='section-header'><a
                            href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
 <span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
 
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
-<span class='kw'>use</span> <span class='ident'>sorted_collections</span>::<span class='ident'>SortedMapExt</span>;
-
-<span class='kw'>fn</span> <span class='ident'>main</span>() {
-    <span class='kw'>let</span> <span class='ident'>map</span>: <span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>u32</span>, <span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span>
-        <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
-    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>range_iter</span>(<span class='kw-2'>&amp;</span><span class='number'>2</span>, <span class='kw-2'>&amp;</span><span class='number'>4</span>).<span class='ident'>map</span>(<span class='op'>|</span>(<span class='kw-2'>&amp;</span><span class='ident'>k</span>, <span class='kw-2'>&amp;</span><span class='ident'>v</span>)<span class='op'>|</span> (<span class='ident'>k</span>, <span class='ident'>v</span>)).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>u32</span>, <span class='ident'>u32</span>)<span class='op'>&gt;&gt;</span>(),
-        <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>2u32</span>, <span class='number'>2u32</span>), (<span class='number'>3</span>, <span class='number'>3</span>)]);
-}
-</pre>
-</div><h3 id='tymethod.range_iter_mut' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.range_iter_mut' class='fnname'>range_iter_mut</a>(&amp;mut self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMapExt.html' title='sorted-collections::sortedmap::SortedMapExt'>RangeIterMut</a></code></h3><div class='docblock'><p>Returns an iterator over pairs of immutable-key/mutable-value references into this map,
-with the pairs being iterated being those whose keys are in the range [from_key, to_key).</p>
-
-<h1 id="examples" class='section-header'><a
-                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
-
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>Bound</span>::{<span class='ident'>Excluded</span>, <span class='ident'>Included</span>};
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
 <span class='kw'>use</span> <span class='ident'>sorted_collections</span>::<span class='ident'>SortedMapExt</span>;
 
 <span class='kw'>fn</span> <span class='ident'>main</span>() {
     <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>map</span>: <span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>u32</span>, <span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span>
         <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
-    <span class='kw'>for</span> (_, <span class='ident'>v</span>) <span class='kw'>in</span> <span class='ident'>map</span>.<span class='ident'>range_iter_mut</span>(<span class='kw-2'>&amp;</span><span class='number'>2</span>, <span class='kw-2'>&amp;</span><span class='number'>4</span>) {
-        <span class='op'>*</span><span class='ident'>v</span> <span class='op'>+=</span> <span class='number'>1</span>;
-    }
-    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>u32</span>, <span class='ident'>u32</span>)<span class='op'>&gt;&gt;</span>(),
-        <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>3</span>), (<span class='number'>3</span>, <span class='number'>4</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)]);
-}
-</pre>
-</div><h3 id='tymethod.range_remove_iter' class='method'><a class='stability Unmarked' title='No stability level'></a><code>fn <a href='#tymethod.range_remove_iter' class='fnname'>range_remove_iter</a>(&amp;mut self, from_key: &amp;K, to_key: &amp;K) -&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMapExt.html' title='sorted-collections::sortedmap::SortedMapExt'>RangeRemoveIter</a></code></h3><div class='docblock'><p>Removes the key-value pairs of this map whose keys lie in the range [from_key, to_key),
-and returns a by-value iterator over the removed pairs.</p>
-
-<h1 id="examples" class='section-header'><a
-                           href="#examples">Examples</a></h1><pre id='rust-example-rendered' class='rust '>
-<span class='kw'>extern</span> <span class='kw'>crate</span> <span class='string'>&quot;sorted-collections&quot;</span> <span class='kw'>as</span> <span class='ident'>sorted_collections</span>;
-
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
-<span class='kw'>use</span> <span class='ident'>sorted_collections</span>::<span class='ident'>SortedMapExt</span>;
-
-<span class='kw'>fn</span> <span class='ident'>main</span>() {
-    <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>map</span>: <span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>u32</span>, <span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span>
-        <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
-    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>range_remove_iter</span>(<span class='kw-2'>&amp;</span><span class='number'>2</span>, <span class='kw-2'>&amp;</span><span class='number'>4</span>).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>u32</span>, <span class='ident'>u32</span>)<span class='op'>&gt;&gt;</span>(),
+    <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>range_remove</span>(<span class='ident'>Included</span>(<span class='kw-2'>&amp;</span><span class='number'>2</span>), <span class='ident'>Excluded</span>(<span class='kw-2'>&amp;</span><span class='number'>4</span>)).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>u32</span>, <span class='ident'>u32</span>)<span class='op'>&gt;&gt;</span>(),
         <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>2u32</span>, <span class='number'>2u32</span>), (<span class='number'>3</span>, <span class='number'>3</span>)]);
     <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>u32</span>, <span class='ident'>u32</span>)<span class='op'>&gt;&gt;</span>(),
         <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)]);

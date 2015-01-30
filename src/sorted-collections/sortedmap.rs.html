@@ -558,105 +558,6 @@
 <span id="516">516</span>
 <span id="517">517</span>
 <span id="518">518</span>
-<span id="519">519</span>
-<span id="520">520</span>
-<span id="521">521</span>
-<span id="522">522</span>
-<span id="523">523</span>
-<span id="524">524</span>
-<span id="525">525</span>
-<span id="526">526</span>
-<span id="527">527</span>
-<span id="528">528</span>
-<span id="529">529</span>
-<span id="530">530</span>
-<span id="531">531</span>
-<span id="532">532</span>
-<span id="533">533</span>
-<span id="534">534</span>
-<span id="535">535</span>
-<span id="536">536</span>
-<span id="537">537</span>
-<span id="538">538</span>
-<span id="539">539</span>
-<span id="540">540</span>
-<span id="541">541</span>
-<span id="542">542</span>
-<span id="543">543</span>
-<span id="544">544</span>
-<span id="545">545</span>
-<span id="546">546</span>
-<span id="547">547</span>
-<span id="548">548</span>
-<span id="549">549</span>
-<span id="550">550</span>
-<span id="551">551</span>
-<span id="552">552</span>
-<span id="553">553</span>
-<span id="554">554</span>
-<span id="555">555</span>
-<span id="556">556</span>
-<span id="557">557</span>
-<span id="558">558</span>
-<span id="559">559</span>
-<span id="560">560</span>
-<span id="561">561</span>
-<span id="562">562</span>
-<span id="563">563</span>
-<span id="564">564</span>
-<span id="565">565</span>
-<span id="566">566</span>
-<span id="567">567</span>
-<span id="568">568</span>
-<span id="569">569</span>
-<span id="570">570</span>
-<span id="571">571</span>
-<span id="572">572</span>
-<span id="573">573</span>
-<span id="574">574</span>
-<span id="575">575</span>
-<span id="576">576</span>
-<span id="577">577</span>
-<span id="578">578</span>
-<span id="579">579</span>
-<span id="580">580</span>
-<span id="581">581</span>
-<span id="582">582</span>
-<span id="583">583</span>
-<span id="584">584</span>
-<span id="585">585</span>
-<span id="586">586</span>
-<span id="587">587</span>
-<span id="588">588</span>
-<span id="589">589</span>
-<span id="590">590</span>
-<span id="591">591</span>
-<span id="592">592</span>
-<span id="593">593</span>
-<span id="594">594</span>
-<span id="595">595</span>
-<span id="596">596</span>
-<span id="597">597</span>
-<span id="598">598</span>
-<span id="599">599</span>
-<span id="600">600</span>
-<span id="601">601</span>
-<span id="602">602</span>
-<span id="603">603</span>
-<span id="604">604</span>
-<span id="605">605</span>
-<span id="606">606</span>
-<span id="607">607</span>
-<span id="608">608</span>
-<span id="609">609</span>
-<span id="610">610</span>
-<span id="611">611</span>
-<span id="612">612</span>
-<span id="613">613</span>
-<span id="614">614</span>
-<span id="615">615</span>
-<span id="616">616</span>
-<span id="617">617</span>
 </pre><pre class='rust '>
 <span class='comment'>// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or</span>
 <span class='comment'>// http://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license</span>
@@ -664,26 +565,18 @@
 <span class='comment'>// option. This file may not be copied, modified, or distributed</span>
 <span class='comment'>// except according to those terms.</span>
 
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>Bound</span>::{<span class='ident'>Included</span>, <span class='ident'>Excluded</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>Bound</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>btree_map</span>::{<span class='ident'>BTreeMap</span>, <span class='self'>self</span>};
 
 <span class='doccomment'>/// An extension trait for a `Map` whose keys have a defined total ordering.</span>
-<span class='doccomment'>/// This trait provides convenience methods which take advantage of the map&#39;s ordering.</span>
+<span class='doccomment'>/// This trait defines convenience methods which take advantage of the map&#39;s ordering.</span>
 <span class='kw'>pub</span> <span class='kw'>trait</span> <span class='ident'>SortedMapExt</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span>
     <span class='kw'>where</span> <span class='ident'>K</span>: <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Ord</span>,
           <span class='ident'>V</span>: <span class='ident'>Clone</span> 
 {
-    <span class='doccomment'>/// An iterator over immutable references to the key-value pairs in this map whose keys fall</span>
-    <span class='doccomment'>/// within a given range.</span>
-    <span class='kw'>type</span> <span class='ident'>RangeIter</span>;
-
-    <span class='doccomment'>/// An iterator over mutable references to the key-value pairs in this map whose keys fall</span>
-    <span class='doccomment'>/// within a given range.</span>
-    <span class='kw'>type</span> <span class='ident'>RangeIterMut</span>;
-
     <span class='doccomment'>/// A by-value iterator yielding key-value pairs whose keys fall within a given range and</span>
     <span class='doccomment'>/// which have just been removed from this map.</span>
-    <span class='kw'>type</span> <span class='ident'>RangeRemoveIter</span>;
+    <span class='kw'>type</span> <span class='ident'>RangeRemove</span>;
 
     <span class='doccomment'>/// Returns an immutable reference to the first (least) key currently in this map.</span>
     <span class='doccomment'>/// Returns `None` if this map is empty.</span>
@@ -930,75 +823,38 @@
     <span class='doccomment'>/// ```</span>
     <span class='kw'>fn</span> <span class='ident'>lower_remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>key</span>: <span class='kw-2'>&amp;</span><span class='ident'>K</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>K</span>, <span class='ident'>V</span>)<span class='op'>&gt;</span>;
 
-    <span class='doccomment'>/// Returns an iterator over pairs of immutable key-value references into this map,</span>
-    <span class='doccomment'>/// with the pairs being iterated being those whose keys are in the range [from_key, to_key).</span>
+    <span class='doccomment'>/// Removes the key-value pairs of this map whose keys lie in the range starting at `from_key`</span>
+    <span class='doccomment'>/// and ending at `to_key`, and returns a double-ended by-value iterator over the removed pairs.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// If `from_key` is `Unbounded`, then it will be treated as &quot;negative infinity&quot;, and</span>
+    <span class='doccomment'>/// if `to_key` is `Unbounded`, then it will be treated as &quot;positive infinity&quot;.  Thus,</span>
+    <span class='doccomment'>/// `range_remove(Unbounded, Unbounded)` will clear the map and return a by-value</span>
+    <span class='doccomment'>/// iterator over all of the pairs which were in it.</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// # Examples</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// ```</span>
     <span class='doccomment'>/// extern crate &quot;sorted-collections&quot; as sorted_collections;</span>
     <span class='doccomment'>///</span>
-    <span class='doccomment'>/// use std::collections::BTreeMap;</span>
-    <span class='doccomment'>/// use sorted_collections::SortedMapExt;</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// fn main() {</span>
-    <span class='doccomment'>///     let map: BTreeMap&lt;u32, u32&gt; =</span>
-    <span class='doccomment'>///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();</span>
-    <span class='doccomment'>///     assert_eq!(map.range_iter(&amp;2, &amp;4).map(|(&amp;k, &amp;v)| (k, v)).collect::&lt;Vec&lt;(u32, u32)&gt;&gt;(),</span>
-    <span class='doccomment'>///         vec![(2u32, 2u32), (3, 3)]);</span>
-    <span class='doccomment'>/// }</span>
-    <span class='doccomment'>/// ```</span>
-    <span class='kw'>fn</span> <span class='ident'>range_iter</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>from_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>K</span>, <span class='ident'>to_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>K</span>) <span class='op'>-&gt;</span> <span class='ident'>Self</span>::<span class='ident'>RangeIter</span>;
-
-    <span class='doccomment'>/// Returns an iterator over pairs of immutable-key/mutable-value references into this map,</span>
-    <span class='doccomment'>/// with the pairs being iterated being those whose keys are in the range [from_key, to_key).</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// # Examples</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// ```</span>
-    <span class='doccomment'>/// extern crate &quot;sorted-collections&quot; as sorted_collections;</span>
-    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// use std::collections::Bound::{Excluded, Included};</span>
     <span class='doccomment'>/// use std::collections::BTreeMap;</span>
     <span class='doccomment'>/// use sorted_collections::SortedMapExt;</span>
     <span class='doccomment'>///</span>
     <span class='doccomment'>/// fn main() {</span>
     <span class='doccomment'>///     let mut map: BTreeMap&lt;u32, u32&gt; =</span>
     <span class='doccomment'>///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();</span>
-    <span class='doccomment'>///     for (_, v) in map.range_iter_mut(&amp;2, &amp;4) {</span>
-    <span class='doccomment'>///         *v += 1;</span>
-    <span class='doccomment'>///     }</span>
-    <span class='doccomment'>///     assert_eq!(map.into_iter().collect::&lt;Vec&lt;(u32, u32)&gt;&gt;(),</span>
-    <span class='doccomment'>///         vec![(1u32, 1u32), (2, 3), (3, 4), (4, 4), (5, 5)]);</span>
-    <span class='doccomment'>/// }</span>
-    <span class='doccomment'>/// ```</span>
-    <span class='kw'>fn</span> <span class='ident'>range_iter_mut</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>from_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>K</span>, <span class='ident'>to_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>K</span>) <span class='op'>-&gt;</span> <span class='ident'>Self</span>::<span class='ident'>RangeIterMut</span>;
-
-    <span class='doccomment'>/// Removes the key-value pairs of this map whose keys lie in the range [from_key, to_key),</span>
-    <span class='doccomment'>/// and returns a by-value iterator over the removed pairs.</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// # Examples</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// ```</span>
-    <span class='doccomment'>/// extern crate &quot;sorted-collections&quot; as sorted_collections;</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// use std::collections::BTreeMap;</span>
-    <span class='doccomment'>/// use sorted_collections::SortedMapExt;</span>
-    <span class='doccomment'>///</span>
-    <span class='doccomment'>/// fn main() {</span>
-    <span class='doccomment'>///     let mut map: BTreeMap&lt;u32, u32&gt; =</span>
-    <span class='doccomment'>///         vec![(1u32, 1u32), (2, 2), (3, 3), (4, 4), (5, 5)].into_iter().collect();</span>
-    <span class='doccomment'>///     assert_eq!(map.range_remove_iter(&amp;2, &amp;4).collect::&lt;Vec&lt;(u32, u32)&gt;&gt;(),</span>
+    <span class='doccomment'>///     assert_eq!(map.range_remove(Included(&amp;2), Excluded(&amp;4)).collect::&lt;Vec&lt;(u32, u32)&gt;&gt;(),</span>
     <span class='doccomment'>///         vec![(2u32, 2u32), (3, 3)]);</span>
     <span class='doccomment'>///     assert_eq!(map.into_iter().collect::&lt;Vec&lt;(u32, u32)&gt;&gt;(),</span>
     <span class='doccomment'>///         vec![(1u32, 1u32), (4, 4), (5, 5)]);</span>
     <span class='doccomment'>/// }</span>
     <span class='doccomment'>/// ```</span>
-    <span class='kw'>fn</span> <span class='ident'>range_remove_iter</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>from_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>K</span>, <span class='ident'>to_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>K</span>) <span class='op'>-&gt;</span> <span class='ident'>Self</span>::<span class='ident'>RangeRemoveIter</span>;
+    <span class='kw'>fn</span> <span class='ident'>range_remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>from_key</span>: <span class='ident'>Bound</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>K</span><span class='op'>&gt;</span>, <span class='ident'>to_key</span>: <span class='ident'>Bound</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>K</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='ident'>Self</span>::<span class='ident'>RangeRemove</span>;
 }
 
 <span class='comment'>// A generic reusable impl of SortedMapExt.</span>
 <span class='macro'>macro_rules</span><span class='macro'>!</span> <span class='ident'>sortedmap_impl</span> {
-    (<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>typ</span>:<span class='ident'>ty</span>) <span class='op'>=&gt;</span> (
+    (<span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>typ</span>:<span class='ident'>ty</span>, <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>rangeremove</span>:<span class='ident'>ident</span>, <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>rangeremoveret</span>:<span class='ident'>ty</span>) <span class='op'>=&gt;</span> (
         <span class='kw'>fn</span> <span class='ident'>first</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>K</span><span class='op'>&gt;</span> {
             <span class='self'>self</span>.<span class='ident'>keys</span>().<span class='ident'>min</span>()
         }
@@ -1082,6 +938,17 @@
                 <span class='prelude-val'>None</span>
             }
         }
+
+        <span class='kw'>fn</span> <span class='ident'>range_remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>from_key</span>: <span class='ident'>Bound</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>K</span><span class='op'>&gt;</span>, <span class='ident'>to_key</span>: <span class='ident'>Bound</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>K</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>rangeremoveret</span> {
+            <span class='kw'>let</span> <span class='ident'>ret</span>: <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>typ</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>range</span>(<span class='ident'>from_key</span>, <span class='ident'>to_key</span>)
+                                .<span class='ident'>map</span>(<span class='op'>|</span>(<span class='kw-2'>ref</span> <span class='ident'>k</span>, <span class='kw-2'>ref</span> <span class='ident'>v</span>)<span class='op'>|</span> ((<span class='op'>*</span><span class='op'>*</span><span class='ident'>k</span>).<span class='ident'>clone</span>(), (<span class='op'>*</span><span class='op'>*</span><span class='ident'>v</span>).<span class='ident'>clone</span>()))
+                                .<span class='ident'>collect</span>();
+
+            <span class='kw'>for</span> <span class='ident'>key</span> <span class='kw'>in</span> <span class='ident'>ret</span>.<span class='ident'>keys</span>() {
+                <span class='macro'>assert</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>remove</span>(<span class='ident'>key</span>).<span class='ident'>is_some</span>())
+            }
+            <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>rangeremove</span> { <span class='ident'>iter</span>: <span class='ident'>ret</span>.<span class='ident'>into_iter</span>() }
+        }
     );
 }
 
@@ -1090,80 +957,31 @@
     <span class='kw'>where</span> <span class='ident'>K</span>: <span class='ident'>Clone</span> <span class='op'>+</span> <span class='ident'>Ord</span>,
           <span class='ident'>V</span>: <span class='ident'>Clone</span>
 {
-    <span class='kw'>type</span> <span class='ident'>RangeIter</span> <span class='op'>=</span> <span class='ident'>BTreeMapRangeIter</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span>;
-    <span class='kw'>type</span> <span class='ident'>RangeIterMut</span> <span class='op'>=</span> <span class='ident'>BTreeMapRangeIterMut</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span>;
-    <span class='kw'>type</span> <span class='ident'>RangeRemoveIter</span> <span class='op'>=</span> <span class='ident'>BTreeMapRangeRemoveIter</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span>;
+    <span class='kw'>type</span> <span class='ident'>RangeRemove</span> <span class='op'>=</span> <span class='ident'>BTreeMapRangeRemove</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span>;
 
-    <span class='macro'>sortedmap_impl</span><span class='macro'>!</span>(<span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span>);
-
-    <span class='kw'>fn</span> <span class='ident'>range_iter</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>, <span class='ident'>from_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>K</span>, <span class='ident'>to_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>K</span>) <span class='op'>-&gt;</span> <span class='ident'>BTreeMapRangeIter</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> {
-        <span class='ident'>BTreeMapRangeIter</span> { <span class='ident'>iter</span>: <span class='self'>self</span>.<span class='ident'>range</span>(<span class='ident'>Included</span>(<span class='ident'>from_key</span>), <span class='ident'>Excluded</span>(<span class='ident'>to_key</span>)) }
-    }
-
-    <span class='kw'>fn</span> <span class='ident'>range_iter_mut</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>from_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>K</span>, <span class='ident'>to_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>K</span>) <span class='op'>-&gt;</span> <span class='ident'>BTreeMapRangeIterMut</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> {
-        <span class='ident'>BTreeMapRangeIterMut</span> { <span class='ident'>iter</span>: <span class='self'>self</span>.<span class='ident'>range_mut</span>(<span class='ident'>Included</span>(<span class='ident'>from_key</span>), <span class='ident'>Excluded</span>(<span class='ident'>to_key</span>)) }
-    }
-
-    <span class='kw'>fn</span> <span class='ident'>range_remove_iter</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>from_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>K</span>, <span class='ident'>to_key</span>: <span class='kw-2'>&amp;</span><span class='ident'>K</span>) <span class='op'>-&gt;</span> <span class='ident'>BTreeMapRangeRemoveIter</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> {
-        <span class='kw'>let</span> <span class='ident'>ret</span>: <span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> <span class='op'>=</span> 
-                <span class='self'>self</span>.<span class='ident'>range_iter</span>(<span class='ident'>from_key</span>, <span class='ident'>to_key</span>)
-                .<span class='ident'>map</span>(<span class='op'>|</span>(<span class='kw-2'>ref</span> <span class='ident'>k</span>, <span class='kw-2'>ref</span> <span class='ident'>v</span>)<span class='op'>|</span> ((<span class='op'>*</span><span class='op'>*</span><span class='ident'>k</span>).<span class='ident'>clone</span>(), (<span class='op'>*</span><span class='op'>*</span><span class='ident'>v</span>).<span class='ident'>clone</span>()))
-                .<span class='ident'>collect</span>();
-
-        <span class='kw'>for</span> <span class='ident'>key</span> <span class='kw'>in</span> <span class='ident'>ret</span>.<span class='ident'>keys</span>() {
-            <span class='macro'>assert</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>remove</span>(<span class='ident'>key</span>).<span class='ident'>is_some</span>());
-        }
-        <span class='ident'>BTreeMapRangeRemoveIter</span> { <span class='ident'>iter</span>: <span class='ident'>ret</span>.<span class='ident'>into_iter</span>() }
-    }
+    <span class='macro'>sortedmap_impl</span><span class='macro'>!</span>(<span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span>, <span class='ident'>BTreeMapRangeRemove</span>, <span class='ident'>BTreeMapRangeRemove</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span>);
 }
 
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>BTreeMapRangeIter</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>K</span>: <span class='lifetime'>&#39;a</span>, <span class='ident'>V</span>: <span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='ident'>iter</span>: <span class='ident'>btree_map</span>::<span class='ident'>Range</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span>
-}
-
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> <span class='ident'>Iterator</span> <span class='kw'>for</span> <span class='ident'>BTreeMapRangeIter</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> {
-    <span class='kw'>type</span> <span class='ident'>Item</span> <span class='op'>=</span> (<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>K</span>, <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>V</span>);
-
-    <span class='kw'>fn</span> <span class='ident'>next</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>K</span>, <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>V</span>)<span class='op'>&gt;</span> { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>next</span>() }
-    <span class='kw'>fn</span> <span class='ident'>size_hint</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> (<span class='ident'>usize</span>, <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>) { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>size_hint</span>() }
-}
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> <span class='ident'>DoubleEndedIterator</span> <span class='kw'>for</span> <span class='ident'>BTreeMapRangeIter</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> {
-    <span class='kw'>fn</span> <span class='ident'>next_back</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>K</span>, <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>V</span>)<span class='op'>&gt;</span> { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>next_back</span>() }
-}
-
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>BTreeMapRangeIterMut</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>K</span>: <span class='lifetime'>&#39;a</span>, <span class='ident'>V</span>: <span class='lifetime'>&#39;a</span><span class='op'>&gt;</span> {
-    <span class='ident'>iter</span>: <span class='ident'>btree_map</span>::<span class='ident'>RangeMut</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span>
-}
-
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> <span class='ident'>Iterator</span> <span class='kw'>for</span> <span class='ident'>BTreeMapRangeIterMut</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> {
-    <span class='kw'>type</span> <span class='ident'>Item</span> <span class='op'>=</span> (<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>K</span>, <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='ident'>V</span>);
-
-    <span class='kw'>fn</span> <span class='ident'>next</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>K</span>, <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='ident'>V</span>)<span class='op'>&gt;</span> { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>next</span>() }
-    <span class='kw'>fn</span> <span class='ident'>size_hint</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> (<span class='ident'>usize</span>, <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>) { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>size_hint</span>() }
-}
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> <span class='ident'>DoubleEndedIterator</span> <span class='kw'>for</span> <span class='ident'>BTreeMapRangeIterMut</span><span class='op'>&lt;</span><span class='lifetime'>&#39;a</span>, <span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> {
-    <span class='kw'>fn</span> <span class='ident'>next_back</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='ident'>K</span>, <span class='kw-2'>&amp;</span><span class='lifetime'>&#39;a</span> <span class='kw-2'>mut</span> <span class='ident'>V</span>)<span class='op'>&gt;</span> { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>next_back</span>() }
-}
-
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>BTreeMapRangeRemoveIter</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> {
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>BTreeMapRangeRemove</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> {
     <span class='ident'>iter</span>: <span class='ident'>btree_map</span>::<span class='ident'>IntoIter</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span>
 }
 
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> <span class='ident'>Iterator</span> <span class='kw'>for</span> <span class='ident'>BTreeMapRangeRemoveIter</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> {
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> <span class='ident'>Iterator</span> <span class='kw'>for</span> <span class='ident'>BTreeMapRangeRemove</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> {
     <span class='kw'>type</span> <span class='ident'>Item</span> <span class='op'>=</span> (<span class='ident'>K</span>, <span class='ident'>V</span>);
 
     <span class='kw'>fn</span> <span class='ident'>next</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>K</span>, <span class='ident'>V</span>)<span class='op'>&gt;</span> { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>next</span>() }
     <span class='kw'>fn</span> <span class='ident'>size_hint</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> (<span class='ident'>usize</span>, <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>) { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>size_hint</span>() }
 }
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> <span class='ident'>DoubleEndedIterator</span> <span class='kw'>for</span> <span class='ident'>BTreeMapRangeRemoveIter</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> {
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> <span class='ident'>DoubleEndedIterator</span> <span class='kw'>for</span> <span class='ident'>BTreeMapRangeRemove</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> {
     <span class='kw'>fn</span> <span class='ident'>next_back</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span>(<span class='ident'>K</span>, <span class='ident'>V</span>)<span class='op'>&gt;</span> { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>next_back</span>() }
 }
-<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> <span class='ident'>ExactSizeIterator</span> <span class='kw'>for</span> <span class='ident'>BTreeMapRangeRemoveIter</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> {
+<span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> <span class='ident'>ExactSizeIterator</span> <span class='kw'>for</span> <span class='ident'>BTreeMapRangeRemove</span><span class='op'>&lt;</span><span class='ident'>K</span>, <span class='ident'>V</span><span class='op'>&gt;</span> {
     <span class='kw'>fn</span> <span class='ident'>len</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>len</span>() }
 }
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
 <span class='kw'>mod</span> <span class='ident'>tests</span> {
+    <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>Bound</span>::{<span class='ident'>Excluded</span>, <span class='ident'>Included</span>};
     <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>BTreeMap</span>;
 
     <span class='kw'>use</span> <span class='ident'>super</span>::<span class='ident'>SortedMapExt</span>;
@@ -1251,26 +1069,10 @@
     }
 
     <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_range_iter</span>() {
-        <span class='kw'>let</span> <span class='ident'>map</span>: <span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>u32</span>, <span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>range_iter</span>(<span class='kw-2'>&amp;</span><span class='number'>2</span>, <span class='kw-2'>&amp;</span><span class='number'>4</span>).<span class='ident'>map</span>(<span class='op'>|</span>(<span class='kw-2'>&amp;</span><span class='ident'>k</span>, <span class='kw-2'>&amp;</span><span class='ident'>v</span>)<span class='op'>|</span> (<span class='ident'>k</span>, <span class='ident'>v</span>)).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>u32</span>, <span class='ident'>u32</span>)<span class='op'>&gt;&gt;</span>(),
+    <span class='kw'>fn</span> <span class='ident'>test_range_remove</span>() {
+        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>map</span>: <span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>u32</span>, <span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
+        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>range_remove</span>(<span class='ident'>Included</span>(<span class='kw-2'>&amp;</span><span class='number'>2</span>), <span class='ident'>Excluded</span>(<span class='kw-2'>&amp;</span><span class='number'>4</span>)).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>u32</span>, <span class='ident'>u32</span>)<span class='op'>&gt;&gt;</span>(),
             <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>2u32</span>, <span class='number'>2u32</span>), (<span class='number'>3</span>, <span class='number'>3</span>)]);
-    }
-
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_range_iter_mut</span>() {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>map</span>: <span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>u32</span>, <span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
-        <span class='kw'>for</span> (_, <span class='ident'>v</span>) <span class='kw'>in</span> <span class='ident'>map</span>.<span class='ident'>range_iter_mut</span>(<span class='kw-2'>&amp;</span><span class='number'>2</span>, <span class='kw-2'>&amp;</span><span class='number'>4</span>) {
-            <span class='op'>*</span><span class='ident'>v</span> <span class='op'>+=</span> <span class='number'>1</span>;
-        }
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>u32</span>, <span class='ident'>u32</span>)<span class='op'>&gt;&gt;</span>(),
-            <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>3</span>), (<span class='number'>3</span>, <span class='number'>4</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)]);
-    }
-
-    <span class='attribute'>#[<span class='ident'>test</span>]</span>
-    <span class='kw'>fn</span> <span class='ident'>test_range_remove_iter</span>() {
-        <span class='kw'>let</span> <span class='kw-2'>mut</span> <span class='ident'>map</span>: <span class='ident'>BTreeMap</span><span class='op'>&lt;</span><span class='ident'>u32</span>, <span class='ident'>u32</span><span class='op'>&gt;</span> <span class='op'>=</span> <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>2</span>, <span class='number'>2</span>), (<span class='number'>3</span>, <span class='number'>3</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)].<span class='ident'>into_iter</span>().<span class='ident'>collect</span>();
-        <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>range_remove_iter</span>(<span class='kw-2'>&amp;</span><span class='number'>2</span>, <span class='kw-2'>&amp;</span><span class='number'>4</span>).<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>u32</span>, <span class='ident'>u32</span>)<span class='op'>&gt;&gt;</span>(), <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>2u32</span>, <span class='number'>2u32</span>), (<span class='number'>3</span>, <span class='number'>3</span>)]);
         <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>map</span>.<span class='ident'>into_iter</span>().<span class='ident'>collect</span>::<span class='op'>&lt;</span><span class='ident'>Vec</span><span class='op'>&lt;</span>(<span class='ident'>u32</span>, <span class='ident'>u32</span>)<span class='op'>&gt;&gt;</span>(),
             <span class='macro'>vec</span><span class='macro'>!</span>[(<span class='number'>1u32</span>, <span class='number'>1u32</span>), (<span class='number'>4</span>, <span class='number'>4</span>), (<span class='number'>5</span>, <span class='number'>5</span>)]);
     }

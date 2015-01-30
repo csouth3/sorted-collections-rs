@@ -1,1 +1,1 @@
-{"name":"sorted-collections","counts":{"unstable":0,"stable":12,"unmarked":44},"submodules":[{"name":"sortedmap","counts":{"unstable":0,"stable":7,"unmarked":23},"submodules":[]},{"name":"sortedset","counts":{"unstable":0,"stable":5,"unmarked":20},"submodules":[]}]}
+{"name":"sorted-collections","counts":{"unstable":0,"stable":6,"unmarked":35},"submodules":[{"name":"sortedmap","counts":{"unstable":0,"stable":3,"unmarked":17},"submodules":[]},{"name":"sortedset","counts":{"unstable":0,"stable":3,"unmarked":17},"submodules":[]}]}
