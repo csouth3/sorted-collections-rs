@@ -21,3 +21,7 @@ naming conflict.
 Version 0.0.5 (January 24, 2015)
 --------------------------------
 Various cleanups, removed support for Hash{Set, Map}, traits renamed.
+
+Version 0.0.6 (January 30, 2015)
+--------------------------------
+Removed some redundant features in favor of libcollections bounded iterators.
