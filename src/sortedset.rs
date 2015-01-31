@@ -4,6 +4,8 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//! A trait extending ordered sets, along with associated impls and iterators.
+
 use std::collections::Bound::{Excluded, Included, Unbounded, self};
 use std::collections::btree_set::{BTreeSet, self};
 
@@ -351,7 +353,7 @@ macro_rules! sortedset_impl {
             for elem in ret.iter() {
                 assert!(self.remove(elem));
             }
-            $rangeremove { iter: ret.into_iter() }
+            $rangeremove(ret.into_iter())
         }
     );
 }
@@ -365,21 +367,20 @@ impl<'a, T> SortedSetExt<T> for BTreeSet<T>
     sortedset_impl!(BTreeSet<T>, BTreeSetRangeRemove, BTreeSetRangeRemove<T>);
 }
 
-pub struct BTreeSetRangeRemove<T> {
-    iter: btree_set::IntoIter<T>
-}
+/// A double-ended by-value iterator for removing pairs from a BTreeSet.
+pub struct BTreeSetRangeRemove<T>(btree_set::IntoIter<T>);
 
 impl<T> Iterator for BTreeSetRangeRemove<T> {
     type Item = T;
 
-    fn next(&mut self) -> Option<T> { self.iter.next() }
-    fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
+    fn next(&mut self) -> Option<T> { self.0.next() }
+    fn size_hint(&self) -> (usize, Option<usize>) { self.0.size_hint() }
 }
 impl<T> DoubleEndedIterator for BTreeSetRangeRemove<T> {
-    fn next_back(&mut self) -> Option<T> { self.iter.next_back() }
+    fn next_back(&mut self) -> Option<T> { self.0.next_back() }
 }
 impl<T> ExactSizeIterator for BTreeSetRangeRemove<T> {
-    fn len(&self) -> usize { self.iter.len() }
+    fn len(&self) -> usize { self.0.len() }
 }
 
 #[cfg(test)]

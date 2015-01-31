@@ -4,6 +4,8 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+//! A trait extending ordered maps, along with associated impls and iterators.
+
 use std::collections::Bound;
 use std::collections::btree_map::{BTreeMap, self};
 
@@ -386,7 +388,7 @@ macro_rules! sortedmap_impl {
             for key in ret.keys() {
                 assert!(self.remove(key).is_some())
             }
-            $rangeremove { iter: ret.into_iter() }
+            $rangeremove(ret.into_iter())
         }
     );
 }
@@ -401,21 +403,20 @@ impl<'a, K, V> SortedMapExt<K, V> for BTreeMap<K, V>
     sortedmap_impl!(BTreeMap<K, V>, BTreeMapRangeRemove, BTreeMapRangeRemove<K, V>);
 }
 
-pub struct BTreeMapRangeRemove<K, V> {
-    iter: btree_map::IntoIter<K, V>
-}
+/// A double-ended by-value iterator for removing pairs from a BTreeMap.
+pub struct BTreeMapRangeRemove<K, V>(btree_map::IntoIter<K, V>);
 
 impl<K, V> Iterator for BTreeMapRangeRemove<K, V> {
     type Item = (K, V);
 
-    fn next(&mut self) -> Option<(K, V)> { self.iter.next() }
-    fn size_hint(&self) -> (usize, Option<usize>) { self.iter.size_hint() }
+    fn next(&mut self) -> Option<(K, V)> { self.0.next() }
+    fn size_hint(&self) -> (usize, Option<usize>) { self.0.size_hint() }
 }
 impl<K, V> DoubleEndedIterator for BTreeMapRangeRemove<K, V> {
-    fn next_back(&mut self) -> Option<(K, V)> { self.iter.next_back() }
+    fn next_back(&mut self) -> Option<(K, V)> { self.0.next_back() }
 }
 impl<K, V> ExactSizeIterator for BTreeMapRangeRemove<K, V> {
-    fn len(&self) -> usize { self.iter.len() }
+    fn len(&self) -> usize { self.0.len() }
 }
 
 #[cfg(test)]
