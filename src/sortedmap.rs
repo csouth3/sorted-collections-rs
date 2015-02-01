@@ -12,8 +12,7 @@ use std::collections::btree_map::{BTreeMap, self};
 /// An extension trait for a `Map` whose keys have a defined total ordering.
 /// This trait defines convenience methods which take advantage of the map's ordering.
 pub trait SortedMapExt<K, V>
-    where K: Clone + Ord,
-          V: Clone 
+    where K: Clone + Ord
 {
     /// A by-value iterator yielding key-value pairs whose keys fall within a given range and
     /// which have just been removed from this map.
@@ -381,14 +380,10 @@ macro_rules! sortedmap_impl {
         }
 
         fn range_remove(&mut self, from_key: Bound<&K>, to_key: Bound<&K>) -> $rangeremoveret {
-            let ret: $typ = self.range(from_key, to_key)
-                                .map(|(ref k, ref v)| ((**k).clone(), (**v).clone()))
-                                .collect();
+            let keys: Vec<K> = self.range(from_key, to_key).map(|(ref k, _)| (**k).clone()).collect();
+            let values: Vec<V> = keys.iter().map(|ref k| self.remove(*k).unwrap()).collect();
+            let ret: $typ = keys.into_iter().zip(values.into_iter()).collect();
 
-            for key in ret.keys() {
-                let val = self.remove(key);
-                debug_assert!(val.is_some());
-            }
             $rangeremove(ret.into_iter())
         }
     );
@@ -396,8 +391,7 @@ macro_rules! sortedmap_impl {
 
 // An impl of SortedMapExt for the standard library BTreeMap
 impl<'a, K, V> SortedMapExt<K, V> for BTreeMap<K, V>
-    where K: Clone + Ord,
-          V: Clone
+    where K: Clone + Ord
 {
     type RangeRemove = BTreeMapRangeRemove<K, V>;
 
