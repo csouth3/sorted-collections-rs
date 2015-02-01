@@ -276,7 +276,8 @@ macro_rules! sortedset_impl {
 
         fn first_remove(&mut self) -> Option<T> {
             if let Some(ret) = self.first().cloned() {
-                assert!(self.remove(&ret));
+                let sanity = self.remove(&ret);
+                debug_assert!(sanity);
                 Some(ret)
             } else {
                 None
@@ -289,7 +290,8 @@ macro_rules! sortedset_impl {
 
         fn last_remove(&mut self) -> Option<T> {
             if let Some(ret) = self.last().cloned() {
-                assert!(self.remove(&ret));
+                let sanity = self.remove(&ret);
+                debug_assert!(sanity);
                 Some(ret)
             } else {
                 None
@@ -302,7 +304,8 @@ macro_rules! sortedset_impl {
 
         fn ceiling_remove(&mut self, elem: &T) -> Option<T> {
             if let Some(ceiling) = self.ceiling(elem).cloned() {
-                assert!(self.remove(&ceiling));
+                let sanity = self.remove(&ceiling);
+                debug_assert!(sanity);
                 Some(ceiling)
             } else {
                 None
@@ -315,7 +318,8 @@ macro_rules! sortedset_impl {
 
         fn floor_remove(&mut self, elem: &T) -> Option<T> {
             if let Some(floor) = self.floor(elem).cloned() {
-                assert!(self.remove(&floor));
+                let sanity = self.remove(&floor);
+                debug_assert!(sanity);
                 Some(floor)
             } else {
                 None
@@ -328,7 +332,8 @@ macro_rules! sortedset_impl {
 
         fn higher_remove(&mut self, elem: &T) -> Option<T> {
             if let Some(higher) = self.higher(elem).cloned() {
-                assert!(self.remove(&higher));
+                let sanity = self.remove(&higher);
+                debug_assert!(sanity);
                 Some(higher)
             } else {
                 None
@@ -341,7 +346,8 @@ macro_rules! sortedset_impl {
 
         fn lower_remove(&mut self, elem: &T) -> Option<T> {
             if let Some(lower) = self.lower(elem).cloned() {
-                assert!(self.remove(&lower));
+                let sanity = self.remove(&lower);
+                debug_assert!(sanity);
                 Some(lower)
             } else {
                 None
@@ -351,7 +357,8 @@ macro_rules! sortedset_impl {
         fn range_remove(&mut self, from_elem: Bound<&T>, to_elem: Bound<&T>) -> $rangeremoveret {
             let ret: $typ = self.range(from_elem, to_elem).cloned().collect();
             for elem in ret.iter() {
-                assert!(self.remove(elem));
+                let sanity = self.remove(elem);
+                debug_assert!(sanity);
             }
             $rangeremove(ret.into_iter())
         }

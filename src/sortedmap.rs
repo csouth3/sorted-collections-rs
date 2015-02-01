@@ -303,7 +303,7 @@ macro_rules! sortedmap_impl {
         fn first_remove(&mut self) -> Option<(K, V)> {
             if let Some(key) = self.first().cloned() {
                 let val = self.remove(&key);
-                assert!(val.is_some());
+                debug_assert!(val.is_some());
                 Some((key, val.unwrap()))
             } else {
                 None
@@ -317,7 +317,7 @@ macro_rules! sortedmap_impl {
         fn last_remove(&mut self) -> Option<(K, V)> {
             if let Some(key) = self.last().cloned() {
                 let val = self.remove(&key);
-                assert!(val.is_some());
+                debug_assert!(val.is_some());
                 Some((key, val.unwrap()))
             } else {
                 None
@@ -331,7 +331,7 @@ macro_rules! sortedmap_impl {
         fn ceiling_remove(&mut self, key: &K) -> Option<(K, V)> {
             if let Some(ceiling) = self.ceiling(key).cloned() {
                 let val = self.remove(&ceiling);
-                assert!(val.is_some());
+                debug_assert!(val.is_some());
                 Some((ceiling, val.unwrap()))
             } else {
                 None
@@ -345,7 +345,7 @@ macro_rules! sortedmap_impl {
         fn floor_remove(&mut self, key: &K) -> Option<(K, V)> {
             if let Some(floor) = self.floor(key).cloned() {
                 let val = self.remove(&floor);
-                assert!(val.is_some());
+                debug_assert!(val.is_some());
                 Some((floor, val.unwrap()))
             } else {
                 None
@@ -359,7 +359,7 @@ macro_rules! sortedmap_impl {
         fn higher_remove(&mut self, key: &K) -> Option<(K, V)> {
             if let Some(higher) = self.higher(key).cloned() {
                 let val = self.remove(&higher);
-                assert!(val.is_some());
+                debug_assert!(val.is_some());
                 Some((higher, val.unwrap()))
             } else {
                 None
@@ -373,7 +373,7 @@ macro_rules! sortedmap_impl {
         fn lower_remove(&mut self, key: &K) -> Option<(K, V)> {
             if let Some(lower) = self.lower(key).cloned() {
                 let val = self.remove(&lower);
-                assert!(val.is_some());
+                debug_assert!(val.is_some());
                 Some((lower, val.unwrap()))
             } else {
                 None
@@ -386,7 +386,8 @@ macro_rules! sortedmap_impl {
                                 .collect();
 
             for key in ret.keys() {
-                assert!(self.remove(key).is_some())
+                let val = self.remove(key);
+                debug_assert!(val.is_some());
             }
             $rangeremove(ret.into_iter())
         }
