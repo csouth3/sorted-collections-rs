@@ -6,8 +6,8 @@
 
 //! A trait extending ordered maps, along with associated impls and iterators.
 
-use std::collections::Bound;
-use std::collections::btree_map::{BTreeMap, self};
+use std::collections::Bound::{self, Excluded, Included, Unbounded};
+use std::collections::btree_map::{self, BTreeMap};
 
 /// An extension trait for a `Map` whose keys have a defined total ordering.
 /// This trait defines convenience methods which take advantage of the map's ordering.
@@ -324,7 +324,7 @@ macro_rules! sortedmap_impl {
         }
 
         fn ceiling(&self, key: &K) -> Option<&K> {
-            self.keys().filter(|&k| k >= key).min()
+            self.range(Included(key), Unbounded).map(|(k, _)| k).min()
         }
 
         fn ceiling_remove(&mut self, key: &K) -> Option<(K, V)> {
@@ -338,7 +338,7 @@ macro_rules! sortedmap_impl {
         }
 
         fn floor(&self, key: &K) -> Option<&K> {
-            self.keys().filter(|&k| k <= key).max()
+            self.range(Unbounded, Included(key)).map(|(k, _)| k).max()
         }
 
         fn floor_remove(&mut self, key: &K) -> Option<(K, V)> {
@@ -352,7 +352,7 @@ macro_rules! sortedmap_impl {
         }
 
         fn higher(&self, key: &K) -> Option<&K> {
-            self.keys().filter(|&k| k > key).min()
+            self.range(Excluded(key), Unbounded).map(|(k, _)| k).min()
         }
 
         fn higher_remove(&mut self, key: &K) -> Option<(K, V)> {
@@ -366,7 +366,7 @@ macro_rules! sortedmap_impl {
         }
 
         fn lower(&self, key: &K) -> Option<&K> {
-            self.keys().filter(|&k| k < key).max()
+            self.range(Unbounded, Excluded(key)).map(|(k, _)| k).max()
         }
 
         fn lower_remove(&mut self, key: &K) -> Option<(K, V)> {
@@ -380,8 +380,8 @@ macro_rules! sortedmap_impl {
         }
 
         fn range_remove(&mut self, from_key: Bound<&K>, to_key: Bound<&K>) -> $rangeremoveret {
-            let keys: Vec<K> = self.range(from_key, to_key).map(|(ref k, _)| (**k).clone()).collect();
-            let values: Vec<V> = keys.iter().map(|ref k| self.remove(*k).unwrap()).collect();
+            let keys: Vec<K> = self.range(from_key, to_key).map(|(k, _)| k.clone()).collect();
+            let values: Vec<V> = keys.iter().map(|k| self.remove(k).unwrap()).collect();
             let ret: $typ = keys.into_iter().zip(values.into_iter()).collect();
 
             $rangeremove(ret.into_iter())

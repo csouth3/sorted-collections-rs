@@ -6,8 +6,8 @@
 
 //! A trait extending ordered sets, along with associated impls and iterators.
 
-use std::collections::Bound::{Excluded, Included, Unbounded, self};
-use std::collections::btree_set::{BTreeSet, self};
+use std::collections::Bound::{self, Excluded, Included, Unbounded};
+use std::collections::btree_set::{self, BTreeSet};
 
 /// An extension trait for a `Set` whose elements have a defined total ordering.
 /// This trait defines convenience methods which take advantage of the set's ordering.
