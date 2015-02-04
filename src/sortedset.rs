@@ -356,7 +356,8 @@ macro_rules! sortedset_impl {
 
         fn range_remove(&mut self, from_elem: Bound<&T>, to_elem: Bound<&T>) -> $rangeremoveret {
             let ret: $typ = self.range(from_elem, to_elem).cloned().collect();
-            for elem in ret.iter() {
+
+            for elem in &ret {
                 let sanity = self.remove(elem);
                 debug_assert!(sanity);
             }
