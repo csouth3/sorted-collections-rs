@@ -26,7 +26,7 @@
 
     <section class="sidebar">
         
-        <p class='location'><a href='../index.html'>sorted-collections</a>::<wbr><a href='index.html'>sortedmap</a></p><div class='block struct'><h2>Structs</h2><a class='struct ' href='struct.BTreeMapRangeRemove.html' title=''>BTreeMapRangeRemove</a></div><div class='block trait'><h2>Traits</h2><a class='trait current' href='trait.SortedMapExt.html' title='An extension trait for a `Map` whose keys have a defined total ordering. This trait defines convenience methods which take advantage of the map&#39;s ordering.'>SortedMapExt</a></div>
+        <p class='location'><a href='../index.html'>sorted-collections</a>::<wbr><a href='index.html'>sortedmap</a></p><div class='block struct'><h2>Structs</h2><a class='struct ' href='struct.BTreeMapRangeRemove.html' title='A double-ended by-value iterator for removing pairs from a BTreeMap.'>BTreeMapRangeRemove</a></div><div class='block trait'><h2>Traits</h2><a class='trait current' href='trait.SortedMapExt.html' title='An extension trait for a `Map` whose keys have a defined total ordering. This trait defines convenience methods which take advantage of the map&#39;s ordering.'>SortedMapExt</a></div>
     </section>
 
     <nav class="sub">
@@ -44,8 +44,8 @@
 <h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>sorted-collections</a>::<wbr><a href='index.html'>sortedmap</a>::<wbr><a class='trait' href=''>SortedMapExt</a><wbr></span><span class='out-of-band'><span id='render-detail'>
             <a id="collapse-all" href="#">[-]
             </a>&nbsp;<a id="expand-all" href="#">[+]</a>
-        </span><a id='src-12' href='../../src/sorted-collections/sortedmap.rs.html#12-292'>[src]</a></span></h1>
-<pre class='rust trait'>pub trait SortedMapExt&lt;K, V&gt; <span class='where'>where K: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a>, V: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a></span> {
+        </span><a id='src-16' href='../../src/sorted-collections/sortedmap.rs.html#14-293'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait SortedMapExt&lt;K, V&gt; <span class='where'>where K: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a></span> {
     type RangeRemove;
 
     fn <a href='#tymethod.first' class='fnname'>first</a>(&amp;self) -&gt; <a class='enum' href='http://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;&amp;K&gt;;
@@ -307,7 +307,7 @@ iterator over all of the pairs which were in it.</p>
 </div></div>
         <h2 id='implementors'>Implementors</h2>
         <ul class='item-list' id='implementors-list'>
-    <li><a class='stability Unmarked' title='No stability level'></a><code>impl&lt;'a, K, V&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMapExt.html' title='sorted-collections::sortedmap::SortedMapExt'>SortedMapExt</a>&lt;K, V&gt; for <a class='struct' href='http://doc.rust-lang.org/nightly/collections/btree/map/struct.BTreeMap.html' title='collections::btree::map::BTreeMap'>BTreeMap</a>&lt;K, V&gt; <span class='where'>where K: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a>, V: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a></span></code></li>
+    <li><a class='stability Unmarked' title='No stability level'></a><code>impl&lt;'a, K, V&gt; <a class='trait' href='../../sorted-collections/sortedmap/trait.SortedMapExt.html' title='sorted-collections::sortedmap::SortedMapExt'>SortedMapExt</a>&lt;K, V&gt; for <a class='struct' href='http://doc.rust-lang.org/nightly/collections/btree/map/struct.BTreeMap.html' title='collections::btree::map::BTreeMap'>BTreeMap</a>&lt;K, V&gt; <span class='where'>where K: <a class='trait' href='http://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> + <a class='trait' href='http://doc.rust-lang.org/nightly/core/cmp/trait.Ord.html' title='core::cmp::Ord'>Ord</a></span></code></li>
 </ul><script type="text/javascript" async
                               src="../../implementors/sorted-collections/sortedmap/trait.SortedMapExt.js">
                       </script></section>

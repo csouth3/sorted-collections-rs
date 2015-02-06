@@ -521,6 +521,33 @@
 <span id="479">479</span>
 <span id="480">480</span>
 <span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
+<span id="486">486</span>
+<span id="487">487</span>
+<span id="488">488</span>
+<span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
+<span id="492">492</span>
+<span id="493">493</span>
+<span id="494">494</span>
+<span id="495">495</span>
+<span id="496">496</span>
+<span id="497">497</span>
+<span id="498">498</span>
+<span id="499">499</span>
+<span id="500">500</span>
+<span id="501">501</span>
+<span id="502">502</span>
+<span id="503">503</span>
+<span id="504">504</span>
+<span id="505">505</span>
+<span id="506">506</span>
+<span id="507">507</span>
+<span id="508">508</span>
 </pre><pre class='rust '>
 <span class='comment'>// Licensed under the Apache License, Version 2.0 &lt;LICENSE-APACHE or</span>
 <span class='comment'>// http://www.apache.org/licenses/LICENSE-2.0&gt; or the MIT license</span>
@@ -528,8 +555,10 @@
 <span class='comment'>// option. This file may not be copied, modified, or distributed</span>
 <span class='comment'>// except according to those terms.</span>
 
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>Bound</span>::{<span class='ident'>Excluded</span>, <span class='ident'>Included</span>, <span class='ident'>Unbounded</span>, <span class='self'>self</span>};
-<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>btree_set</span>::{<span class='ident'>BTreeSet</span>, <span class='self'>self</span>};
+<span class='doccomment'>//! A trait extending ordered sets, along with associated impls and iterators.</span>
+
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>Bound</span>::{<span class='self'>self</span>, <span class='ident'>Excluded</span>, <span class='ident'>Included</span>, <span class='ident'>Unbounded</span>};
+<span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>collections</span>::<span class='ident'>btree_set</span>::{<span class='self'>self</span>, <span class='ident'>BTreeSet</span>};
 
 <span class='doccomment'>/// An extension trait for a `Set` whose elements have a defined total ordering.</span>
 <span class='doccomment'>/// This trait defines convenience methods which take advantage of the set&#39;s ordering.</span>
@@ -797,11 +826,15 @@
         }
 
         <span class='kw'>fn</span> <span class='ident'>first_remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-            <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>ret</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>first</span>().<span class='ident'>cloned</span>() {
-                <span class='macro'>assert</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>ret</span>));
-                <span class='prelude-val'>Some</span>(<span class='ident'>ret</span>)
-            } <span class='kw'>else</span> {
-                <span class='prelude-val'>None</span>
+            <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>first</span>().<span class='ident'>cloned</span>() {
+                <span class='prelude-val'>Some</span>(<span class='ident'>first</span>) <span class='op'>=&gt;</span> {
+                    <span class='kw'>let</span> <span class='ident'>sanity</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>first</span>);
+                    <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>sanity</span>);
+                    <span class='prelude-val'>Some</span>(<span class='ident'>first</span>)
+                },
+                _ <span class='op'>=&gt;</span> {
+                    <span class='prelude-val'>None</span>
+                },
             }
         }
 
@@ -810,11 +843,15 @@
         }
 
         <span class='kw'>fn</span> <span class='ident'>last_remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-            <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>ret</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>last</span>().<span class='ident'>cloned</span>() {
-                <span class='macro'>assert</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>ret</span>));
-                <span class='prelude-val'>Some</span>(<span class='ident'>ret</span>)
-            } <span class='kw'>else</span> {
-                <span class='prelude-val'>None</span>
+            <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>last</span>().<span class='ident'>cloned</span>() {
+                <span class='prelude-val'>Some</span>(<span class='ident'>last</span>) <span class='op'>=&gt;</span> {
+                    <span class='kw'>let</span> <span class='ident'>sanity</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>last</span>);
+                    <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>sanity</span>);
+                    <span class='prelude-val'>Some</span>(<span class='ident'>last</span>)
+                },
+                _ <span class='op'>=&gt;</span> {
+                    <span class='prelude-val'>None</span>
+                },
             }
         }
 
@@ -823,11 +860,15 @@
         }
 
         <span class='kw'>fn</span> <span class='ident'>ceiling_remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>elem</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-            <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>ceiling</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>ceiling</span>(<span class='ident'>elem</span>).<span class='ident'>cloned</span>() {
-                <span class='macro'>assert</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>ceiling</span>));
-                <span class='prelude-val'>Some</span>(<span class='ident'>ceiling</span>)
-            } <span class='kw'>else</span> {
-                <span class='prelude-val'>None</span>
+            <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>ceiling</span>(<span class='ident'>elem</span>).<span class='ident'>cloned</span>() {
+                <span class='prelude-val'>Some</span>(<span class='ident'>ceiling</span>) <span class='op'>=&gt;</span> {
+                    <span class='kw'>let</span> <span class='ident'>sanity</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>ceiling</span>);
+                    <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>sanity</span>);
+                    <span class='prelude-val'>Some</span>(<span class='ident'>ceiling</span>)
+                },
+                _ <span class='op'>=&gt;</span> {
+                    <span class='prelude-val'>None</span>
+                },
             }
         }
 
@@ -836,11 +877,15 @@
         }
 
         <span class='kw'>fn</span> <span class='ident'>floor_remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>elem</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-            <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>floor</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>floor</span>(<span class='ident'>elem</span>).<span class='ident'>cloned</span>() {
-                <span class='macro'>assert</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>floor</span>));
-                <span class='prelude-val'>Some</span>(<span class='ident'>floor</span>)
-            } <span class='kw'>else</span> {
-                <span class='prelude-val'>None</span>
+            <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>floor</span>(<span class='ident'>elem</span>).<span class='ident'>cloned</span>() {
+                <span class='prelude-val'>Some</span>(<span class='ident'>floor</span>) <span class='op'>=&gt;</span> {
+                    <span class='kw'>let</span> <span class='ident'>sanity</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>floor</span>);
+                    <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>sanity</span>);
+                    <span class='prelude-val'>Some</span>(<span class='ident'>floor</span>)
+                },
+                _ <span class='op'>=&gt;</span> {
+                    <span class='prelude-val'>None</span>
+                },
             }
         }
 
@@ -849,11 +894,15 @@
         }
 
         <span class='kw'>fn</span> <span class='ident'>higher_remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>elem</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-            <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>higher</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>higher</span>(<span class='ident'>elem</span>).<span class='ident'>cloned</span>() {
-                <span class='macro'>assert</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>higher</span>));
-                <span class='prelude-val'>Some</span>(<span class='ident'>higher</span>)
-            } <span class='kw'>else</span> {
-                <span class='prelude-val'>None</span>
+            <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>higher</span>(<span class='ident'>elem</span>).<span class='ident'>cloned</span>() {
+                <span class='prelude-val'>Some</span>(<span class='ident'>higher</span>) <span class='op'>=&gt;</span> {
+                    <span class='kw'>let</span> <span class='ident'>sanity</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>higher</span>);
+                    <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>sanity</span>);
+                    <span class='prelude-val'>Some</span>(<span class='ident'>higher</span>)
+                },
+                _ <span class='op'>=&gt;</span> {
+                    <span class='prelude-val'>None</span>
+                },
             }
         }
 
@@ -862,20 +911,26 @@
         }
 
         <span class='kw'>fn</span> <span class='ident'>lower_remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>elem</span>: <span class='kw-2'>&amp;</span><span class='ident'>T</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-            <span class='kw'>if</span> <span class='kw'>let</span> <span class='prelude-val'>Some</span>(<span class='ident'>lower</span>) <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>lower</span>(<span class='ident'>elem</span>).<span class='ident'>cloned</span>() {
-                <span class='macro'>assert</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>lower</span>));
-                <span class='prelude-val'>Some</span>(<span class='ident'>lower</span>)
-            } <span class='kw'>else</span> {
-                <span class='prelude-val'>None</span>
+            <span class='kw'>match</span> <span class='self'>self</span>.<span class='ident'>lower</span>(<span class='ident'>elem</span>).<span class='ident'>cloned</span>() {
+                <span class='prelude-val'>Some</span>(<span class='ident'>lower</span>) <span class='op'>=&gt;</span> {
+                    <span class='kw'>let</span> <span class='ident'>sanity</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>remove</span>(<span class='kw-2'>&amp;</span><span class='ident'>lower</span>);
+                    <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>sanity</span>);
+                    <span class='prelude-val'>Some</span>(<span class='ident'>lower</span>)
+                },
+                _ <span class='op'>=&gt;</span> {
+                 <span class='prelude-val'>None</span>
+                },
             }
         }
 
         <span class='kw'>fn</span> <span class='ident'>range_remove</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>, <span class='ident'>from_elem</span>: <span class='ident'>Bound</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>to_elem</span>: <span class='ident'>Bound</span><span class='op'>&lt;</span><span class='kw-2'>&amp;</span><span class='ident'>T</span><span class='op'>&gt;</span>) <span class='op'>-&gt;</span> <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>rangeremoveret</span> {
             <span class='kw'>let</span> <span class='ident'>ret</span>: <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>typ</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>range</span>(<span class='ident'>from_elem</span>, <span class='ident'>to_elem</span>).<span class='ident'>cloned</span>().<span class='ident'>collect</span>();
-            <span class='kw'>for</span> <span class='ident'>elem</span> <span class='kw'>in</span> <span class='ident'>ret</span>.<span class='ident'>iter</span>() {
-                <span class='macro'>assert</span><span class='macro'>!</span>(<span class='self'>self</span>.<span class='ident'>remove</span>(<span class='ident'>elem</span>));
+
+            <span class='kw'>for</span> <span class='ident'>elem</span> <span class='kw'>in</span> <span class='kw-2'>&amp;</span><span class='ident'>ret</span> {
+                <span class='kw'>let</span> <span class='ident'>sanity</span> <span class='op'>=</span> <span class='self'>self</span>.<span class='ident'>remove</span>(<span class='ident'>elem</span>);
+                <span class='macro'>debug_assert</span><span class='macro'>!</span>(<span class='ident'>sanity</span>);
             }
-            <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>rangeremove</span> { <span class='ident'>iter</span>: <span class='ident'>ret</span>.<span class='ident'>into_iter</span>() }
+            <span class='macro-nonterminal'>$</span><span class='macro-nonterminal'>rangeremove</span>(<span class='ident'>ret</span>.<span class='ident'>into_iter</span>())
         }
     );
 }
@@ -889,21 +944,20 @@
     <span class='macro'>sortedset_impl</span><span class='macro'>!</span>(<span class='ident'>BTreeSet</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>, <span class='ident'>BTreeSetRangeRemove</span>, <span class='ident'>BTreeSetRangeRemove</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>);
 }
 
-<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>BTreeSetRangeRemove</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-    <span class='ident'>iter</span>: <span class='ident'>btree_set</span>::<span class='ident'>IntoIter</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>
-}
+<span class='doccomment'>/// A double-ended by-value iterator for removing pairs from a BTreeSet.</span>
+<span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>BTreeSetRangeRemove</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>(<span class='ident'>btree_set</span>::<span class='ident'>IntoIter</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>);
 
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='ident'>Iterator</span> <span class='kw'>for</span> <span class='ident'>BTreeSetRangeRemove</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
     <span class='kw'>type</span> <span class='ident'>Item</span> <span class='op'>=</span> <span class='ident'>T</span>;
 
-    <span class='kw'>fn</span> <span class='ident'>next</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>next</span>() }
-    <span class='kw'>fn</span> <span class='ident'>size_hint</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> (<span class='ident'>usize</span>, <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>) { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>size_hint</span>() }
+    <span class='kw'>fn</span> <span class='ident'>next</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> { <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>next</span>() }
+    <span class='kw'>fn</span> <span class='ident'>size_hint</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> (<span class='ident'>usize</span>, <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>usize</span><span class='op'>&gt;</span>) { <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>size_hint</span>() }
 }
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='ident'>DoubleEndedIterator</span> <span class='kw'>for</span> <span class='ident'>BTreeSetRangeRemove</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-    <span class='kw'>fn</span> <span class='ident'>next_back</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>next_back</span>() }
+    <span class='kw'>fn</span> <span class='ident'>next_back</span>(<span class='kw-2'>&amp;</span><span class='kw-2'>mut</span> <span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='prelude-ty'>Option</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> { <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>next_back</span>() }
 }
 <span class='kw'>impl</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> <span class='ident'>ExactSizeIterator</span> <span class='kw'>for</span> <span class='ident'>BTreeSetRangeRemove</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span> {
-    <span class='kw'>fn</span> <span class='ident'>len</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='self'>self</span>.<span class='ident'>iter</span>.<span class='ident'>len</span>() }
+    <span class='kw'>fn</span> <span class='ident'>len</span>(<span class='kw-2'>&amp;</span><span class='self'>self</span>) <span class='op'>-&gt;</span> <span class='ident'>usize</span> { <span class='self'>self</span>.<span class='number'>0</span>.<span class='ident'>len</span>() }
 }
 
 <span class='attribute'>#[<span class='ident'>cfg</span>(<span class='ident'>test</span>)]</span>
