@@ -25,3 +25,8 @@ Various cleanups, removed support for Hash{Set, Map}, traits renamed.
 Version 0.0.6 (January 30, 2015)
 --------------------------------
 Removed some redundant features in favor of libcollections bounded iterators.
+
+Version 0.0.7 (February 6, 2015)
+--------------------------------
+Mainly trivial refactorings, the main difference is that the `V: Clone` bound in SortedMap
+is gone now with no loss in functionality.
