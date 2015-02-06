@@ -300,12 +300,15 @@ macro_rules! sortedmap_impl {
         }
 
         fn first_remove(&mut self) -> Option<(K, V)> {
-            if let Some(key) = self.first().cloned() {
-                let val = self.remove(&key);
-                debug_assert!(val.is_some());
-                Some((key, val.unwrap()))
-            } else {
-                None
+            match self.first().cloned() {
+                Some(first) => {
+                    let val = self.remove(&first);
+                    debug_assert!(val.is_some());
+                    Some((first, val.unwrap()))
+                },
+                _ => {
+                    None
+                },
             }
         }
 
@@ -314,12 +317,15 @@ macro_rules! sortedmap_impl {
         }
 
         fn last_remove(&mut self) -> Option<(K, V)> {
-            if let Some(key) = self.last().cloned() {
-                let val = self.remove(&key);
-                debug_assert!(val.is_some());
-                Some((key, val.unwrap()))
-            } else {
-                None
+            match self.last().cloned() {
+                Some(last) => {
+                    let val = self.remove(&last);
+                    debug_assert!(val.is_some());
+                    Some((last, val.unwrap()))
+                },
+                _ => {
+                    None
+                },
             }
         }
 
@@ -328,12 +334,15 @@ macro_rules! sortedmap_impl {
         }
 
         fn ceiling_remove(&mut self, key: &K) -> Option<(K, V)> {
-            if let Some(ceiling) = self.ceiling(key).cloned() {
-                let val = self.remove(&ceiling);
-                debug_assert!(val.is_some());
-                Some((ceiling, val.unwrap()))
-            } else {
-                None
+            match self.ceiling(key).cloned() {
+                Some(ceiling) => {
+                    let val = self.remove(&ceiling);
+                    debug_assert!(val.is_some());
+                    Some((ceiling, val.unwrap()))
+                },
+                _ => {
+                    None
+                },
             }
         }
 
@@ -342,12 +351,15 @@ macro_rules! sortedmap_impl {
         }
 
         fn floor_remove(&mut self, key: &K) -> Option<(K, V)> {
-            if let Some(floor) = self.floor(key).cloned() {
-                let val = self.remove(&floor);
-                debug_assert!(val.is_some());
-                Some((floor, val.unwrap()))
-            } else {
-                None
+            match self.floor(key).cloned() {
+                Some(floor) => {
+                    let val = self.remove(&floor);
+                    debug_assert!(val.is_some());
+                    Some((floor, val.unwrap()))
+                },
+                _ => {
+                    None
+                },
             }
         }
 
@@ -356,12 +368,15 @@ macro_rules! sortedmap_impl {
         }
 
         fn higher_remove(&mut self, key: &K) -> Option<(K, V)> {
-            if let Some(higher) = self.higher(key).cloned() {
-                let val = self.remove(&higher);
-                debug_assert!(val.is_some());
-                Some((higher, val.unwrap()))
-            } else {
-                None
+            match self.higher(key).cloned() {
+                Some(higher) => {
+                    let val = self.remove(&higher);
+                    debug_assert!(val.is_some());
+                    Some((higher, val.unwrap()))
+                },
+                _ => {
+                    None
+                },
             }
         }
 
@@ -370,12 +385,15 @@ macro_rules! sortedmap_impl {
         }
 
         fn lower_remove(&mut self, key: &K) -> Option<(K, V)> {
-            if let Some(lower) = self.lower(key).cloned() {
-                let val = self.remove(&lower);
-                debug_assert!(val.is_some());
-                Some((lower, val.unwrap()))
-            } else {
-                None
+            match self.lower(key).cloned() {
+                Some(lower) => {
+                    let val = self.remove(&lower);
+                    debug_assert!(val.is_some());
+                    Some((lower, val.unwrap()))
+                },
+                _ => {
+                    None
+                },
             }
         }
 

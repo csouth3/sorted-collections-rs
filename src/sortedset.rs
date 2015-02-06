@@ -275,12 +275,15 @@ macro_rules! sortedset_impl {
         }
 
         fn first_remove(&mut self) -> Option<T> {
-            if let Some(ret) = self.first().cloned() {
-                let sanity = self.remove(&ret);
-                debug_assert!(sanity);
-                Some(ret)
-            } else {
-                None
+            match self.first().cloned() {
+                Some(first) => {
+                    let sanity = self.remove(&first);
+                    debug_assert!(sanity);
+                    Some(first)
+                },
+                _ => {
+                    None
+                },
             }
         }
 
@@ -289,12 +292,15 @@ macro_rules! sortedset_impl {
         }
 
         fn last_remove(&mut self) -> Option<T> {
-            if let Some(ret) = self.last().cloned() {
-                let sanity = self.remove(&ret);
-                debug_assert!(sanity);
-                Some(ret)
-            } else {
-                None
+            match self.last().cloned() {
+                Some(last) => {
+                    let sanity = self.remove(&last);
+                    debug_assert!(sanity);
+                    Some(last)
+                },
+                _ => {
+                    None
+                },
             }
         }
 
@@ -303,12 +309,15 @@ macro_rules! sortedset_impl {
         }
 
         fn ceiling_remove(&mut self, elem: &T) -> Option<T> {
-            if let Some(ceiling) = self.ceiling(elem).cloned() {
-                let sanity = self.remove(&ceiling);
-                debug_assert!(sanity);
-                Some(ceiling)
-            } else {
-                None
+            match self.ceiling(elem).cloned() {
+                Some(ceiling) => {
+                    let sanity = self.remove(&ceiling);
+                    debug_assert!(sanity);
+                    Some(ceiling)
+                },
+                _ => {
+                    None
+                },
             }
         }
 
@@ -317,12 +326,15 @@ macro_rules! sortedset_impl {
         }
 
         fn floor_remove(&mut self, elem: &T) -> Option<T> {
-            if let Some(floor) = self.floor(elem).cloned() {
-                let sanity = self.remove(&floor);
-                debug_assert!(sanity);
-                Some(floor)
-            } else {
-                None
+            match self.floor(elem).cloned() {
+                Some(floor) => {
+                    let sanity = self.remove(&floor);
+                    debug_assert!(sanity);
+                    Some(floor)
+                },
+                _ => {
+                    None
+                },
             }
         }
 
@@ -331,12 +343,15 @@ macro_rules! sortedset_impl {
         }
 
         fn higher_remove(&mut self, elem: &T) -> Option<T> {
-            if let Some(higher) = self.higher(elem).cloned() {
-                let sanity = self.remove(&higher);
-                debug_assert!(sanity);
-                Some(higher)
-            } else {
-                None
+            match self.higher(elem).cloned() {
+                Some(higher) => {
+                    let sanity = self.remove(&higher);
+                    debug_assert!(sanity);
+                    Some(higher)
+                },
+                _ => {
+                    None
+                },
             }
         }
 
@@ -345,12 +360,15 @@ macro_rules! sortedset_impl {
         }
 
         fn lower_remove(&mut self, elem: &T) -> Option<T> {
-            if let Some(lower) = self.lower(elem).cloned() {
-                let sanity = self.remove(&lower);
-                debug_assert!(sanity);
-                Some(lower)
-            } else {
-                None
+            match self.lower(elem).cloned() {
+                Some(lower) => {
+                    let sanity = self.remove(&lower);
+                    debug_assert!(sanity);
+                    Some(lower)
+                },
+                _ => {
+                 None
+                },
             }
         }
 
