@@ -7,10 +7,9 @@
 //! sorted-collections-rs is a library providing useful extension traits and convenience
 //! methods for ordered collections in Rust.
 
-#![feature(core)]
+#![feature(collections, core)]
 
-#![cfg_attr(test, feature(collections, test))]
-#[cfg(test)] extern crate test;
+#![cfg_attr(test, feature(test))] #[cfg(test)] extern crate test;
 
 pub use sortedmap::SortedMapExt;
 pub use sortedset::SortedSetExt;
