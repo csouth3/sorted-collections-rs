@@ -250,7 +250,7 @@ pub trait SortedSetExt<T>
     ///
     /// # Examples
     ///
-    /// ```
+    /// ```ignore
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::Bound::{Excluded, Included};
