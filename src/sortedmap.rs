@@ -273,7 +273,7 @@ pub trait SortedMapExt<K, V>
     ///
     /// # Examples
     ///
-    /// ```
+    /// ```ignore
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::Bound::{Excluded, Included};
