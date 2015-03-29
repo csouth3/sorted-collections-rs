@@ -7,7 +7,7 @@
 //! sorted-collections-rs is a library providing useful extension traits and convenience
 //! methods for ordered collections in Rust.
 
-#![feature(collections, core)]
+#![feature(collections)]
 
 #![cfg_attr(test, feature(test))] #[cfg(test)] extern crate test;
 

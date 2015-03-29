@@ -23,7 +23,7 @@ pub trait SortedMapExt<K, V>
     ///
     /// # Examples
     ///
-    /// ```
+    /// ```ignore
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeMap;
@@ -42,7 +42,7 @@ pub trait SortedMapExt<K, V>
     ///
     /// # Examples
     ///
-    /// ```
+    /// ```ignore
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeMap;
@@ -63,7 +63,7 @@ pub trait SortedMapExt<K, V>
     ///
     /// # Examples
     ///
-    /// ```
+    /// ```ignore
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeMap;
@@ -82,7 +82,7 @@ pub trait SortedMapExt<K, V>
     ///
     /// # Examples
     ///
-    /// ```
+    /// ```ignore
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeMap;
@@ -103,7 +103,7 @@ pub trait SortedMapExt<K, V>
     ///
     /// # Examples
     ///
-    /// ```
+    /// ```ignore
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeMap;
@@ -123,7 +123,7 @@ pub trait SortedMapExt<K, V>
     ///
     /// # Examples
     ///
-    /// ```
+    /// ```ignore
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeMap;
@@ -144,7 +144,7 @@ pub trait SortedMapExt<K, V>
     ///
     /// # Examples
     ///
-    /// ```
+    /// ```ignore
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeMap;
@@ -164,7 +164,7 @@ pub trait SortedMapExt<K, V>
     ///
     /// # Examples
     ///
-    /// ```
+    /// ```ignore
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeMap;
@@ -185,7 +185,7 @@ pub trait SortedMapExt<K, V>
     ///
     /// # Examples
     ///
-    /// ```
+    /// ```ignore
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeMap;
@@ -205,7 +205,7 @@ pub trait SortedMapExt<K, V>
     ///
     /// # Examples
     ///
-    /// ```
+    /// ```ignore
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeMap;
@@ -227,7 +227,7 @@ pub trait SortedMapExt<K, V>
     ///
     /// # Examples
     ///
-    /// ```
+    /// ```ignore
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeMap;
@@ -247,7 +247,7 @@ pub trait SortedMapExt<K, V>
     ///
     /// # Examples
     ///
-    /// ```
+    /// ```ignore
     /// extern crate "sorted-collections" as sorted_collections;
     ///
     /// use std::collections::BTreeMap;
