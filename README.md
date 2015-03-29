@@ -8,7 +8,7 @@ This library is not currently in active development, and much of the functionali
 
 [![Build Status](https://travis-ci.org/csouth3/sorted-collections-rs.svg?branch=master)](https://travis-ci.org/csouth3/sorted-collections-rs)
 
-## Usage
+## Usage (This is broken by new crate name rules.)
 
 Put this in your `Cargo.toml`:
 
